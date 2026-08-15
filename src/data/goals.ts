@@ -3,26 +3,19 @@ import type { AreaId, GoalId, Minutes, NeedId } from '../types'
 
 export interface GoalDef {
   id: GoalId
-  label: string
-  icon: string
   /** Obszary, które ten cel najbardziej wspiera (używane w rekomendacji). */
   areas: AreaId[]
 }
 
 export const GOALS: GoalDef[] = [
-  { id: 'wiecej-energii', label: 'Chcę mieć więcej energii', icon: 'Zap', areas: ['regeneracja', 'cialo'] },
-  { id: 'mniej-stresu', label: 'Chcę lepiej radzić sobie ze stresem', icon: 'Waves', areas: ['emocje', 'regeneracja'] },
-  { id: 'koncentracja', label: 'Chcę odzyskać koncentrację', icon: 'Brain', areas: ['umysl'] },
-  { id: 'zaczac-dzialac', label: 'Chcę zacząć działać', icon: 'Target', areas: ['dzialanie'] },
-  { id: 'lepszy-sen', label: 'Chcę poprawić sen', icon: 'Moon', areas: ['regeneracja'] },
-  { id: 'zdrowe-relacje', label: 'Chcę budować zdrowe relacje', icon: 'Users', areas: ['relacje'] },
-  { id: 'poczucie-kierunku', label: 'Chcę odzyskać poczucie kierunku', icon: 'Compass', areas: ['sens'] },
-  {
-    id: 'zdrowie-mozgu',
-    label: 'Chcę dbać o zdrowie mózgu na przyszłość',
-    icon: 'Sparkles',
-    areas: ['cialo', 'umysl', 'relacje', 'regeneracja'],
-  },
+  { id: 'wiecej-energii', areas: ['regeneracja', 'cialo'] },
+  { id: 'mniej-stresu', areas: ['emocje', 'regeneracja'] },
+  { id: 'koncentracja', areas: ['umysl'] },
+  { id: 'zaczac-dzialac', areas: ['dzialanie'] },
+  { id: 'lepszy-sen', areas: ['regeneracja'] },
+  { id: 'zdrowe-relacje', areas: ['relacje'] },
+  { id: 'poczucie-kierunku', areas: ['sens'] },
+  { id: 'zdrowie-mozgu', areas: ['cialo', 'umysl', 'relacje', 'regeneracja'] },
 ]
 
 export const GOAL_BY_ID: Record<GoalId, GoalDef> = GOALS.reduce(

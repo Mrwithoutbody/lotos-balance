@@ -481,20 +481,6 @@
   background: linear-gradient(120deg, rgba(193, 120, 98, 0.08), rgba(139, 121, 176, 0.08));
 }
 
-.anna-monogram {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 46px;
-  height: 46px;
-  flex: none;
-  border-radius: 999px;
-  background: var(--plum);
-  color: #fdf6f1;
-  font-family: var(--font-serif);
-  font-size: 1.35rem;
-}
-
 .anna-text {
   font-family: var(--font-serif);
   font-size: 1.02rem;
