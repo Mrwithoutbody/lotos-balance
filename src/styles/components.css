@@ -86,7 +86,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--sp-3);
   padding: 18px 18px 10px;
   border-bottom: 1px solid var(--line);
 }
@@ -143,7 +143,7 @@
 .scale-row {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
 .scale-dot {
@@ -184,17 +184,17 @@
 .balance-map {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--sp-3);
 }
 
 .balance-map.is-compact {
-  gap: 10px;
+  gap: var(--sp-2);
 }
 
 .balance-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 
 .balance-row.is-highlight .balance-name {
@@ -215,7 +215,7 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 10px;
+  gap: var(--sp-2);
 }
 
 .balance-name {
@@ -269,14 +269,14 @@
   position: relative;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: var(--card-pad);
   box-shadow: var(--shadow);
 }
 
 .activation-top {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
   flex-wrap: wrap;
   margin-bottom: 16px;
 }
@@ -325,7 +325,7 @@
 }
 
 .activation-meta {
-  gap: 12px;
+  gap: var(--sp-3);
   margin-top: 12px;
 }
 
@@ -428,10 +428,10 @@
 .card-tile-main {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: var(--sp-1);
   width: 100%;
   height: 100%;
-  padding: 15px 15px 16px;
+  padding: var(--sp-3);
   border: 0;
   background: transparent;
   text-align: left;
@@ -441,9 +441,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 12px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
 }
 
 .card-tile-title {
@@ -451,6 +451,11 @@
   font-size: 0.95rem;
   line-height: 1.3;
   padding-right: 24px;
+  /* Max 2 linie — inaczej najdłuższy tytuł rozciąga cały wiersz gridu i reszta kafli dostaje pustkę. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-tile-meta {
@@ -471,27 +476,14 @@
 
 /* ——— Prowadzenie Anny ——— */
 
-.anna-guide {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 14px;
-  border-radius: var(--radius);
-  border: 1px dashed rgba(51, 41, 31, 0.18);
-  background: linear-gradient(120deg, rgba(193, 120, 98, 0.08), rgba(139, 121, 176, 0.08));
-}
 
-.anna-text {
-  font-family: var(--font-serif);
-  font-size: 1.02rem;
-}
 
 /* ——— Kroki, ostrzeżenia, listy ——— */
 
 .steps {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sp-3);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -501,7 +493,7 @@
 .steps li {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: var(--sp-3);
   font-size: 0.97rem;
   line-height: 1.5;
 }
@@ -521,7 +513,7 @@
 .caution {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: var(--sp-2);
   padding: 12px 14px;
   border-radius: var(--radius-sm);
   background: rgba(201, 162, 39, 0.12);
@@ -538,13 +530,13 @@
 .bullets {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sp-2);
 }
 
 .bullets li {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: var(--sp-2);
   font-size: 0.92rem;
   color: var(--plum-soft);
   line-height: 1.5;
@@ -569,13 +561,13 @@
 .mini-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
 .mini-list li {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sp-2);
   font-size: 0.88rem;
 }
 
@@ -585,7 +577,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: var(--sp-3);
 }
 
 .timer-ring {
@@ -629,13 +621,13 @@
 .picker-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
 .picker-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
   width: 100%;
   padding: 12px;
   border-radius: var(--radius-sm);
@@ -673,7 +665,7 @@
 .quiz-item {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sp-2);
   padding: 16px;
   border-radius: var(--radius);
   background: var(--paper);
@@ -686,7 +678,7 @@
 .brain-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sp-2);
   align-items: flex-start;
   background: linear-gradient(150deg, rgba(139, 121, 176, 0.13), #ffffff 60%);
 }

@@ -14,17 +14,17 @@
 .app-bar-inner {
   max-width: var(--page-max);
   margin: 0 auto;
-  padding: 12px 18px;
+  padding: var(--sp-3);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 
 .brand-row {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: var(--sp-2);
   min-width: 0;
 }
 
@@ -70,7 +70,7 @@
   padding: 56px 20px 20px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--sp-2);
   background: linear-gradient(180deg, rgba(35, 28, 21, 0) 0%, rgba(35, 28, 21, 0.62) 62%, rgba(35, 28, 21, 0.78) 100%);
 }
 
@@ -117,7 +117,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: var(--sp-2);
   padding: 18px;
   background: linear-gradient(120deg, rgba(58, 48, 39, 0.94) 30%, rgba(58, 48, 39, 0.72) 100%);
   color: var(--dark-text);
@@ -159,29 +159,18 @@
   color: #f4ede7;
 }
 
-/* ——— Zdjęcie Anny ——— */
-
-.anna-photo {
-  width: 46px;
-  height: 46px;
-  flex: none;
-  border-radius: 999px;
-  object-fit: cover;
-  box-shadow: 0 0 0 2px var(--paper), 0 2px 8px rgba(51, 41, 31, 0.25);
-}
-
 /* ——— Ekran Dzisiaj ——— */
 
 .entry-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--sp-2);
 }
 
 .entry-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
   padding: 10px;
   border-radius: var(--radius-sm);
   background: rgba(244, 237, 231, 0.7);
@@ -191,7 +180,7 @@
 .entry-row-block {
   flex-direction: column;
   align-items: stretch;
-  gap: 10px;
+  gap: var(--sp-2);
 }
 
 .entry-title {
@@ -206,7 +195,7 @@
 }
 
 .entry-actions {
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
 .pill-done {
@@ -265,6 +254,11 @@
   min-height: 0;
 }
 
+.deck-live {
+  position: relative;
+  animation: fade-up 0.3s ease both;
+}
+
 .deck-ghost {
   position: absolute;
   left: 12px;
@@ -288,18 +282,13 @@
   opacity: 0.6;
 }
 
-.deck-live {
-  position: relative;
-  animation: fade-up 0.3s ease both;
-}
-
 /* Stos wypełnia cały viewport jak natywna aplikacja — karta bierze wolną przestrzeń. */
 .deck-screen {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--sp-3);
 }
 
 .deck-flow {
@@ -307,7 +296,7 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sp-3);
 }
 
 .deck-stage .activation-card {
@@ -317,19 +306,15 @@
   flex-direction: column;
 }
 
+/* Cały blok treści (emblemat, tytuł, opis) kotwiczy przy dole — góra to tylko pigułki. */
 .deck-stage .activation-emblem {
   width: 64px;
   height: 64px;
-  margin-top: 10px;
+  margin-top: auto;
 }
 
 .deck-stage .activation-title {
   font-size: 1.7rem;
-}
-
-/* Cały blok treści (emblemat, tytuł, opis) kotwiczy przy dole — góra to tylko pigułki. */
-.deck-stage .activation-emblem {
-  margin-top: auto;
 }
 
 .deck-stage .activation-footer {
@@ -381,7 +366,7 @@
 }
 
 .map-progress {
-  gap: 10px;
+  gap: var(--sp-2);
   padding: 10px 14px;
 }
 
@@ -398,7 +383,7 @@
 }
 
 .deck-actions {
-  gap: 8px;
+  gap: var(--sp-2);
 }
 
 .deck-actions .btn {
@@ -416,7 +401,7 @@
 
 .filter-scroll {
   display: flex;
-  gap: 8px;
+  gap: var(--sp-2);
   overflow-x: auto;
   padding-bottom: 4px;
   scrollbar-width: thin;
@@ -429,7 +414,7 @@
 .tile-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 12px;
+  gap: var(--sp-2);
 }
 
 /* ——— Kalendarz ——— */
@@ -521,7 +506,7 @@
 .week-row {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--sp-3);
   width: 100%;
   padding: 10px 12px;
   border-radius: var(--radius-sm);
@@ -555,7 +540,7 @@
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 12px;
+  gap: var(--sp-2);
 }
 
 @media (min-width: 480px) {
