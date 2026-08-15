@@ -3,12 +3,13 @@ import { brainStepForDate } from '../data/brain'
 import { useAppState } from '../hooks/useAppState'
 import { todayKey } from '../utils/date'
 import { Icon } from './Icon'
+import natureImg from '../assets/anna/natura-gniazdo.webp'
 
 interface Props {
   onAbout: () => void
 }
 
-/** „Mózg na lata” — dokładnie jeden prosty krok dziennie. */
+/** „Mózg na lata” — dokładnie jeden prosty krok dziennie. Ciemna karta editorial. */
 export function BrainCard({ onAbout }: Props) {
   const { state, markBrainStep } = useAppState()
   const today = todayKey()
@@ -16,28 +17,34 @@ export function BrainCard({ onAbout }: Props) {
   const done = state.brainSteps.includes(today)
 
   return (
-    <section className="surface brain-card">
-      <div className="row-between">
-        <span className="pill" style={{ background: `${step.color}1f`, color: step.color }}>
-          <Icon name={step.icon} size={13} />
-          Mózg na lata · {step.pillarLabel}
-        </span>
-        <button type="button" className="btn btn-ghost btn-sm" onClick={onAbout}>
-          <Icon name="Info" size={15} />
-          O metodzie
+    <section className="brain-card-dark" style={{ backgroundImage: `url(${natureImg})` }}>
+      <div className="brain-card-scrim">
+        <div className="row-between">
+          <span className="pill pill-glass">
+            <Icon name={step.icon} size={13} />
+            Mózg na lata · {step.pillarLabel}
+          </span>
+          <button
+            type="button"
+            className="icon-btn icon-btn-glass"
+            onClick={onAbout}
+            aria-label="O metodzie"
+          >
+            <Icon name="Info" size={16} />
+          </button>
+        </div>
+        <h3 className="brain-title">{step.text}</h3>
+        <p className="brain-hint">{step.hint}</p>
+        <button
+          type="button"
+          className={`btn btn-sm ${done ? 'btn-glass-done' : 'btn-glass'}`}
+          onClick={() => !done && markBrainStep(today)}
+          disabled={done}
+        >
+          <Icon name={done ? 'CheckCircle2' : 'Check'} size={16} />
+          {done ? 'Zrobione dzisiaj' : 'Zrobione'}
         </button>
       </div>
-      <h3 className="h2">{step.text}</h3>
-      <p className="muted">{step.hint}</p>
-      <button
-        type="button"
-        className={`btn btn-sm ${done ? 'btn-ghost' : 'btn-secondary'}`}
-        onClick={() => !done && markBrainStep(today)}
-        disabled={done}
-      >
-        <Icon name={done ? 'CheckCircle2' : 'Check'} size={16} />
-        {done ? 'Zrobione dzisiaj' : 'Zrobione'}
-      </button>
     </section>
   )
 }

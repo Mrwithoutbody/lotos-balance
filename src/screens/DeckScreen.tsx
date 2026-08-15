@@ -123,7 +123,9 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
     <div className="stack-lg">
       <header className="stack-sm">
         <p className="eyebrow">Talia aktywacji</p>
-        <h1 className="display">Zatrzymaj to, co Twoje</h1>
+        <h1 className="display">
+          Zatrzymaj to, co <em>Twoje</em>
+        </h1>
         <div className="row wrap gesture-legend" aria-label="Znaczenie gestów">
           <span className="legend-pill legend-no">
             <Icon name="ChevronLeft" size={14} />

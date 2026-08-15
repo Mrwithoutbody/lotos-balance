@@ -59,7 +59,9 @@ export function CalendarScreen({ onPlay }: Props) {
     <div className="stack-lg">
       <header className="stack-sm">
         <p className="eyebrow">Kalendarz</p>
-        <h1 className="display">Zaplanuj swój tydzień</h1>
+        <h1 className="display">
+          Zaplanuj swój <em>tydzień</em>
+        </h1>
         <p className="muted">Jedna karta dziennie w zupełności wystarczy.</p>
       </header>
 

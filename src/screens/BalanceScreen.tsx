@@ -19,6 +19,7 @@ import {
 } from '../utils/balance'
 import { longDate, shortDate, todayKey, weekdayShort } from '../utils/date'
 import type { AreaId } from '../types'
+import lotosImg from '../assets/anna/lotos.webp'
 
 interface Props {
   onAbout: () => void
@@ -50,10 +51,14 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
 
   return (
     <div className="stack-lg">
-      <header className="stack-sm">
-        <p className="eyebrow">Mapa Balansu</p>
-        <h1 className="display">Twój obecny balans</h1>
-        {snapshot && <p className="muted">Ostatnie badanie: {longDate(snapshot.date)}.</p>}
+      <header className="hero hero-slim" style={{ backgroundImage: `url(${lotosImg})` }}>
+        <div className="hero-overlay">
+          <p className="hero-eyebrow">Mapa Balansu</p>
+          <h1 className="display hero-title">
+            Twój obecny <em>balans</em>
+          </h1>
+          {snapshot && <p className="hero-sub">Ostatnie badanie: {longDate(snapshot.date)}</p>}
+        </div>
       </header>
 
       {snapshot ? (

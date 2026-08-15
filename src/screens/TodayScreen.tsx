@@ -16,6 +16,7 @@ import type { ActivationCard, Minutes, NeedId, Scale5 } from '../types'
 import { latestSnapshot, weakestAreas } from '../utils/balance'
 import { greeting, longDate, todayKey } from '../utils/date'
 import type { TabId } from '../components/BottomNav'
+import heroImg from '../assets/anna/anna-jezioro.webp'
 
 interface Props {
   onPlay: (card: ActivationCard, source: 'dzisiaj' | 'talia' | 'kalendarz', entryId?: string) => void
@@ -59,18 +60,23 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
 
   return (
     <div className="stack-lg">
-      <header className="stack-sm">
-        <p className="eyebrow">{longDate(today)}</p>
-        <h1 className="display">{greeting()}.</h1>
-        <div className="row wrap">
-          <span className="pill">
-            <Icon name="Flame" size={13} />
-            {days > 0 ? `${days} ${days === 1 ? 'dzień' : 'dni'} z rzędu` : 'Zacznij dziś'}
-          </span>
-          <span className="pill">
-            <Icon name="Check" size={13} />
-            {doneToday} {doneToday === 1 ? 'aktywacja dziś' : 'aktywacji dziś'}
-          </span>
+      <header className="hero" style={{ backgroundImage: `url(${heroImg})` }}>
+        <div className="hero-overlay">
+          <p className="hero-eyebrow">{longDate(today)}</p>
+          <h1 className="display hero-title">
+            {greeting()}
+            <em>.</em>
+          </h1>
+          <div className="row wrap">
+            <span className="pill pill-glass">
+              <Icon name="Flame" size={13} />
+              {days > 0 ? `${days} ${days === 1 ? 'dzień' : 'dni'} z rzędu` : 'Zacznij dziś'}
+            </span>
+            <span className="pill pill-glass">
+              <Icon name="Check" size={13} />
+              {doneToday} {doneToday === 1 ? 'aktywacja dziś' : 'aktywacji dziś'}
+            </span>
+          </div>
         </div>
       </header>
 
