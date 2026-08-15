@@ -1,0 +1,19 @@
+# Cloudflare Pages: front (dist) + Functions (functions/) w jednym deployu.
+# Konto: 5ac2ce215d670d3c2f2cd33317caaaba (Anna) — patrz CLAUDE.md.
+name = "lotos-balance"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lotos-db"
+database_id = "be7b255e-610f-4414-ab86-66474f5e05ee"
+migrations_dir = "drizzle"
+
+# Bucket na talie — utworzyć po włączeniu R2 na koncie Anny:
+#   npx wrangler r2 bucket create lotos-talie --jurisdiction eu
+# Do tego czasu binding zakomentowany, żeby deploy nie wywalał się o brakujący bucket.
+# [[r2_buckets]]
+# binding = "TALIE"
+# bucket_name = "lotos-talie"
