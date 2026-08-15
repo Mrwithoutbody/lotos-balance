@@ -1,4 +1,4 @@
-# MENTAL BALANCE by Anna
+# LOTOS BALANCE by Anna
 
 Mobilna aplikacja webowa (MVP) wspierająca codzienny balans i zdrowie mózgu.
 Bez logowania, bez backendu, bez zewnętrznych API. Wszystkie dane zostają w przeglądarce.
@@ -67,7 +67,7 @@ src/
 
 ## Przechowywanie danych
 
-- Klucz: `mental-balance:v1` w `localStorage`.
+- Klucz: `lotos-balance:v1` w `localStorage` (stary `mental-balance:v1` czytany awaryjnie).
 - Odczyt jest odporny na uszkodzony JSON — w razie błędu wraca stan domyślny.
 - Migracja uzupełnia brakujące pola zamiast wywalać aplikację.
 - Ekran **Balans** pozwala: załadować dane demonstracyjne, wyeksportować dane do pliku JSON,

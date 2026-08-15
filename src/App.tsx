@@ -36,7 +36,7 @@ export default function App() {
       <header className="app-bar">
         <div className="app-bar-inner">
           <span className="brand-row">
-            <span className="brand-mark">MENTAL BALANCE</span>
+            <span className="brand-mark">LOTOS BALANCE</span>
             <span className="brand-sub">by Anna</span>
           </span>
           <button

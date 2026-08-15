@@ -1,7 +1,10 @@
 // src/services/storage.ts
 import type { AppState } from '../types'
 
-export const STORAGE_KEY = 'mental-balance:v1'
+export const STORAGE_KEY = 'lotos-balance:v1'
+
+/** Poprzednia nazwa aplikacji — odczyt awaryjny, żeby nie zgubić danych testerek. */
+const LEGACY_KEY = 'mental-balance:v1'
 
 export function defaultState(): AppState {
   return {
@@ -39,7 +42,7 @@ function migrate(raw: unknown): AppState {
 
 export function loadState(): AppState {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_KEY)
     if (!raw) return defaultState()
     return migrate(JSON.parse(raw))
   } catch {
@@ -69,7 +72,7 @@ export function exportState(state: AppState): void {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `mental-balance-dane-${new Date().toISOString().slice(0, 10)}.json`
+  a.download = `lotos-balance-dane-${new Date().toISOString().slice(0, 10)}.json`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
