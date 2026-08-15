@@ -121,22 +121,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
 
   return (
     <div className="stack-lg">
-      <header className="stack-sm">
-        <p className="eyebrow">Talia aktywacji</p>
-        <h1 className="display">
-          Zatrzymaj to, co <em>Twoje</em>
-        </h1>
-        <div className="row wrap gesture-legend" aria-label="Znaczenie gestów">
-          <span className="legend-pill legend-no">
-            <Icon name="ChevronLeft" size={14} />
-            nie teraz
-          </span>
-          <span className="legend-pill legend-yes">
-            to o mnie
-            <Icon name="ChevronRight" size={14} />
-          </span>
-        </div>
-      </header>
+      <h1 className="sr-only">Talia aktywacji</h1>
 
       <div className="segmented" role="tablist" aria-label="Widok talii">
         {(['stos', 'biblioteka'] as Mode[]).map((m) => (
