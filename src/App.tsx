@@ -5,7 +5,9 @@ import { BottomNav } from './components/BottomNav'
 import type { TabId } from './components/BottomNav'
 import { CardPlayer } from './components/CardPlayer'
 import { Icon } from './components/Icon'
+import { hydrateCards } from './data/cards'
 import { useAppState } from './hooks/useAppState'
+import { useDeck } from './services/decks'
 import { BalanceScreen } from './screens/BalanceScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
 import { DeckScreen } from './screens/DeckScreen'
@@ -20,6 +22,11 @@ interface PlayerTarget {
 
 export default function App() {
   const { state } = useAppState()
+  // Talia Anny z R2. Ekrany montują się dopiero po hydracji (albo po błędzie —
+  // wtedy zostaje statyczny fallback z data/cards.ts), więc konsumenci CARDS
+  // nigdy nie widzą stanu „w połowie podmienione”.
+  const deck = useDeck('anna-rysnik')
+  if (deck.data) hydrateCards(deck.data.cards)
   // Bez onboardingu: przy pustym profilu zaczynamy od talii, bo to ona buduje mapę.
   const [tab, setTab] = useState<TabId>(() => (state.snapshots.length === 0 ? 'talia' : 'dzisiaj'))
   const [player, setPlayer] = useState<PlayerTarget | null>(null)
@@ -51,12 +58,17 @@ export default function App() {
       </header>
 
       <main className="app-main">
-        {tab === 'dzisiaj' && (
+        {deck.isLoading && (
+          <p className="muted center" style={{ padding: 'var(--sp-5)' }}>
+            Chwila — talia się otwiera…
+          </p>
+        )}
+        {!deck.isLoading && tab === 'dzisiaj' && (
           <TodayScreen onPlay={openPlayer} onAbout={() => setAboutOpen(true)} onNavigate={setTab} />
         )}
-        {tab === 'talia' && <DeckScreen onPlay={openPlayer} onNavigate={setTab} />}
-        {tab === 'kalendarz' && <CalendarScreen onPlay={openPlayer} />}
-        {tab === 'balans' && (
+        {!deck.isLoading && tab === 'talia' && <DeckScreen onPlay={openPlayer} onNavigate={setTab} />}
+        {!deck.isLoading && tab === 'kalendarz' && <CalendarScreen onPlay={openPlayer} />}
+        {!deck.isLoading && tab === 'balans' && (
           <BalanceScreen onAbout={() => setAboutOpen(true)} onNavigate={setTab} />
         )}
       </main>

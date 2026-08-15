@@ -522,3 +522,15 @@ export const CARD_BY_ID: Record<string, ActivationCard> = CARDS.reduce(
   },
   {} as Record<string, ActivationCard>,
 )
+
+/**
+ * Podmienia talię na wersję z bucketa R2 — mutacja w miejscu, żeby wszystkie
+ * moduły trzymające referencję do CARDS/CARD_BY_ID widziały nowe karty.
+ * Wołane w App przed renderem ekranów; statyczna talia wyżej zostaje
+ * fallbackiem, gdy bucket nie odpowiada.
+ */
+export function hydrateCards(remote: ActivationCard[]): void {
+  CARDS.splice(0, CARDS.length, ...remote)
+  for (const key of Object.keys(CARD_BY_ID)) delete CARD_BY_ID[key]
+  for (const card of remote) CARD_BY_ID[card.id] = card
+}
