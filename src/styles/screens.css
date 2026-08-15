@@ -340,10 +340,12 @@
   cursor: grabbing;
 }
 
-/* Podpowiedzi gestu — muszą być czytelne na mobile w trakcie przeciągania. */
+/* Podpowiedzi gestu — muszą być czytelne na mobile w trakcie przeciągania.
+   Wychodzą ze środka karty; lekki dryf w tył robi SwipeCard w transformie. */
 .swipe-stamp {
   position: absolute;
-  top: 16px;
+  top: 18%;
+  left: 50%;
   z-index: 3;
   display: inline-flex;
   align-items: center;
@@ -360,16 +362,12 @@
   transition: opacity 0.1s linear;
 }
 
-/* Stemple po przeciwnej stronie niż kierunek gestu — karta ucieka w bok,
-   a podpowiedź zostaje w kadrze (jak LIKE po lewej w Tinderze). */
 .swipe-stamp-yes {
-  left: 14px;
   background: rgba(123, 154, 120, 0.96);
   color: #f7fbf6;
 }
 
 .swipe-stamp-no {
-  right: 14px;
   background: rgba(111, 97, 84, 0.95);
   color: #fbf7f2;
 }

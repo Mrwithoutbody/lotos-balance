@@ -87,13 +87,13 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
       role="group"
       aria-label={label}
     >
-      {/* Paralaksa stempli: karta jedzie z gestem, stempel zostaje w tyle
-          (60% ruchu w przeciwną stronę) — unosi się nad kartą. */}
+      {/* Stemple wychodzą ze środka karty; lekki dryf w tył (25% ruchu)
+          daje paralaksę bez uciekania poza kartę. */}
       <span
         className="swipe-stamp swipe-stamp-yes"
         style={{
           opacity: dx > 8 ? intent : 0,
-          transform: `translateX(${(-offset * 0.6).toFixed(1)}px) rotate(-6deg) scale(${0.85 + 0.25 * (dx > 8 ? intent : 0)})`,
+          transform: `translateX(calc(-50% + ${(-offset * 0.25).toFixed(1)}px)) rotate(-6deg) scale(${0.85 + 0.25 * (dx > 8 ? intent : 0)})`,
         }}
         aria-hidden="true"
       >
@@ -104,7 +104,7 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
         className="swipe-stamp swipe-stamp-no"
         style={{
           opacity: dx < -8 ? intent : 0,
-          transform: `translateX(${(-offset * 0.6).toFixed(1)}px) rotate(6deg) scale(${0.85 + 0.25 * (dx < -8 ? intent : 0)})`,
+          transform: `translateX(calc(-50% + ${(-offset * 0.25).toFixed(1)}px)) rotate(6deg) scale(${0.85 + 0.25 * (dx < -8 ? intent : 0)})`,
         }}
         aria-hidden="true"
       >
