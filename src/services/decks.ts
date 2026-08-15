@@ -11,9 +11,15 @@ export function deckAssetUrl(creatorSlug: string, ...path: string[]): string {
   return [DECKS_URL, creatorSlug, ...path].join('/')
 }
 
+class DeckError extends Error {
+  constructor(public status: number, slug: string) {
+    super(`Talia ${slug}: HTTP ${status}`)
+  }
+}
+
 export async function fetchDeck(creatorSlug: string): Promise<DeckManifest> {
   const res = await fetch(deckAssetUrl(creatorSlug, 'deck.json'))
-  if (!res.ok) throw new Error(`Talia ${creatorSlug}: HTTP ${res.status}`)
+  if (!res.ok) throw new DeckError(res.status, creatorSlug)
   return res.json()
 }
 
@@ -22,5 +28,8 @@ export function useDeck(creatorSlug: string) {
     queryKey: ['deck', creatorSlug],
     queryFn: () => fetchDeck(creatorSlug),
     staleTime: 5 * 60 * 1000,
+    // 404 = talia nie istnieje; ponawianie nic nie zmieni. Retry tylko na sieć.
+    retry: (failureCount, error) =>
+      !(error instanceof DeckError && error.status === 404) && failureCount < 2,
   })
 }

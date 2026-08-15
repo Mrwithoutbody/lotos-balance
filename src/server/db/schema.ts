@@ -1,7 +1,8 @@
 // src/server/db/schema.ts
-// Tabele Better Auth (user/session/account/verification) — kształt zgodny z adapterem drizzle.
-// Tabele aplikacji (twórcy, obserwacje, postępy) dojdą w kroku „talie w R2”.
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+// Tabele Better Auth (user/session/account/verification) + tabele kręgu.
+// Podział pracy: treść talii mieszka w R2 (deck.json), D1 trzyma relacje —
+// kto jest twórcą, kto kogo obserwuje, kto co ukończył.
+import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core'
 
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
@@ -51,4 +52,51 @@ export const verification = sqliteTable('verification', {
   expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull(),
   createdAt: integer('created_at', { mode: 'timestamp' }),
   updatedAt: integer('updated_at', { mode: 'timestamp' }),
+})
+
+// ——— Krąg ———
+
+/** Twórczyni talii. Slug = folder w buckecie R2 i trasa /<slug>. */
+export const creators = sqliteTable('creators', {
+  slug: text('slug').primaryKey(),
+  name: text('name').notNull(),
+  /** Konto twórczyni, gdy się zaloguje — na razie może być puste. */
+  userId: text('user_id').references(() => user.id, { onDelete: 'set null' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+})
+
+/** Kto pracuje na czyjej talii — z tego krąg liczy „ilu znajomych tu jest”. */
+export const follows = sqliteTable(
+  'follows',
+  {
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    creatorSlug: text('creator_slug')
+      .notNull()
+      .references(() => creators.slug, { onDelete: 'cascade' }),
+    createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.creatorSlug] })],
+)
+
+/**
+ * Ukończona aktywacja zalogowanej osoby — serwerowy odpowiednik
+ * ActivationSession z localStorage. Oceny przed/po to dane o samopoczuciu
+ * (RODO art. 9): baza w regionie EU, udostępnianie tylko po wyraźnej zgodzie.
+ */
+export const progress = sqliteTable('progress', {
+  id: text('id').primaryKey(),
+  userId: text('user_id')
+    .notNull()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  creatorSlug: text('creator_slug')
+    .notNull()
+    .references(() => creators.slug, { onDelete: 'cascade' }),
+  cardId: text('card_id').notNull(),
+  /** YYYY-MM-DD. */
+  date: text('date').notNull(),
+  before: integer('before'),
+  after: integer('after'),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 })

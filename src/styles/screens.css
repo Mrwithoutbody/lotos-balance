@@ -26,6 +26,9 @@
   align-items: baseline;
   gap: var(--sp-2);
   min-width: 0;
+  /* Marka jest teraz linkiem do kręgu ("/") — bez wyglądu linku. */
+  color: inherit;
+  text-decoration: none;
 }
 
 .brand-mark {

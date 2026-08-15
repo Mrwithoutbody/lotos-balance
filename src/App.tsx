@@ -7,6 +7,7 @@ import { CardPlayer } from './components/CardPlayer'
 import { Icon } from './components/Icon'
 import { hydrateCards } from './data/cards'
 import { useAppState } from './hooks/useAppState'
+import { navigate } from './lib/router'
 import { useDeck } from './services/decks'
 import { BalanceScreen } from './screens/BalanceScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
@@ -20,13 +21,20 @@ interface PlayerTarget {
   entryId?: string
 }
 
-export default function App() {
+interface Props {
+  /** Slug twórczyni z trasy /<slug> — folder talii w R2. */
+  creatorSlug: string
+}
+
+export default function App({ creatorSlug }: Props) {
   const { state } = useAppState()
-  // Talia Anny z R2. Ekrany montują się dopiero po hydracji (albo po błędzie —
+  // Talia z R2. Ekrany montują się dopiero po hydracji (albo po błędzie —
   // wtedy zostaje statyczny fallback z data/cards.ts), więc konsumenci CARDS
   // nigdy nie widzą stanu „w połowie podmienione”.
-  const deck = useDeck('anna-rysnik')
+  const deck = useDeck(creatorSlug)
   if (deck.data) hydrateCards(deck.data.cards)
+  // Fallback statyczny to talia Anny — dla obcego sluga byłby kłamstwem.
+  const deckReady = !deck.isPending && (!deck.isError || creatorSlug === 'anna-rysnik')
   // Bez onboardingu: przy pustym profilu zaczynamy od talii, bo to ona buduje mapę.
   const [tab, setTab] = useState<TabId>(() => (state.snapshots.length === 0 ? 'talia' : 'dzisiaj'))
   const [player, setPlayer] = useState<PlayerTarget | null>(null)
@@ -42,10 +50,18 @@ export default function App() {
     <div className="app">
       <header className="app-bar">
         <div className="app-bar-inner">
-          <span className="brand-row">
+          <a
+            className="brand-row"
+            href="/"
+            onClick={(e) => {
+              e.preventDefault()
+              navigate('/')
+            }}
+            aria-label="Wróć do kręgu"
+          >
             <span className="brand-mark">LOTOS BALANCE</span>
-            <span className="brand-sub">by Anna</span>
-          </span>
+            <span className="brand-sub">{deck.data ? `— ${deck.data.creator.name}` : ''}</span>
+          </a>
           <button
             type="button"
             className="icon-btn"
@@ -58,17 +74,26 @@ export default function App() {
       </header>
 
       <main className="app-main">
-        {deck.isLoading && (
+        {deck.isPending && (
           <p className="muted center" style={{ padding: 'var(--sp-5)' }}>
             Chwila — talia się otwiera…
           </p>
         )}
-        {!deck.isLoading && tab === 'dzisiaj' && (
+        {deck.isError && creatorSlug !== 'anna-rysnik' && (
+          <section className="surface stack-sm">
+            <h2 className="h1">Nie ma takiej talii.</h2>
+            <p className="muted">Sprawdź adres albo wróć do kręgu.</p>
+            <button type="button" className="btn btn-primary btn-block" onClick={() => navigate('/')}>
+              Wróć do kręgu
+            </button>
+          </section>
+        )}
+        {deckReady && tab === 'dzisiaj' && (
           <TodayScreen onPlay={openPlayer} onAbout={() => setAboutOpen(true)} onNavigate={setTab} />
         )}
-        {!deck.isLoading && tab === 'talia' && <DeckScreen onPlay={openPlayer} onNavigate={setTab} />}
-        {!deck.isLoading && tab === 'kalendarz' && <CalendarScreen onPlay={openPlayer} />}
-        {!deck.isLoading && tab === 'balans' && (
+        {deckReady && tab === 'talia' && <DeckScreen onPlay={openPlayer} onNavigate={setTab} />}
+        {deckReady && tab === 'kalendarz' && <CalendarScreen onPlay={openPlayer} />}
+        {deckReady && tab === 'balans' && (
           <BalanceScreen onAbout={() => setAboutOpen(true)} onNavigate={setTab} />
         )}
       </main>
