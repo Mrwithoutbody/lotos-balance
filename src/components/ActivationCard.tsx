@@ -1,6 +1,7 @@
 // src/components/ActivationCard.tsx
 import type { ReactNode } from 'react'
 import { AREA_BY_ID } from '../data/areas'
+import { CARD_ART } from '../data/cards'
 import type { ActivationCard as Card } from '../types'
 import { Icon } from './Icon'
 
@@ -16,6 +17,7 @@ interface Props {
 export function ActivationCardView({ card, reasons, isFavorite, onToggleFavorite, footer }: Props) {
   const area = AREA_BY_ID[card.area]
   const secondary = card.secondaryArea ? AREA_BY_ID[card.secondaryArea] : null
+  const art = CARD_ART[card.area]
 
   return (
     <article
@@ -25,6 +27,13 @@ export function ActivationCardView({ card, reasons, isFavorite, onToggleFavorite
         borderColor: `${area.color}33`,
       }}
     >
+      {art && (
+        <span
+          className="activation-art"
+          style={{ backgroundImage: `url(${art})` }}
+          aria-hidden="true"
+        />
+      )}
       <div className="activation-top">
         <span className="pill" style={{ background: '#ffffffcc', color: area.color }}>
           <Icon name={area.icon} size={13} />

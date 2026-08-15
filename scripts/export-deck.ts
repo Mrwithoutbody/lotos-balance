@@ -19,6 +19,15 @@ const manifest: DeckManifest = {
     bio: 'Krótkie ćwiczenia na balans — 3, 7 albo 15 minut. Bez teorii, bez oceniania.',
   },
   title: 'Lotos Balance',
+  art: {
+    emocje: 'emocje.webp',
+    regeneracja: 'regeneracja.webp',
+    umysl: 'umysl.webp',
+    dzialanie: 'dzialanie.webp',
+    cialo: 'cialo.webp',
+    relacje: 'relacje.webp',
+    sens: 'sens.webp',
+  },
   cards,
 }
 

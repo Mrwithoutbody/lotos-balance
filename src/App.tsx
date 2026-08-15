@@ -8,7 +8,7 @@ import { Icon } from './components/Icon'
 import { hydrateCards } from './data/cards'
 import { useAppState } from './hooks/useAppState'
 import { navigate } from './lib/router'
-import { useDeck } from './services/decks'
+import { deckAssetUrl, useDeck } from './services/decks'
 import { BalanceScreen } from './screens/BalanceScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
 import { DeckScreen } from './screens/DeckScreen'
@@ -32,7 +32,15 @@ export default function App({ creatorSlug }: Props) {
   // wtedy zostaje statyczny fallback z data/cards.ts), więc konsumenci CARDS
   // nigdy nie widzą stanu „w połowie podmienione”.
   const deck = useDeck(creatorSlug)
-  if (deck.data) hydrateCards(deck.data.cards)
+  if (deck.data) {
+    const art = Object.fromEntries(
+      Object.entries(deck.data.art ?? {}).map(([area, file]) => [
+        area,
+        deckAssetUrl(creatorSlug, 'art', file),
+      ]),
+    )
+    hydrateCards(deck.data.cards, art)
+  }
   // Fallback statyczny to talia Anny — dla obcego sluga byłby kłamstwem.
   const deckReady = !deck.isPending && (!deck.isError || creatorSlug === 'anna-rysnik')
   // Bez onboardingu: przy pustym profilu zaczynamy od talii, bo to ona buduje mapę.

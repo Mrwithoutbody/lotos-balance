@@ -5,7 +5,7 @@
 //   <bucket>/<creatorSlug>/deck.json
 //   <bucket>/<creatorSlug>/karty/<cardSlug>/card.json
 //   <bucket>/<creatorSlug>/karty/<cardSlug>/audio.mp3 | video.mp4  (opcjonalnie)
-import type { ActivationCard } from './index'
+import type { ActivationCard, AreaId } from './index'
 
 /** Rodzaj karty — dyskryminator dla treści w buckecie. */
 export type CardKind = 'tekst' | 'audio' | 'wideo'
@@ -33,6 +33,8 @@ export interface DeckManifest {
     bio?: string
   }
   title: string
+  /** Grafiki tła kart per obszar — nazwy plików w folderze art/ talii. */
+  art?: Partial<Record<AreaId, string>>
   /** Pełne karty w kolejności ustalonej przez twórcę. */
   cards: DeckCard[]
 }

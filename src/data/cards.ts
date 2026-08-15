@@ -523,14 +523,22 @@ export const CARD_BY_ID: Record<string, ActivationCard> = CARDS.reduce(
   {} as Record<string, ActivationCard>,
 )
 
+/** Pełne URL-e grafik tła per obszar — hydrowane z manifestu talii. */
+export const CARD_ART: Partial<Record<ActivationCard['area'], string>> = {}
+
 /**
  * Podmienia talię na wersję z bucketa R2 — mutacja w miejscu, żeby wszystkie
  * moduły trzymające referencję do CARDS/CARD_BY_ID widziały nowe karty.
  * Wołane w App przed renderem ekranów; statyczna talia wyżej zostaje
  * fallbackiem, gdy bucket nie odpowiada.
  */
-export function hydrateCards(remote: ActivationCard[]): void {
+export function hydrateCards(
+  remote: ActivationCard[],
+  art?: Partial<Record<ActivationCard['area'], string>>,
+): void {
   CARDS.splice(0, CARDS.length, ...remote)
   for (const key of Object.keys(CARD_BY_ID)) delete CARD_BY_ID[key]
   for (const card of remote) CARD_BY_ID[card.id] = card
+  for (const key of Object.keys(CARD_ART)) delete CARD_ART[key as keyof typeof CARD_ART]
+  Object.assign(CARD_ART, art)
 }

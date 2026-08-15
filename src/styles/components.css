@@ -271,6 +271,32 @@
   border-radius: var(--radius-lg);
   padding: var(--card-pad);
   box-shadow: var(--shadow);
+  /* Grafika tła nie może wystawać poza zaokrąglenie. */
+  overflow: hidden;
+}
+
+/*
+ * Grafika talii jako tło karty. Desaturacja + niska nieprzezroczystość:
+ * kolor obszaru z gradientu karty prześwituje i „barwi” ilustrację.
+ * Maska wygasza ją ku dołowi, żeby nie kolidowała z treścią.
+ */
+.activation-art {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  /* Motyw ilustracji siedzi w środku pionowego kadru — nie w górnej ćwiartce. */
+  background-position: center 32%;
+  filter: saturate(0.25);
+  opacity: 0.5;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 32%, transparent 78%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 32%, transparent 78%);
+  pointer-events: none;
+}
+
+/* Treść karty zawsze nad grafiką. */
+.activation-card > :not(.activation-art) {
+  position: relative;
+  z-index: 1;
 }
 
 .activation-top {
