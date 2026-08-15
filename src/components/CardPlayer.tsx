@@ -15,6 +15,8 @@ interface Props {
   source: ActivationSession['source']
   /** Wpis kalendarza, który zostanie oznaczony jako wykonany. */
   calendarEntryId?: string
+  /** Talia, z której grana jest karta — do zapisu postępu na serwerze. */
+  creatorSlug?: string
   onClose: () => void
 }
 
@@ -31,7 +33,7 @@ function summaryText(before: Scale5, after: Scale5): string {
   return 'Dziś ta aktywacja nie pomogła. Następnym razem spróbujemy innego podejścia.'
 }
 
-export function CardPlayer({ card, source, calendarEntryId, onClose }: Props) {
+export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose }: Props) {
   const { saveSession, setEntryDone } = useAppState()
   const [phase, setPhase] = useState<Phase>('before')
   const [before, setBefore] = useState<Scale5>()
@@ -76,6 +78,15 @@ export function CardPlayer({ card, source, calendarEntryId, onClose }: Props) {
       source,
     })
     if (calendarEntryId) setEntryDone(calendarEntryId, true, session.id)
+    // Zalogowana osoba dokłada swoją pracę do kręgu; 401 (brak sesji) po prostu ignorujemy —
+    // localStorage wyżej pozostaje źródłem prawdy dla widoku.
+    if (creatorSlug) {
+      void fetch('/api/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ creatorSlug, cardId: card.id, date: session.date, before, after }),
+      }).catch(() => {})
+    }
     setPhase('summary')
   }
 

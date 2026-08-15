@@ -1,9 +1,10 @@
 // src/screens/CircleScreen.tsx
-// Krąg na "/": twórczynie i Twoja praca na ich taliach. Bez atrap — pokazujemy
-// tylko to, co naprawdę wiemy (dziś: talie z R2 + Twoje aktywacje z localStorage).
-import { useQuery } from '@tanstack/react-query'
+// Krąg na "/": twórczynie, ilu ludzi z nimi pracuje, Twoje miejsce w tym.
+// Bez atrap — liczby przychodzą z D1, a sekcje bez danych po prostu się nie renderują.
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Icon } from '../components/Icon'
 import { useAppState } from '../hooks/useAppState'
+import { signOut, useSession } from '../lib/auth-client'
 import { navigate } from '../lib/router'
 import { streak } from '../services/insights'
 import { deckAssetUrl, useDeck } from '../services/decks'
@@ -11,6 +12,12 @@ import { deckAssetUrl, useDeck } from '../services/decks'
 interface CreatorRow {
   slug: string
   name: string
+  followers?: number
+}
+
+interface Me {
+  user: { name: string; email: string }
+  follows: string[]
 }
 
 /** Dev (vite) nie ma Pages Functions, a krąg musi żyć — stąd fallback. */
@@ -29,15 +36,49 @@ function useCreators() {
         return KNOWN_CREATORS
       }
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 60 * 1000,
   })
 }
 
-function CreatorCard({ creator }: { creator: CreatorRow }) {
+function useMe(loggedIn: boolean) {
+  return useQuery<Me | null>({
+    queryKey: ['me'],
+    enabled: loggedIn,
+    queryFn: async () => {
+      const res = await fetch('/api/me')
+      if (!res.ok) return null
+      return res.json()
+    },
+  })
+}
+
+function CreatorCard({
+  creator,
+  isFollowing,
+  loggedIn,
+}: {
+  creator: CreatorRow
+  isFollowing: boolean
+  loggedIn: boolean
+}) {
   const deck = useDeck(creator.slug)
+  const queryClient = useQueryClient()
+  const follow = useMutation({
+    mutationFn: (join: boolean) =>
+      fetch('/api/follow', {
+        method: join ? 'POST' : 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: creator.slug }),
+      }),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['creators'] })
+      queryClient.invalidateQueries({ queryKey: ['me'] })
+    },
+  })
   const cover = deck.data?.creator.cover
     ? deckAssetUrl(creator.slug, deck.data.creator.cover)
     : undefined
+  const followers = creator.followers ?? 0
 
   return (
     <article
@@ -52,18 +93,40 @@ function CreatorCard({ creator }: { creator: CreatorRow }) {
         {deck.data?.creator.bio && <p className="brain-hint">{deck.data.creator.bio}</p>}
         <p className="brain-hint">
           {deck.data ? `${deck.data.cards.length} kart · 3–15 min` : 'Wczytywanie talii…'}
+          {followers > 0 &&
+            ` · ${followers} ${followers === 1 ? 'osoba' : followers < 5 ? 'osoby' : 'osób'} w kręgu`}
         </p>
-        <button type="button" className="btn btn-glass" onClick={() => navigate(`/${creator.slug}`)}>
-          <Icon name="Layers" size={16} />
-          Wejdź do talii
-        </button>
+        <div className="row wrap">
+          <button
+            type="button"
+            className="btn btn-glass"
+            onClick={() => navigate(`/${creator.slug}`)}
+          >
+            <Icon name="Layers" size={16} />
+            Wejdź do talii
+          </button>
+          {loggedIn && (
+            <button
+              type="button"
+              className={isFollowing ? 'btn btn-glass-done' : 'btn btn-glass'}
+              disabled={follow.isPending}
+              onClick={() => follow.mutate(!isFollowing)}
+            >
+              <Icon name={isFollowing ? 'Check' : 'UserPlus'} size={16} />
+              {isFollowing ? 'Jesteś w kręgu' : 'Dołącz do kręgu'}
+            </button>
+          )}
+        </div>
       </div>
     </article>
   )
 }
 
 export function CircleScreen() {
+  const session = useSession()
+  const loggedIn = Boolean(session.data)
   const creators = useCreators()
+  const me = useMe(loggedIn)
   const { state } = useAppState()
   const done = state.sessions.filter((s) => s.completed).length
   const days = streak(state)
@@ -76,6 +139,19 @@ export function CircleScreen() {
             <span className="brand-mark">LOTOS BALANCE</span>
             <span className="brand-sub">krąg</span>
           </span>
+          {loggedIn ? (
+            <button type="button" className="btn btn-ghost btn-sm" onClick={() => signOut()}>
+              Wyloguj
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-secondary btn-sm"
+              onClick={() => navigate('/logowanie')}
+            >
+              Zaloguj się
+            </button>
+          )}
         </div>
       </header>
 
@@ -91,9 +167,11 @@ export function CircleScreen() {
             </p>
           </section>
 
-          {done > 0 && (
+          {(done > 0 || loggedIn) && (
             <section className="surface stack-sm">
-              <p className="eyebrow">Twoja praca</p>
+              <p className="eyebrow">
+                {me.data?.user.name ? `Twoja praca, ${me.data.user.name}` : 'Twoja praca'}
+              </p>
               <div className="row wrap">
                 <span className="pill">
                   <Icon name="Check" size={13} />
@@ -110,12 +188,20 @@ export function CircleScreen() {
           )}
 
           {(creators.data ?? KNOWN_CREATORS).map((c) => (
-            <CreatorCard key={c.slug} creator={c} />
+            <CreatorCard
+              key={c.slug}
+              creator={c}
+              loggedIn={loggedIn}
+              isFollowing={me.data?.follows.includes(c.slug) ?? false}
+            />
           ))}
 
-          <p className="tiny center">
-            Znajomi i wspólny balans pojawią się tu po zalogowaniu — budujemy to po kolei.
-          </p>
+          {!loggedIn && (
+            <p className="tiny center">
+              Zaloguj się, aby dołączyć do kręgu twórczyni — Twoja praca zacznie się liczyć razem
+              z innymi.
+            </p>
+          )}
         </div>
       </main>
     </div>

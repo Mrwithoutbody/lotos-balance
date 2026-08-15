@@ -34,6 +34,12 @@ export function createAuth(env: Env) {
     plugins: [
       magicLink({
         async sendMagicLink({ email, url }) {
+          // Dev bez klucza Resend: link ląduje w logu wranglera zamiast w mailu.
+          // Tylko localhost — na produkcji brak klucza ma być błędem, nie ciszą.
+          if (!env.RESEND_API_KEY && env.BETTER_AUTH_URL?.startsWith('http://localhost')) {
+            console.log(`[dev] Magic link dla ${email}: ${url}`)
+            return
+          }
           const res = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {

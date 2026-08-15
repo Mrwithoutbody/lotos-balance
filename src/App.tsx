@@ -105,6 +105,7 @@ export default function App({ creatorSlug }: Props) {
           card={player.card}
           source={player.source}
           calendarEntryId={player.entryId}
+          creatorSlug={creatorSlug}
           onClose={() => setPlayer(null)}
         />
       )}

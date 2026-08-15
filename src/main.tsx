@@ -6,6 +6,7 @@ import App from './App'
 import { AppStateProvider } from './hooks/useAppState'
 import { usePath } from './lib/router'
 import { CircleScreen } from './screens/CircleScreen'
+import { LoginScreen } from './screens/LoginScreen'
 import '@fontsource-variable/newsreader'
 import '@fontsource-variable/newsreader/wght-italic.css'
 import '@fontsource-variable/inter'
@@ -18,10 +19,11 @@ if (!container) throw new Error('Nie znaleziono elementu #root')
 
 const queryClient = new QueryClient()
 
-/** "/" → krąg twórczyń, "/<slug>" → aplikacja talii tej twórczyni. */
+/** "/" → krąg, "/logowanie" → logowanie, "/<slug>" → aplikacja talii twórczyni. */
 function Root() {
   const path = usePath()
   if (path === '/') return <CircleScreen />
+  if (path === '/logowanie') return <LoginScreen />
   return <App creatorSlug={path.slice(1).split('/')[0]} />
 }
 
