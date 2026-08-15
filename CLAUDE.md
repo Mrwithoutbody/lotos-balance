@@ -40,6 +40,23 @@ localStorage, bez backendu. Pełna dokumentacja produktu i algorytmu: README.md.
 - localStorage: `lotos-balance:v1` (stary `mental-balance:v1` czytany awaryjnie).
 - Talia (stos) wypełnia viewport flexem — bez stałych dvh; treść karty kotwiczy przy dole.
 
+## Stan po sesji 2026-08-16 (backend + krąg)
+
+- Działa na produkcji: `/` (krąg), `/anna-rysnik` (apka talii), `/logowanie`
+  (magic link → tylko dadmor@gmail.com do czasu weryfikacji domeny w Resend;
+  Google → tylko test users z konsoli). Sekrety Pages wgrane (bulk z .dev.vars);
+  UWAGA: sekrety Pages obowiązują dopiero od następnego deploymentu.
+- Talia ładowana z R2 (`pub-b800680ed48f426cab8c4693966aa056.r2.dev`, bucket
+  `lotos-balance` na koncie dadmor, EU). Seed/upload: `scripts/export-deck.ts`
+  + `scripts/upload-deck.sh` (klucze R2_* w .dev.vars).
+- D1 `lotos-db` (konto Anny, WEUR): tabele auth + creators/follows/progress.
+- PRZERWANE przez usera („szkoda pieniędzy”): plan naprawy zrozumiałości.
+  Lekcja: najpierw wartość dla usera, potem infrastruktura. „Dołącz do kręgu”
+  daje dziś tylko etykietę — plan 5 kroków w historii rozmowy: (1) jedno
+  zdanie „co robi apka” słowami testera, (2) słownik aktywacja→ćwiczenie itd.,
+  (3) powrót fixów talii z 79b96c8 + zdjęcie Anny jako tło karty, (4) krąg
+  pokazuje wspólną pracę z `progress`, (5) jedno wejście zamiast Dzisiaj+Talia.
+
 ## Otwarte tematy
 
 - Wideo Anny: odłożone. Opcje: Stream na osobnym płatnym koncie usera (embed cross-account,
