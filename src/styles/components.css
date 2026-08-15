@@ -282,8 +282,8 @@
  */
 .activation-art {
   position: absolute;
-  /* Zapas poza kartę — paralaksa przesuwa grafikę bez odsłaniania krawędzi. */
-  inset: -32px;
+  /* Poziomy zapas poza kartę — kompensacja ruchu nie odsłania krawędzi. */
+  inset: -32px -110px;
   background-size: cover;
   /* Motyw ilustracji siedzi w środku pionowego kadru — nie w górnej ćwiartce. */
   background-position: center 32%;
@@ -292,10 +292,13 @@
   -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 32%, transparent 78%);
   mask-image: linear-gradient(180deg, #000 0%, #000 32%, transparent 78%);
   pointer-events: none;
-  /* Paralaksa: karta jedzie z gestem, ilustracja zostaje lekko w tyle.
-     Opóźnienie transition daje miękkie doganianie. */
-  transform: translateX(calc(var(--swipe-dx, 0px) * -0.22));
-  transition: transform 0.15s ease-out;
+  /*
+   * Paralaksa okna: ilustracja jest przyspawana do sceny, karta przesuwa się
+   * po niej jak ramka. Pełna kompensacja ruchu karty (×−1), sztywno — bez
+   * transition, żeby tło nie „pływało”. Clamp ogranicza kompensację przy
+   * wylocie karty (±520px), gdzie zapas by się skończył.
+   */
+  transform: translateX(clamp(-104px, calc(var(--swipe-dx, 0px) * -1), 104px));
 }
 
 /* Treść karty zawsze nad grafiką. */
