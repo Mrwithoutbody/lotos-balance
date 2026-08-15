@@ -1,0 +1,68 @@
+// src/utils/balance.ts
+import { AREA_IDS } from '../data/areas'
+import type { AreaId, AreaStatus, BalanceSnapshot, Scale5 } from '../types'
+
+export type Levels = Partial<Record<AreaId, number>>
+
+/** Odpowiedź 1–5 przeliczona liniowo na poziom 0–100. */
+export function answerToLevel(answer: Scale5): number {
+  return Math.round(((answer - 1) / 4) * 100)
+}
+
+export function levelsFromAnswers(answers: Partial<Record<AreaId, Scale5>>): Levels {
+  const levels: Levels = {}
+  for (const id of AREA_IDS) {
+    const answer = answers[id]
+    if (answer !== undefined) levels[id] = answerToLevel(answer)
+  }
+  return levels
+}
+
+export function statusOf(level: number): AreaStatus {
+  if (level < 40) return 'potrzebuje wsparcia'
+  if (level < 70) return 'stabilny'
+  return 'mocna strona'
+}
+
+export function latestSnapshot(snapshots: BalanceSnapshot[]): BalanceSnapshot | null {
+  if (snapshots.length === 0) return null
+  return snapshots.reduce((a, b) => (a.createdAt >= b.createdAt ? a : b))
+}
+
+export function previousSnapshot(snapshots: BalanceSnapshot[]): BalanceSnapshot | null {
+  if (snapshots.length < 2) return null
+  const sorted = [...snapshots].sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+  return sorted[sorted.length - 2]
+}
+
+export function knownAreas(levels: Levels): AreaId[] {
+  return AREA_IDS.filter((id) => levels[id] !== undefined)
+}
+
+export function unknownAreas(levels: Levels): AreaId[] {
+  return AREA_IDS.filter((id) => levels[id] === undefined)
+}
+
+/** Najsłabsze poznane obszary — kolejność deterministyczna. */
+export function weakestAreas(levels: Levels, count = 2): AreaId[] {
+  return knownAreas(levels)
+    .sort(
+      (a, b) => (levels[a] as number) - (levels[b] as number) || AREA_IDS.indexOf(a) - AREA_IDS.indexOf(b),
+    )
+    .slice(0, count)
+}
+
+export function strongestArea(levels: Levels): AreaId | null {
+  const known = knownAreas(levels)
+  if (known.length === 0) return null
+  return known.sort(
+    (a, b) => (levels[b] as number) - (levels[a] as number) || AREA_IDS.indexOf(a) - AREA_IDS.indexOf(b),
+  )[0]
+}
+
+export function averageLevel(levels: Levels): number | null {
+  const known = knownAreas(levels)
+  if (known.length === 0) return null
+  const sum = known.reduce((acc, id) => acc + (levels[id] as number), 0)
+  return Math.round(sum / known.length)
+}

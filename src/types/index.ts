@@ -1,0 +1,172 @@
+// src/types/index.ts
+
+/** Siedem obszarów prostego modelu człowieka. */
+export type AreaId =
+  | 'emocje'
+  | 'regeneracja'
+  | 'umysl'
+  | 'dzialanie'
+  | 'cialo'
+  | 'relacje'
+  | 'sens'
+
+/** Potrzeba deklarowana w check-inie („Czego najbardziej potrzebujesz teraz?”). */
+export type NeedId =
+  | 'uspokojenie'
+  | 'energia'
+  | 'skupienie'
+  | 'odwaga'
+  | 'ulga'
+  | 'kontakt-z-cialem'
+  | 'kontakt-z-czlowiekiem'
+  | 'kierunek'
+
+/** Cele wybierane w onboardingu (maksymalnie trzy). */
+export type GoalId =
+  | 'wiecej-energii'
+  | 'mniej-stresu'
+  | 'koncentracja'
+  | 'zaczac-dzialac'
+  | 'lepszy-sen'
+  | 'zdrowe-relacje'
+  | 'poczucie-kierunku'
+  | 'zdrowie-mozgu'
+
+/** Czas trwania aktywacji w minutach. */
+export type Minutes = 3 | 7 | 15
+
+/** Poziom energii potrzebny, aby wykonać kartę. */
+export type EnergyLevel = 'niska' | 'srednia' | 'wysoka'
+
+/** Skala samooceny 1–5 używana w check-inie i przy aktywacji. */
+export type Scale5 = 1 | 2 | 3 | 4 | 5
+
+/** Status obszaru wyliczany z poziomu 0–100. */
+export type AreaStatus = 'potrzebuje wsparcia' | 'stabilny' | 'mocna strona'
+
+/** Filary modułu „Mózg na lata”. */
+export type BrainPillar = 'ruch' | 'regeneracja' | 'wyzwanie' | 'relacje'
+
+/** Statyczna definicja obszaru balansu. */
+export interface BalanceArea {
+  id: AreaId
+  name: string
+  icon: string
+  color: string
+  /** Delikatniejszy odcień używany jako tło. */
+  softColor: string
+  description: string
+  /** Trzy składowe obszaru, np. napięcie / nastrój / regulacja emocjonalna. */
+  aspects: string[]
+  /** Pytanie z Mapy Balansu (skala 1–5, ostatnie 7 dni). */
+  question: string
+}
+
+/**
+ * Zapis Mapy Balansu. Buduje się stopniowo — obszar bez odpowiedzi
+ * pozostaje nieznany, zamiast być zgadywany.
+ */
+export interface BalanceSnapshot {
+  id: string
+  /** Data w formacie YYYY-MM-DD. */
+  date: string
+  createdAt: string
+  /** Surowe odpowiedzi 1–5, tylko dla poznanych obszarów. */
+  answers: Partial<Record<AreaId, Scale5>>
+  /** Odpowiedzi przeliczone liniowo na 0–100. */
+  levels: Partial<Record<AreaId, number>>
+}
+
+/** Kierunek gestu na stosie kart. */
+export type SwipeDirection = 'w-lewo' | 'w-prawo'
+
+/**
+ * Reakcja na kartę w talii. „W prawo” to sygnał, że temat jest na czasie,
+ * „w lewo” — że nie teraz. Oba zdejmują kartę, ale znaczą co innego.
+ */
+export interface Swipe {
+  id: string
+  cardId: string
+  area: AreaId
+  direction: SwipeDirection
+  date: string
+  createdAt: string
+}
+
+/** Karta aktywacji z talii. */
+export interface ActivationCard {
+  id: string
+  title: string
+  area: AreaId
+  secondaryArea?: AreaId
+  color: string
+  icon: string
+  minutes: Minutes
+  energy: EnergyLevel
+  needs: NeedId[]
+  description: string
+  steps: string[]
+  why: string
+  /** Bezpieczne zastrzeżenie pokazywane w trybie skupienia. */
+  caution?: string
+}
+
+/**
+ * Profil użytkowniczki. Powstaje sam przy pierwszym uruchomieniu —
+ * cele są opcjonalne i mogą być odczytane z reakcji na karty.
+ */
+export interface UserProfile {
+  name?: string
+  goals: GoalId[]
+  createdAt: string
+}
+
+/** Krótki check-in „czego potrzebuję teraz”. */
+export interface DailyCheckIn {
+  id: string
+  date: string
+  createdAt: string
+  need: NeedId
+  minutes: Minutes
+  state?: Scale5
+}
+
+/** Wykonanie karty wraz z oceną przed i po. */
+export interface ActivationSession {
+  id: string
+  cardId: string
+  date: string
+  startedAt: string
+  finishedAt?: string
+  before: Scale5
+  after?: Scale5
+  note?: string
+  completed: boolean
+  source: 'dzisiaj' | 'talia' | 'kalendarz'
+}
+
+/** Karta zaplanowana na konkretny dzień. */
+export interface CalendarEntry {
+  id: string
+  /** Data w formacie YYYY-MM-DD. */
+  date: string
+  cardId: string
+  done: boolean
+  sessionId?: string
+  createdAt: string
+}
+
+/** Cały stan aplikacji zapisywany w localStorage. */
+export interface AppState {
+  version: 1
+  profile: UserProfile | null
+  snapshots: BalanceSnapshot[]
+  checkIns: DailyCheckIn[]
+  sessions: ActivationSession[]
+  calendar: CalendarEntry[]
+  favorites: string[]
+  swipes: Swipe[]
+  /** Dni, w których wykonano krok „Mózg na lata” (YYYY-MM-DD). */
+  brainSteps: string[]
+  isDemo: boolean
+}
