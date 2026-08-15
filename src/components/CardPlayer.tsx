@@ -4,7 +4,6 @@ import { AREA_BY_ID } from '../data/areas'
 import { useAppState } from '../hooks/useAppState'
 import type { ActivationCard, ActivationSession, Scale5 } from '../types'
 import { todayKey } from '../utils/date'
-import { AnnaGuide } from './AnnaGuide'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
 import { ScaleInput } from './ScaleInput'
@@ -173,8 +172,6 @@ export function CardPlayer({ card, source, calendarEntryId, onClose }: Props) {
               {card.caution}
             </p>
           )}
-
-          <AnnaGuide />
 
           <button type="button" className="btn btn-primary btn-block" onClick={() => setPhase('after')}>
             <Icon name="Check" size={18} />

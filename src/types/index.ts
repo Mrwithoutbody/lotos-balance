@@ -21,17 +21,6 @@ export type NeedId =
   | 'kontakt-z-czlowiekiem'
   | 'kierunek'
 
-/** Cele wybierane w onboardingu (maksymalnie trzy). */
-export type GoalId =
-  | 'wiecej-energii'
-  | 'mniej-stresu'
-  | 'koncentracja'
-  | 'zaczac-dzialac'
-  | 'lepszy-sen'
-  | 'zdrowe-relacje'
-  | 'poczucie-kierunku'
-  | 'zdrowie-mozgu'
-
 /** Czas trwania aktywacji w minutach. */
 export type Minutes = 3 | 7 | 15
 
@@ -111,13 +100,9 @@ export interface ActivationCard {
   caution?: string
 }
 
-/**
- * Profil użytkowniczki. Powstaje sam przy pierwszym uruchomieniu —
- * cele są opcjonalne i mogą być odczytane z reakcji na karty.
- */
+/** Profil użytkowniczki. Powstaje sam przy pierwszym uruchomieniu — bez ekranu rejestracji. */
 export interface UserProfile {
   name?: string
-  goals: GoalId[]
   createdAt: string
 }
 
@@ -158,7 +143,6 @@ export interface CalendarEntry {
 
 /** Cały stan aplikacji zapisywany w localStorage. */
 export interface AppState {
-  version: 1
   profile: UserProfile | null
   snapshots: BalanceSnapshot[]
   checkIns: DailyCheckIn[]
@@ -168,5 +152,4 @@ export interface AppState {
   swipes: Swipe[]
   /** Dni, w których wykonano krok „Mózg na lata” (YYYY-MM-DD). */
   brainSteps: string[]
-  isDemo: boolean
 }

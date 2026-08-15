@@ -2,7 +2,7 @@
 import { AREA_BY_ID } from '../data/areas'
 import { CARD_BY_ID } from '../data/cards'
 import type { ActivationSession, AppState, AreaId } from '../types'
-import { addDays, timeOfDayFromISO, todayKey } from '../utils/date'
+import { addDays, partOfDay, todayKey } from '../utils/date'
 
 export interface CardEffect {
   cardId: string
@@ -141,7 +141,7 @@ export function personalManual(state: AppState): string[] {
   // 3. Pora dnia.
   const byPart = new Map<string, number>()
   for (const s of state.sessions.filter((x) => x.completed)) {
-    const part = timeOfDayFromISO(s.startedAt)
+    const part = partOfDay(new Date(s.startedAt))
     byPart.set(part, (byPart.get(part) ?? 0) + 1)
   }
   let topPart: { part: string; count: number } | null = null

@@ -522,7 +522,3 @@ export const CARD_BY_ID: Record<string, ActivationCard> = CARDS.reduce(
   },
   {} as Record<string, ActivationCard>,
 )
-
-export function getCard(id: string): ActivationCard | undefined {
-  return CARD_BY_ID[id]
-}

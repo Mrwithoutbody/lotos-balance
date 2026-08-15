@@ -45,10 +45,8 @@ export function buildDemoState(): AppState {
 
   const state: AppState = {
     ...defaultState(),
-    isDemo: true,
     profile: {
       name: 'Anna',
-      goals: ['mniej-stresu', 'wiecej-energii', 'koncentracja'],
       createdAt: iso(addDays(today, -24), 8),
     },
     favorites: ['reg-oddech', 'umy-zrzut', 'cia-spacer'],

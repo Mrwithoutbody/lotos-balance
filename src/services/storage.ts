@@ -8,7 +8,6 @@ const LEGACY_KEY = 'mental-balance:v1'
 
 export function defaultState(): AppState {
   return {
-    version: 1,
     profile: null,
     snapshots: [],
     checkIns: [],
@@ -17,7 +16,6 @@ export function defaultState(): AppState {
     favorites: [],
     swipes: [],
     brainSteps: [],
-    isDemo: false,
   }
 }
 
@@ -27,7 +25,6 @@ function migrate(raw: unknown): AppState {
   if (!raw || typeof raw !== 'object') return base
   const data = raw as Partial<AppState>
   return {
-    version: 1,
     profile: data.profile && typeof data.profile === 'object' ? data.profile : base.profile,
     snapshots: Array.isArray(data.snapshots) ? data.snapshots : base.snapshots,
     checkIns: Array.isArray(data.checkIns) ? data.checkIns : base.checkIns,
@@ -36,7 +33,6 @@ function migrate(raw: unknown): AppState {
     favorites: Array.isArray(data.favorites) ? data.favorites : base.favorites,
     swipes: Array.isArray(data.swipes) ? data.swipes : base.swipes,
     brainSteps: Array.isArray(data.brainSteps) ? data.brainSteps : base.brainSteps,
-    isDemo: typeof data.isDemo === 'boolean' ? data.isDemo : base.isDemo,
   }
 }
 

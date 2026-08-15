@@ -11,7 +11,7 @@ import { CARD_BY_ID } from '../data/cards'
 import { NEED_BY_ID } from '../data/goals'
 import { useAppState } from '../hooks/useAppState'
 import { streak } from '../services/insights'
-import { recommend } from '../services/recommend'
+import { scoreCards } from '../services/recommend'
 import type { ActivationCard, Minutes, NeedId, Scale5 } from '../types'
 import { latestSnapshot, weakestAreas } from '../utils/balance'
 import { greeting, longDate, todayKey } from '../utils/date'
@@ -38,7 +38,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
 
   const ranked = useMemo(() => {
     if (!todayCheckIn) return []
-    return recommend(state, {
+    return scoreCards(state, {
       need: todayCheckIn.need,
       minutes: todayCheckIn.minutes,
       state: todayCheckIn.state,

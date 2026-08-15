@@ -2,21 +2,6 @@
 
 export const WEEKDAYS_SHORT = ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So', 'Nd']
 
-const MONTHS = [
-  'styczeń',
-  'luty',
-  'marzec',
-  'kwiecień',
-  'maj',
-  'czerwiec',
-  'lipiec',
-  'sierpień',
-  'wrzesień',
-  'październik',
-  'listopad',
-  'grudzień',
-]
-
 /** Klucz dnia YYYY-MM-DD w czasie lokalnym (bez przesunięć UTC). */
 export function dateKey(d: Date = new Date()): string {
   const y = d.getFullYear()
@@ -46,7 +31,7 @@ export function diffDays(a: string, b: string): number {
 }
 
 export function monthLabel(year: number, month: number): string {
-  return `${MONTHS[month]} ${year}`
+  return new Date(year, month).toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })
 }
 
 /** Pełna, czytelna data po polsku, np. „piątek, 15 sierpnia”. */
@@ -90,8 +75,4 @@ export function partOfDay(now: Date = new Date()): 'rano' | 'popołudnie' | 'wie
   if (h < 12) return 'rano'
   if (h < 18) return 'popołudnie'
   return 'wieczór'
-}
-
-export function timeOfDayFromISO(iso: string): 'rano' | 'popołudnie' | 'wieczór' {
-  return partOfDay(new Date(iso))
 }

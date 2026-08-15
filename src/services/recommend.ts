@@ -1,6 +1,5 @@
 // src/services/recommend.ts
 import { CARDS } from '../data/cards'
-import { GOAL_BY_ID } from '../data/goals'
 import type { ActivationCard, AppState, AreaId, Minutes, NeedId, Scale5 } from '../types'
 import { latestSnapshot, weakestAreas } from '../utils/balance'
 import { diffDays, todayKey } from '../utils/date'
@@ -37,15 +36,9 @@ function daysSinceLastUse(state: AppState, cardId: string): number | null {
  * Deterministyczny algorytm punktowy. Bez losowania — kolejność zależy wyłącznie
  * od potrzeby, Mapy Balansu, celów, czasu i wcześniejszych reakcji.
  */
-/**
- * Obszary, które użytkowniczka sama wskazała: z zadeklarowanych celów
- * oraz z kart odrzuconych w prawo („to o mnie”).
- */
+/** Obszary, które użytkowniczka sama wskazała kartami zatrzymanymi w prawo („to o mnie”). */
 export function preferredAreas(state: AppState): Set<AreaId> {
   const areas = new Set<AreaId>()
-  for (const goal of state.profile?.goals ?? []) {
-    for (const area of GOAL_BY_ID[goal]?.areas ?? []) areas.add(area)
-  }
   const counts = new Map<AreaId, number>()
   for (const swipe of state.swipes) {
     const delta = swipe.direction === 'w-prawo' ? 1 : -1
@@ -130,8 +123,4 @@ export function scoreCards(state: AppState, input: RecommendationInput): ScoredC
   })
 
   return scored.sort((a, b) => b.score - a.score)
-}
-
-export function recommend(state: AppState, input: RecommendationInput): ScoredCard[] {
-  return scoreCards(state, input)
 }

@@ -46,7 +46,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   // Profil powstaje sam przy pierwszym uruchomieniu — bez ekranu rejestracji.
   useEffect(() => {
     setState((prev) =>
-      prev.profile ? prev : { ...prev, profile: { goals: [], createdAt: new Date().toISOString() } },
+      prev.profile ? prev : { ...prev, profile: { createdAt: new Date().toISOString() } },
     )
   }, [])
 

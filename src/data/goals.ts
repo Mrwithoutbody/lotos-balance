@@ -1,30 +1,5 @@
 // src/data/goals.ts
-import type { AreaId, GoalId, Minutes, NeedId } from '../types'
-
-export interface GoalDef {
-  id: GoalId
-  /** Obszary, które ten cel najbardziej wspiera (używane w rekomendacji). */
-  areas: AreaId[]
-}
-
-export const GOALS: GoalDef[] = [
-  { id: 'wiecej-energii', areas: ['regeneracja', 'cialo'] },
-  { id: 'mniej-stresu', areas: ['emocje', 'regeneracja'] },
-  { id: 'koncentracja', areas: ['umysl'] },
-  { id: 'zaczac-dzialac', areas: ['dzialanie'] },
-  { id: 'lepszy-sen', areas: ['regeneracja'] },
-  { id: 'zdrowe-relacje', areas: ['relacje'] },
-  { id: 'poczucie-kierunku', areas: ['sens'] },
-  { id: 'zdrowie-mozgu', areas: ['cialo', 'umysl', 'relacje', 'regeneracja'] },
-]
-
-export const GOAL_BY_ID: Record<GoalId, GoalDef> = GOALS.reduce(
-  (acc, g) => {
-    acc[g.id] = g
-    return acc
-  },
-  {} as Record<GoalId, GoalDef>,
-)
+import type { Minutes, NeedId } from '../types'
 
 export interface NeedDef {
   id: NeedId

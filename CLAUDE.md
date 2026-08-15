@@ -16,6 +16,14 @@ localStorage, bez backendu. Pełna dokumentacja produktu i algorytmu: README.md.
 - Nie przenosić projektu między kontami bez wyraźnej prośby (decyzja 2026-08-15).
 - Repo: https://github.com/Mrwithoutbody/lotos-balance (public).
 
+## Tryb pracy (2026-08-15)
+
+- Zgłoszenie „coś źle wygląda” → **najpierw pytanie o element** (selektor z devtools / zrzut),
+  potem edycja. „Karta” znaczy tu 4 różne rzeczy — zgadywanie kosztowało już całą sesję.
+- Diagnoza z pomiaru w przeglądarce (`getComputedStyle`, `getBoundingClientRect`), nie z oka.
+  Pustka wewnątrz komponentu wygląda jak „odstęp”, a nie jest `gap`-em.
+- Deploy tylko na wyraźną prośbę. Jedna zmiana na raz, diff przed wdrożeniem.
+
 ## Kluczowe decyzje produktowe
 
 - **Bez onboardingu** — start w Talii; Mapa Balansu buduje się z kart-sond (1 pytanie / 3 karty,
@@ -25,15 +33,18 @@ localStorage, bez backendu. Pełna dokumentacja produktu i algorytmu: README.md.
 - **Rekomendacje deterministyczne** (punktowe, bez AI/losowania) — `services/recommend.ts`,
   tabela wag w README.
 - Wyniki obszarów zmieniają tylko odpowiedzi użytkowniczki — nigdy kliknięcia/wykonania kart.
-- Design: greige/taupe + terracotta, Fraunces Variable + Inter Variable (self-host fontsource),
+- Design: greige/taupe + terracotta, Newsreader Variable + Inter Variable (self-host fontsource),
   hero ze zdjęciami, ciemna karta „Mózg na lata”. Wzorzec: moshealth.com.
+- **Odstępy tylko z tokenów** `--sp-1..5` (4/8/12/16/24) + `--card-pad`. Zero gołych px w layoucie
+  (mikro-gapy w chipach/nawigacji 3–7px zostają — to odstęp ikona↔tekst, nie layout).
 - localStorage: `lotos-balance:v1` (stary `mental-balance:v1` czytany awaryjnie).
 - Talia (stos) wypełnia viewport flexem — bez stałych dvh; treść karty kotwiczy przy dole.
 
 ## Otwarte tematy
 
 - Wideo Anny: odłożone. Opcje: Stream na osobnym płatnym koncie usera (embed cross-account,
-  Allowed Origins) albo R2 free (klipy 30–60 s → R2 wystarczy). Placeholder: `AnnaGuide.tsx`.
+  Allowed Origins) albo R2 free (klipy 30–60 s → R2 wystarczy). Placeholder `AnnaGuide.tsx`
+  usunięty w audycie — wraca razem z nagraniem (`anna-avatar.webp` czeka w assetach).
 - Zdjęcia w `src/assets/anna/`: oryginały HQ z publicznego IG @annarysnik (curl z CDN, 3072px)
   i z annarysnik.pl. Hero to dedykowane poziome kadry (`hero-dzisiaj`, `hero-balans`) — Anna
   zawsze w prawej tercji, lewa strona pod tekst. Do produkcji nadal potrzebna wyraźna zgoda Anny
