@@ -38,11 +38,7 @@ localStorage, bez backendu. Pełna dokumentacja produktu i algorytmu: README.md.
 - **Odstępy tylko z tokenów** `--sp-1..5` (4/8/12/16/24) + `--card-pad`. Zero gołych px w layoucie
   (mikro-gapy w chipach/nawigacji 3–7px zostają — to odstęp ikona↔tekst, nie layout).
 - localStorage: `lotos-balance:v1` (stary `mental-balance:v1` czytany awaryjnie).
-- Talia (stos) wypełnia viewport flexem — bez stałych dvh. Karta ma wysokość swojej treści
-  i stoi na środku sceny (`align-items:center`). Rozciąganie karty na całą scenę dawało
-  300+ px pustego gradientu w środku — cofnięte 2026-08-15.
-- Karta wykonana dziś znika ze stosu (`doneToday` w `DeckScreen`).
-- Nastrój pytany raz: check-in młodszy niż 30 min zasila `before` w `CardPlayer`.
+- Talia (stos) wypełnia viewport flexem — bez stałych dvh; treść karty kotwiczy przy dole.
 
 ## Otwarte tematy
 

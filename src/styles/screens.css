@@ -238,15 +238,12 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* Karta ma wysokosc swojej tresci i stoi na srodku wolnej przestrzeni.
-   Rozciagana na cala scene robila 300+ px pustego gradientu. */
 .deck-stage {
   position: relative;
   padding-top: 12px;
   flex: 1;
   min-height: 260px;
   display: flex;
-  align-items: center;
 }
 
 .deck-stage .swipe-card,
@@ -262,12 +259,11 @@
   animation: fade-up 0.3s ease both;
 }
 
-/* Duchy siedza w .deck-live, wiec wystaja spod karty niezaleznie od jej wysokosci. */
 .deck-ghost {
   position: absolute;
   left: 12px;
   right: 12px;
-  top: -12px;
+  top: 0;
   height: 60px;
   border-radius: var(--radius-lg);
   background: var(--paper);
@@ -278,7 +274,7 @@
 .deck-ghost-1 {
   left: 8px;
   right: 8px;
-  top: -6px;
+  top: 6px;
   opacity: 0.85;
 }
 
@@ -303,13 +299,26 @@
   gap: var(--sp-3);
 }
 
+.deck-stage .activation-card {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cały blok treści (emblemat, tytuł, opis) kotwiczy przy dole — góra to tylko pigułki. */
 .deck-stage .activation-emblem {
   width: 64px;
   height: 64px;
+  margin-top: auto;
 }
 
 .deck-stage .activation-title {
   font-size: 1.7rem;
+}
+
+.deck-stage .activation-footer {
+  margin-top: auto;
 }
 
 /* ——— Gest na stosie ——— */

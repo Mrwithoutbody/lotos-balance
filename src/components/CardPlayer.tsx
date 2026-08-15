@@ -31,23 +31,10 @@ function summaryText(before: Scale5, after: Scale5): string {
   return 'Dziś ta aktywacja nie pomogła. Następnym razem spróbujemy innego podejścia.'
 }
 
-/** Check-in sprzed pół godziny to ta sama odpowiedź — nie pytamy o nastrój drugi raz. */
-const MOOD_REUSE_MS = 30 * 60 * 1000
-
 export function CardPlayer({ card, source, calendarEntryId, onClose }: Props) {
-  const { state, saveSession, setEntryDone } = useAppState()
-  const knownMood = useMemo(() => {
-    const today = todayKey()
-    const last = [...state.checkIns]
-      .reverse()
-      .find((c) => c.date === today && c.state !== undefined)
-    if (!last) return undefined
-    return Date.now() - new Date(last.createdAt).getTime() < MOOD_REUSE_MS ? last.state : undefined
-    // Liczymy raz, przy otwarciu odtwarzacza.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  const [phase, setPhase] = useState<Phase>(knownMood === undefined ? 'before' : 'run')
-  const [before, setBefore] = useState<Scale5 | undefined>(knownMood)
+  const { saveSession, setEntryDone } = useAppState()
+  const [phase, setPhase] = useState<Phase>('before')
+  const [before, setBefore] = useState<Scale5>()
   const [after, setAfter] = useState<Scale5>()
   const [note, setNote] = useState('')
   const [secondsLeft, setSecondsLeft] = useState(card.minutes * 60)

@@ -13,7 +13,6 @@ import { TIME_OPTIONS } from '../data/goals'
 import { useAppState } from '../hooks/useAppState'
 import type { ActivationCard, AreaId, Minutes, Scale5, SwipeDirection } from '../types'
 import { knownAreas, latestSnapshot, unknownAreas } from '../utils/balance'
-import { todayKey } from '../utils/date'
 import type { TabId } from '../components/BottomNav'
 
 interface Props {
@@ -66,16 +65,8 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
   // Plan sond ustalamy raz na wejściu, żeby stos nie przeskakiwał po odpowiedzi.
   const [probePlan] = useState<AreaId[]>(() => unknownAreas(levels))
 
-  // Karta wykonana dziś znika ze stosu — inaczej apka nie pamięta, co przed chwilą zrobiłaś.
-  const doneToday = useMemo(() => {
-    const today = todayKey()
-    return new Set(
-      state.sessions.filter((s) => s.completed && s.date === today).map((s) => s.cardId),
-    )
-  }, [state.sessions])
-
   const queue = useMemo<QueueItem[]>(() => {
-    const ordered = interleaveByArea(CARDS.filter((c) => !doneToday.has(c.id)))
+    const ordered = interleaveByArea(CARDS)
     const items: QueueItem[] = []
     let probe = 0
     ordered.forEach((card, i) => {
@@ -90,14 +81,13 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
       probe += 1
     }
     return items
-  }, [probePlan, doneToday])
+  }, [probePlan])
 
-  const current = queue.length > 0 ? queue[index % queue.length] : null
+  const current = queue[index % queue.length]
   const advance = useCallback(() => setIndex((i) => i + 1), [])
 
   const handleSwipe = useCallback(
     (direction: SwipeDirection) => {
-      if (!current) return
       if (current.kind === 'karta') recordSwipe(current.card.id, current.card.area, direction)
       advance()
     },
@@ -149,18 +139,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
         ))}
       </div>
 
-      {mode === 'stos' && !current && (
-        <section className="surface stack-sm">
-          <h2 className="h1">Na dziś to wszystko.</h2>
-          <p className="muted">Przeszłaś przez całą talię. Wróć jutro albo zajrzyj do biblioteki.</p>
-          <button type="button" className="btn btn-secondary btn-block" onClick={() => setMode('biblioteka')}>
-            <Icon name="Search" size={16} />
-            Biblioteka
-          </button>
-        </section>
-      )}
-
-      {mode === 'stos' && current && (
+      {mode === 'stos' && (
         <section className="deck-flow">
           <div
             className="map-progress surface-quiet row-between"
@@ -186,9 +165,9 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
           </div>
 
           <div className="deck-stage">
+            <span className="deck-ghost deck-ghost-2" aria-hidden="true" />
+            <span className="deck-ghost deck-ghost-1" aria-hidden="true" />
             <div className="deck-live" key={`${index}-${current.kind}`}>
-              <span className="deck-ghost deck-ghost-2" aria-hidden="true" />
-              <span className="deck-ghost deck-ghost-1" aria-hidden="true" />
               {current.kind === 'karta' ? (
                 <SwipeCard
                   onSwipe={handleSwipe}
