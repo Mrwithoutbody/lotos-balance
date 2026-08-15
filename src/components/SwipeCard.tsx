@@ -63,8 +63,11 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
   const rotation = offset / 22
   // Pełna czytelność podpowiedzi na długo przed progiem — na mobile stemple
   // widoczne od pierwszych pikseli gestu, nie dopiero przy decyzji.
-  const intent = Math.min(1, Math.abs(dx) / (THRESHOLD * 0.5))
+  const intent = flying ? 1 : Math.min(1, Math.abs(dx) / (THRESHOLD * 0.5))
   const edgeColor = dx > 0 ? '123, 154, 120' : '111, 97, 84'
+  // Sztywno przy palcu w trakcie gestu; płynnie razem z kartą przy powrocie i wylocie.
+  const stampTransition =
+    flying || dx === 0 ? 'transform 0.22s ease, opacity 0.22s ease' : 'none'
 
   return (
     <div
@@ -88,12 +91,14 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
       aria-label={label}
     >
       {/* Stemple wychodzą ze środka karty; lekki dryf w tył (25% ruchu)
-          daje paralaksę bez uciekania poza kartę. */}
+          daje paralaksę bez uciekania poza kartę. Transition włącza się
+          w tych samych momentach co na karcie — jeden ruch, zero skoków. */}
       <span
         className="swipe-stamp swipe-stamp-yes"
         style={{
-          opacity: dx > 8 ? intent : 0,
-          transform: `translateX(calc(-50% + ${(-offset * 0.25).toFixed(1)}px)) rotate(-6deg) scale(${0.85 + 0.25 * (dx > 8 ? intent : 0)})`,
+          opacity: dx > 0 || flying === 'w-prawo' ? intent : 0,
+          transform: `translateX(calc(-50% + ${(-offset * 0.25).toFixed(1)}px)) rotate(-6deg) scale(${0.85 + 0.25 * (dx > 0 ? intent : 0)})`,
+          transition: stampTransition,
         }}
         aria-hidden="true"
       >
@@ -103,8 +108,9 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
       <span
         className="swipe-stamp swipe-stamp-no"
         style={{
-          opacity: dx < -8 ? intent : 0,
-          transform: `translateX(calc(-50% + ${(-offset * 0.25).toFixed(1)}px)) rotate(6deg) scale(${0.85 + 0.25 * (dx < -8 ? intent : 0)})`,
+          opacity: dx < 0 || flying === 'w-lewo' ? intent : 0,
+          transform: `translateX(calc(-50% + ${(-offset * 0.25).toFixed(1)}px)) rotate(6deg) scale(${0.85 + 0.25 * (dx < 0 ? intent : 0)})`,
+          transition: stampTransition,
         }}
         aria-hidden="true"
       >
