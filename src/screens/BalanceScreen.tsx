@@ -19,7 +19,7 @@ import {
 } from '../utils/balance'
 import { longDate, shortDate, todayKey, weekdayShort } from '../utils/date'
 import type { AreaId } from '../types'
-import zielenImg from '../assets/anna/anna-zielen.webp'
+import zielenImg from '../assets/anna/hero-balans.webp'
 
 interface Props {
   onAbout: () => void
@@ -51,7 +51,7 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
 
   return (
     <div className="stack-lg">
-      <header className="hero hero-slim" style={{ backgroundImage: `url(${zielenImg})`, backgroundPosition: 'center 24%' }}>
+      <header className="hero hero-slim" style={{ backgroundImage: `url(${zielenImg})` }}>
         <div className="hero-overlay">
           <p className="hero-eyebrow">Mapa Balansu</p>
           <h1 className="display hero-title">

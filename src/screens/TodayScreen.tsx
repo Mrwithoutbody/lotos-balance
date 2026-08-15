@@ -16,7 +16,7 @@ import type { ActivationCard, Minutes, NeedId, Scale5 } from '../types'
 import { latestSnapshot, weakestAreas } from '../utils/balance'
 import { greeting, longDate, todayKey } from '../utils/date'
 import type { TabId } from '../components/BottomNav'
-import heroImg from '../assets/anna/anna-jezioro.webp'
+import heroImg from '../assets/anna/hero-dzisiaj.webp'
 
 interface Props {
   onPlay: (card: ActivationCard, source: 'dzisiaj' | 'talia' | 'kalendarz', entryId?: string) => void
