@@ -78,8 +78,6 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
           // od tego, gdzie na karcie jest kciuk.
           boxShadow: dx !== 0 ? `0 0 0 3px rgba(${edgeColor}, ${0.25 + 0.65 * intent})` : undefined,
           borderRadius: 'var(--radius-lg)',
-          // Ilustracja tła czyta tę zmienną i płynie wolniej niż karta (paralaksa).
-          '--swipe-dx': `${offset}px`,
         } as CSSProperties
       }
       onPointerDown={onPointerDown}
