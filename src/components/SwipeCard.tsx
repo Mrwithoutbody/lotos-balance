@@ -60,7 +60,10 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
 
   const offset = flying ? (flying === 'w-prawo' ? 520 : -520) : dx
   const rotation = offset / 22
-  const intent = Math.min(1, Math.abs(dx) / THRESHOLD)
+  // Pełna czytelność podpowiedzi na długo przed progiem — na mobile stemple
+  // widoczne od pierwszych pikseli gestu, nie dopiero przy decyzji.
+  const intent = Math.min(1, Math.abs(dx) / (THRESHOLD * 0.5))
+  const edgeColor = dx > 0 ? '123, 154, 120' : '111, 97, 84'
 
   return (
     <div
@@ -69,6 +72,10 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
         transform: `translateX(${offset}px) rotate(${rotation}deg)`,
         transition: flying || dx === 0 ? 'transform 0.22s ease, opacity 0.22s ease' : 'none',
         opacity: flying ? 0 : 1,
+        // Obwódka całej karty w kolorze kierunku — sygnał widoczny niezależnie
+        // od tego, gdzie na karcie jest kciuk.
+        boxShadow: dx !== 0 ? `0 0 0 3px rgba(${edgeColor}, ${0.25 + 0.65 * intent})` : undefined,
+        borderRadius: 'var(--radius-lg)',
       }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
@@ -79,14 +86,20 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
     >
       <span
         className="swipe-stamp swipe-stamp-yes"
-        style={{ opacity: dx > 12 ? intent : 0 }}
+        style={{
+          opacity: dx > 8 ? intent : 0,
+          transform: `rotate(-6deg) scale(${0.85 + 0.25 * (dx > 8 ? intent : 0)})`,
+        }}
         aria-hidden="true"
       >
         To o mnie
       </span>
       <span
         className="swipe-stamp swipe-stamp-no"
-        style={{ opacity: dx < -12 ? intent : 0 }}
+        style={{
+          opacity: dx < -8 ? intent : 0,
+          transform: `rotate(6deg) scale(${0.85 + 0.25 * (dx < -8 ? intent : 0)})`,
+        }}
         aria-hidden="true"
       >
         Nie teraz

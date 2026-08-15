@@ -340,32 +340,35 @@
   cursor: grabbing;
 }
 
+/* Podpowiedzi gestu — muszą być czytelne na mobile w trakcie przeciągania. */
 .swipe-stamp {
   position: absolute;
-  top: 18px;
+  top: 16px;
   z-index: 3;
-  padding: 6px 14px;
+  padding: 10px 18px;
   border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   pointer-events: none;
-  transition: opacity 0.12s linear;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 4px 14px rgba(35, 28, 21, 0.28);
+  transition: opacity 0.1s linear;
 }
 
+/* Stemple po przeciwnej stronie niż kierunek gestu — karta ucieka w bok,
+   a podpowiedź zostaje w kadrze (jak LIKE po lewej w Tinderze). */
 .swipe-stamp-yes {
-  right: 18px;
-  background: rgba(123, 154, 120, 0.92);
+  left: 14px;
+  background: rgba(123, 154, 120, 0.96);
   color: #f7fbf6;
-  transform: rotate(6deg);
 }
 
 .swipe-stamp-no {
-  left: 18px;
-  background: rgba(111, 97, 84, 0.9);
+  right: 14px;
+  background: rgba(111, 97, 84, 0.95);
   color: #fbf7f2;
-  transform: rotate(-6deg);
 }
 
 .map-progress {
