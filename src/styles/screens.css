@@ -362,6 +362,28 @@
   animation: fade-up 0.3s ease both;
 }
 
+/* Karta na stosie ma proporcje talii — wysoka, treść rozłożona pionowo. */
+.deck-stage .activation-card {
+  min-height: min(48dvh, 480px);
+  display: flex;
+  flex-direction: column;
+}
+
+.deck-stage .activation-emblem {
+  width: 64px;
+  height: 64px;
+  margin-top: 10px;
+}
+
+.deck-stage .activation-title {
+  font-size: 1.7rem;
+}
+
+.deck-stage .activation-meta,
+.deck-stage .activation-footer {
+  margin-top: auto;
+}
+
 /* ——— Gest na stosie ——— */
 
 .swipe-card {
@@ -408,6 +430,15 @@
 
 .map-progress {
   gap: 10px;
+  padding: 10px 14px;
+}
+
+.map-progress .eyebrow {
+  white-space: nowrap;
+}
+
+.map-progress .area-dots {
+  flex-wrap: nowrap;
 }
 
 .probe-card .activation-title {

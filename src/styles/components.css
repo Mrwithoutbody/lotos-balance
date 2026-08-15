@@ -368,8 +368,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 10px;
   background: rgba(51, 41, 31, 0.05);
   color: var(--plum-faint);
