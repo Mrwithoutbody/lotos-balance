@@ -407,8 +407,8 @@
   font-size: 1.7rem;
 }
 
-/* Tytuł i opis kotwiczą przy dole karty — góra zostaje dla emblematu i powietrza. */
-.deck-stage .activation-title {
+/* Cały blok treści (emblemat, tytuł, opis) kotwiczy przy dole — góra to tylko pigułki. */
+.deck-stage .activation-emblem {
   margin-top: auto;
 }
 
