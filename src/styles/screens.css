@@ -407,7 +407,11 @@
   font-size: 1.7rem;
 }
 
-.deck-stage .activation-meta,
+/* Tytuł i opis kotwiczą przy dole karty — góra zostaje dla emblematu i powietrza. */
+.deck-stage .activation-title {
+  margin-top: auto;
+}
+
 .deck-stage .activation-footer {
   margin-top: auto;
 }
