@@ -1,7 +1,8 @@
 // src/components/SwipeCard.tsx
 import { useRef, useState } from 'react'
-import type { PointerEvent as ReactPointerEvent, ReactNode } from 'react'
+import type { CSSProperties, PointerEvent as ReactPointerEvent, ReactNode } from 'react'
 import type { SwipeDirection } from '../types'
+import { Icon } from './Icon'
 
 interface Props {
   children: ReactNode
@@ -68,15 +69,19 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
   return (
     <div
       className={`swipe-card${flying ? ' is-flying' : ''}${dragging.current ? ' is-dragging' : ''}`}
-      style={{
-        transform: `translateX(${offset}px) rotate(${rotation}deg)`,
-        transition: flying || dx === 0 ? 'transform 0.22s ease, opacity 0.22s ease' : 'none',
-        opacity: flying ? 0 : 1,
-        // Obwódka całej karty w kolorze kierunku — sygnał widoczny niezależnie
-        // od tego, gdzie na karcie jest kciuk.
-        boxShadow: dx !== 0 ? `0 0 0 3px rgba(${edgeColor}, ${0.25 + 0.65 * intent})` : undefined,
-        borderRadius: 'var(--radius-lg)',
-      }}
+      style={
+        {
+          transform: `translateX(${offset}px) rotate(${rotation}deg)`,
+          transition: flying || dx === 0 ? 'transform 0.22s ease, opacity 0.22s ease' : 'none',
+          opacity: flying ? 0 : 1,
+          // Obwódka całej karty w kolorze kierunku — sygnał widoczny niezależnie
+          // od tego, gdzie na karcie jest kciuk.
+          boxShadow: dx !== 0 ? `0 0 0 3px rgba(${edgeColor}, ${0.25 + 0.65 * intent})` : undefined,
+          borderRadius: 'var(--radius-lg)',
+          // Ilustracja tła czyta tę zmienną i płynie wolniej niż karta (paralaksa).
+          '--swipe-dx': `${offset}px`,
+        } as CSSProperties
+      }
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
@@ -92,6 +97,7 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
         }}
         aria-hidden="true"
       >
+        <Icon name="Star" size={16} fill="currentColor" />
         To o mnie
       </span>
       <span
@@ -102,6 +108,7 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
         }}
         aria-hidden="true"
       >
+        <Icon name="Moon" size={16} />
         Nie teraz
       </span>
       {children}
