@@ -34,8 +34,10 @@ localStorage, bez backendu. Pełna dokumentacja produktu i algorytmu: README.md.
 
 - Wideo Anny: odłożone. Opcje: Stream na osobnym płatnym koncie usera (embed cross-account,
   Allowed Origins) albo R2 free (klipy 30–60 s → R2 wystarczy). Placeholder: `AnnaGuide.tsx`.
-- Zdjęcia w `src/assets/anna/` to niskiej jakości zrzuty z publicznego IG @annarysnik (testowo);
-  do produkcji potrzebne oryginały + wyraźna zgoda Anny (repo jest publiczne!).
+- Zdjęcia w `src/assets/anna/`: oryginały HQ z publicznego IG @annarysnik (curl z CDN, 3072px)
+  i z annarysnik.pl. Hero to dedykowane poziome kadry (`hero-dzisiaj`, `hero-balans`) — Anna
+  zawsze w prawej tercji, lewa strona pod tekst. Do produkcji nadal potrzebna wyraźna zgoda Anny
+  (repo jest publiczne!). Motyw lotosu: na IG to wideo — czekamy na prawdziwy kadr od Anny.
 - Przyszłość: backend + społeczność „Lotos Balance” (Workers/D1/R2 albo Supabase). Szew do
   migracji: `services/storage.ts` (jedyne miejsce z localStorage) + `hooks/useAppState.tsx`
   (wszystkie mutacje). Dane o samopoczuciu = RODO art. 9 — region UE, zgody, moderacja od dnia 1.
