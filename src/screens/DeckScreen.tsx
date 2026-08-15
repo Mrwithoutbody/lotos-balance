@@ -120,7 +120,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
   }, [mode, detail, planTarget, handleSwipe])
 
   return (
-    <div className="stack-lg">
+    <div className={mode === 'stos' ? 'deck-screen' : 'stack-lg'}>
       <h1 className="sr-only">Talia aktywacji</h1>
 
       <div className="segmented" role="tablist" aria-label="Widok talii">
@@ -140,7 +140,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
       </div>
 
       {mode === 'stos' && (
-        <section className="stack">
+        <section className="deck-flow">
           <div
             className="map-progress surface-quiet row-between"
             role="img"
