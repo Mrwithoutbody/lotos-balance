@@ -72,6 +72,13 @@ export function LoginScreen() {
                 </button>
               </form>
               {error && <p className="caution">{error}</p>}
+              <button
+                type="button"
+                className="btn btn-secondary btn-block"
+                onClick={() => signIn.social({ provider: 'google', callbackURL: '/' })}
+              >
+                Zaloguj przez Google
+              </button>
             </section>
           )}
         </div>
