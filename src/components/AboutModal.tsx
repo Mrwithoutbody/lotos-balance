@@ -68,10 +68,15 @@ export function AboutModal({ onClose }: Props) {
           </ul>
         </section>
 
-        <p className="tiny">
-          Wszystkie dane zostają na Twoim urządzeniu, w pamięci przeglądarki. Nic nie jest wysyłane
-          na zewnętrzne serwery.
-        </p>
+        <section className="stack-sm">
+          <p className="eyebrow">Twoje dane</p>
+          <p className="muted">
+            Twoja historia i mapa balansu są zapisane w pamięci przeglądarki na tym urządzeniu. Jeśli
+            się zalogujesz, ukończone ćwiczenia wraz z ocenami samopoczucia przed i po trafiają
+            dodatkowo do naszej bazy w Unii Europejskiej — stamtąd bierze się wspólna aktywność
+            kręgu. Inni widzą tam tylko tytuł ćwiczenia i datę, nigdy Twojego imienia ani ocen.
+          </p>
+        </section>
       </div>
     </Modal>
   )
