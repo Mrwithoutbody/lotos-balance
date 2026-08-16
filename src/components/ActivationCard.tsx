@@ -1,5 +1,5 @@
 // src/components/ActivationCard.tsx
-import type { ReactNode } from 'react'
+import type { CSSProperties, ReactNode } from 'react'
 import { AREA_BY_ID } from '../data/areas'
 import { CARD_ART } from '../data/cards'
 import type { ActivationCard as Card } from '../types'
@@ -22,11 +22,8 @@ export function ActivationCardView({ card, reasons, onInfo, footer }: Props) {
 
   return (
     <article
-      className="activation-card"
-      style={{
-        background: `linear-gradient(158deg, ${area.softColor} 0%, #ffffff 62%)`,
-        borderColor: `${area.color}33`,
-      }}
+      className="activation-card area-surface"
+      style={{ '--area': area.color, '--area-soft': area.softColor } as CSSProperties}
     >
       {art && (
         <span
@@ -36,11 +33,11 @@ export function ActivationCardView({ card, reasons, onInfo, footer }: Props) {
         />
       )}
       <div className="activation-top">
-        <span className="pill" style={{ background: '#ffffffcc', color: area.color }}>
+        <span className="pill" style={{ color: area.color }}>
           <Icon name={area.icon} size={13} />
           {area.name}
         </span>
-        <span className="pill" style={{ background: '#ffffffcc' }}>
+        <span className="pill">
           <Icon name="Clock" size={13} />
           {card.minutes} min
         </span>

@@ -1,4 +1,5 @@
 // src/components/ProbeCard.tsx
+import type { CSSProperties } from 'react'
 import { AREA_BY_ID } from '../data/areas'
 import type { AreaId, Scale5 } from '../types'
 import { Icon } from './Icon'
@@ -18,18 +19,15 @@ export function ProbeCard({ area, onAnswer, onSkip }: Props) {
   const def = AREA_BY_ID[area]
   return (
     <article
-      className="activation-card probe-card"
-      style={{
-        background: `linear-gradient(158deg, ${def.softColor} 0%, #ffffff 62%)`,
-        borderColor: `${def.color}33`,
-      }}
+      className="activation-card probe-card area-surface"
+      style={{ '--area': def.color, '--area-soft': def.softColor } as CSSProperties}
     >
       <div className="activation-top">
-        <span className="pill" style={{ background: '#ffffffcc', color: def.color }}>
+        <span className="pill" style={{ color: def.color }}>
           <Icon name={def.icon} size={13} />
           {def.name}
         </span>
-        <span className="pill" style={{ background: '#ffffffcc' }}>
+        <span className="pill">
           <Icon name="Compass" size={13} />
           Mapa Balansu
         </span>

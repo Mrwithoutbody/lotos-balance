@@ -1,4 +1,5 @@
 // src/components/CardTile.tsx
+import type { CSSProperties } from 'react'
 import { AREA_BY_ID } from '../data/areas'
 import { CARD_ART } from '../data/cards'
 import type { ActivationCard } from '../types'
@@ -16,11 +17,8 @@ export function CardTile({ card, isFavorite, onToggleFavorite, onOpen }: Props) 
   const art = CARD_ART[card.area]
   return (
     <div
-      className="card-tile"
-      style={{
-        borderColor: `${area.color}2e`,
-        background: `linear-gradient(158deg, ${area.softColor} 0%, #ffffff 62%)`,
-      }}
+      className="card-tile area-surface"
+      style={{ '--area': area.color, '--area-soft': area.softColor } as CSSProperties}
     >
       {art && (
         <span

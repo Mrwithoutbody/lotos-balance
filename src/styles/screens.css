@@ -123,7 +123,15 @@
   align-items: flex-start;
   gap: var(--sp-2);
   padding: 18px;
-  background: linear-gradient(120deg, rgba(58, 48, 39, 0.94) 30%, rgba(58, 48, 39, 0.72) 100%);
+  /* Ta sama plama światła co na kartach, tyle że ciepła — ciemny blok
+     przestaje być płaską płachtą, dostaje kierunek. */
+  background:
+    radial-gradient(
+      110% 140% at 0% 100%,
+      color-mix(in srgb, var(--glow) 26%, transparent) 0%,
+      transparent 58%
+    ),
+    linear-gradient(120deg, rgba(58, 48, 39, 0.94) 30%, rgba(58, 48, 39, 0.72) 100%);
   color: var(--dark-text);
   width: 100%;
 }

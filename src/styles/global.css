@@ -14,6 +14,8 @@
   --violet: #8b79b0;
   --dark-text: #efe7de;
   --dark-muted: #b8a996;
+  /* Ciepłe światło zza kadru — rozjaśnia ciemne powierzchnie od rogu. */
+  --glow: #c7ab94;
   --line: rgba(51, 41, 31, 0.1);
   --line-strong: rgba(51, 41, 31, 0.18);
 

@@ -318,6 +318,25 @@
 
 /* ——— Karta aktywacji ——— */
 
+/*
+ * Powierzchnia obszaru — jedno miejsce dla karty w stosie, kafla i sondy.
+ * Komponenty podają tylko --area i --area-soft, resztę liczy CSS.
+ *
+ * Dwie warstwy: pod spodem baza softColor → biel, na wierzchu plama światła
+ * z lewego dolnego rogu. Środek plamy leży poza kadrem (at 0% 100%, promień
+ * 120%/130%), więc karta wygląda na oświetloną z boku, nie pomalowaną.
+ */
+.area-surface {
+  background:
+    radial-gradient(
+      120% 130% at 0% 100%,
+      color-mix(in srgb, var(--area) 20%, transparent) 0%,
+      transparent 62%
+    ),
+    linear-gradient(158deg, var(--area-soft) 0%, #ffffff 62%);
+  border-color: color-mix(in srgb, var(--area) 20%, transparent);
+}
+
 .activation-card {
   position: relative;
   border: 1px solid var(--line);
@@ -326,6 +345,15 @@
   box-shadow: var(--shadow);
   /* Grafika tła nie może wystawać poza zaokrąglenie. */
   overflow: hidden;
+}
+
+/* Pigułki na karcie jako szkło: mleczna biel, jasny rant, rozmycie tła. */
+.activation-card .pill,
+.card-tile .pill {
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /*
@@ -497,7 +525,6 @@
   aspect-ratio: 5 / 6;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--paper);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition:
