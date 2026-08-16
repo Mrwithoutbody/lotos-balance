@@ -21,8 +21,10 @@ Otwarte zostaje tylko zadanie 3 — wiadomość do Anny, nie kod.
 2. ✅ **Copy bez żargonu**
    - Zrobione: „ćwiczenie/ćwiczenia/ćwiczeń" (helper `plural()`), „program",
      „Aktywność", „Twoje postępy, {imię}" w `CircleScreen.tsx`; „aktywacje"→
-     „ćwiczenia" w `AboutModal.tsx`. Żargon w samej talii (`/anna-rysnik`)
-     nietknięty — sekcja A dotyczyła kręgu.
+     „ćwiczenia" w `AboutModal.tsx`. Dogrywka `7c8133d`: ten sam żargon
+     wymieciony z całej apki satelity (Dzisiaj/Program/Kalendarz/Balans,
+     odtwarzacz, arkusze, insighty) — tylko stringi UI, identyfikatory
+     (`'talia'` w TabId/source) zostały, żeby nie psuć zapisanych sesji.
 
 3. **Link w bio Anny na `/anna-rysnik`**
    - Problem: `/` to agregator dla całej branży, a fan Anny przychodzi po nią, nie po katalog.
