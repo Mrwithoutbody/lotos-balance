@@ -65,9 +65,9 @@ export function BalanceWheel({ levels, highlight = [] }: Props) {
               <path d={petal(angle, MAX)} className="wheel-track" />
               {level !== undefined && (
                 <path
-                  // ponytail: dolna granica 6% trzyma płatek widocznym, więc 0 i 6
-                  // rysują się tak samo; osobny znacznik dla zera gdy rozróżnienie
-                  // „najniższy wynik” od „prawie najniższy” zacznie mieć znaczenie.
+                  // Dolna granica 6% trzyma płatek widocznym przy wyniku 0. Skala pytań
+                  // daje tylko 0/25/50/75/100, więc granica nie zaciera żadnej realnej
+                  // różnicy — najniższy wynik zostaje odróżnialny od kolejnego.
                   d={petal(angle, CORE + ((MAX - CORE) * Math.max(6, level)) / 100)}
                   fill={area.color}
                   className={highlight.includes(area.id) ? 'wheel-petal is-highlight' : 'wheel-petal'}

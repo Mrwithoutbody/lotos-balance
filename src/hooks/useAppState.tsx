@@ -16,6 +16,8 @@ import { todayKey } from '../utils/date'
 
 interface AppStateContextValue {
   state: AppState
+  /** Zapis do localStorage padł — dane znikną po zamknięciu karty. */
+  saveFailed: boolean
   /** Odpowiedź na jedno pytanie Mapy Balansu — dopisywana do dzisiejszego wyniku. */
   setAreaAnswer: (area: AreaId, answer: Scale5) => void
   recordSwipe: (cardId: string, area: AreaId, direction: SwipeDirection) => void
@@ -35,9 +37,10 @@ const AppStateContext = createContext<AppStateContextValue | null>(null)
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AppState>(() => loadState())
+  const [saveFailed, setSaveFailed] = useState(false)
 
   useEffect(() => {
-    saveState(state)
+    setSaveFailed(!saveState(state))
   }, [state])
 
   // Profil powstaje sam przy pierwszym uruchomieniu — bez ekranu rejestracji.
@@ -58,6 +61,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
     return {
       state,
+      saveFailed,
 
       setAreaAnswer(area, answer) {
         setState((prev) => {
@@ -181,7 +185,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         setState(defaultState())
       },
     }
-  }, [state])
+  }, [state, saveFailed])
 
   return <AppStateContext.Provider value={value}>{children}</AppStateContext.Provider>
 }

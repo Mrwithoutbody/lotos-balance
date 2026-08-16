@@ -28,7 +28,7 @@ interface Props {
 }
 
 export default function App({ creatorSlug }: Props) {
-  const { state } = useAppState()
+  const { state, saveFailed } = useAppState()
   // Program z R2 to jedyne źródło kart. Ekrany montują się dopiero po hydracji,
   // więc konsumenci CARDS nigdy nie widzą pustego magazynu.
   const deck = useDeck(creatorSlug)
@@ -94,6 +94,13 @@ export default function App({ creatorSlug }: Props) {
       </header>
 
       <main className="app-main">
+        {saveFailed && (
+          <p className="caution" role="status">
+            <Icon name="Shield" size={16} />
+            Przeglądarka nie pozwala nic zapisać (brak miejsca albo tryb prywatny). Wyniki i plany
+            znikną po zamknięciu karty.
+          </p>
+        )}
         {deck.isPending && (
           <p className="muted center" style={{ padding: 'var(--sp-5)' }}>
             Chwila — program się otwiera…

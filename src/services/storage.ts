@@ -46,13 +46,14 @@ export function loadState(): AppState {
   }
 }
 
-export function saveState(state: AppState): void {
+/** Zwraca false, gdy zapis padł — brak miejsca albo tryb prywatny. */
+export function saveState(state: AppState): boolean {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    return true
   } catch {
-    // Brak miejsca lub tryb prywatny — aplikacja działa dalej na stanie w pamięci.
-    // ponytail: cisza — użytkowniczka traci dane po zamknięciu karty i nie wie o tym;
-    // komunikat w UI gdy pojawią się dłuższe sesje albo dane warte odzyskania.
+    // Aplikacja działa dalej na stanie w pamięci, ale UI musi o tym powiedzieć.
+    return false
   }
 }
 
