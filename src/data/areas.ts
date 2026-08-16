@@ -39,7 +39,7 @@ export const AREAS: BalanceArea[] = [
     name: 'Ciało',
     icon: 'Footprints',
     color: '#7B9A78',
-    softColor: '#E4EDE2',
+    softColor: '#D8EAD2',
     question: 'Na ile miałaś kontakt z potrzebami swojego ciała?',
   },
   {
