@@ -66,7 +66,6 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
   const snapshot = latestSnapshot(state.snapshots)
   const levels = snapshot?.levels ?? {}
   const known = knownAreas(levels).length
-  const mapaPelna = known === AREAS.length
 
   // Plan sond ustalamy raz na wejściu, żeby stos nie przeskakiwał po odpowiedzi.
   const [probePlan] = useState<AreaId[]>(() => unknownAreas(levels))
@@ -151,20 +150,9 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
           <div
             className="map-progress surface-quiet row-between"
             role="img"
-            aria-label={`Mapa Balansu: poznane ${known} z ${AREAS.length} obszarów`}
+            aria-label={`Mapa Balansu: odkryte ${known} z ${AREAS.length} obszarów`}
           >
-            <span className="map-goal">
-              <span className="eyebrow">
-                {mapaPelna
-                  ? 'Mapa pełna'
-                  : `Poznaj wszystkie ${AREAS.length} ${plural(AREAS.length, 'obszar', 'obszary', 'obszarów')}`}
-              </span>
-              <span className="tiny">
-                {mapaPelna
-                  ? 'Znasz już cały swój balans'
-                  : `${known} z ${AREAS.length} — odpowiedz na pytanie, zapali się kolejny`}
-              </span>
-            </span>
+            <span className="eyebrow">Odkryte</span>
             <span className="area-dots">
               {AREAS.map((a) => {
                 const isKnown = levels[a.id] !== undefined
@@ -174,7 +162,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
                     className={`area-dot${isKnown ? ' is-known' : ''}${justLit === a.id ? ' is-lit' : ''}`}
                     onAnimationEnd={() => justLit === a.id && setJustLit(null)}
                     style={isKnown ? { background: a.softColor, color: a.color } : undefined}
-                    title={`${a.name}: ${isKnown ? 'poznany' : 'jeszcze nie'}`}
+                    title={`${a.name}: ${isKnown ? 'odkryty' : 'jeszcze nie'}`}
                   >
                     <Icon name={a.icon} size={14} />
                   </span>
@@ -192,11 +180,8 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
                   onSwipe={handleSwipe}
                   label={`${current.card.title}. Przeciągnij w prawo — do ulubionych, w lewo — pomiń.`}
                 >
-                  <ActivationCardView
-                    card={current.card}
-                    isFavorite={state.favorites.includes(current.card.id)}
-                    onToggleFavorite={() => toggleFavorite(current.card.id)}
-                  />
+                  {/* Bez gwiazdki na karcie — ulubione robi gest w prawo albo ikona pod kartą. */}
+                  <ActivationCardView card={current.card} />
                 </SwipeCard>
               ) : (
                 <SwipeCard
@@ -219,22 +204,16 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
 
           {current.kind === 'karta' ? (
             <>
+              {/* Pomiń i ulubione robi gest (oraz strzałki ←/→) — ikony są tylko dla myszy. */}
               <div className="row deck-actions">
                 <button
                   type="button"
-                  className="btn btn-secondary grow"
+                  className="icon-btn"
                   onClick={() => handleSwipe('w-lewo')}
+                  aria-label="Pomiń to ćwiczenie"
+                  title="Pomiń"
                 >
-                  <Icon name="ChevronLeft" size={16} />
-                  Pomiń
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary grow"
-                  onClick={() => handleSwipe('w-prawo')}
-                >
-                  <Icon name="Star" size={16} />
-                  Do ulubionych
+                  <Icon name="ChevronLeft" size={18} />
                 </button>
                 <button
                   type="button"
@@ -243,6 +222,15 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
                 >
                   <Icon name="Play" size={16} />
                   Wykonaj
+                </button>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => handleSwipe('w-prawo')}
+                  aria-label="Dodaj do ulubionych"
+                  title="Do ulubionych"
+                >
+                  <Icon name="Star" size={18} />
                 </button>
               </div>
             </>

@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import { AppStateProvider } from './hooks/useAppState'
-import { usePath } from './lib/router'
+import { match, usePath } from './lib/router'
 import { CircleScreen } from './screens/CircleScreen'
 import { LoginScreen } from './screens/LoginScreen'
 import '@fontsource-variable/newsreader'
@@ -22,9 +22,11 @@ const queryClient = new QueryClient()
 /** "/" → krąg, "/logowanie" → logowanie, "/<slug>" → program twórczyni. */
 function Root() {
   const path = usePath()
-  if (path === '/') return <CircleScreen />
-  if (path === '/logowanie') return <LoginScreen />
-  return <App creatorSlug={path.slice(1).split('/')[0]} />
+  if (match('/', path)) return <CircleScreen />
+  if (match('/logowanie', path)) return <LoginScreen />
+  const program = match('/:slug', path)
+  if (program) return <App creatorSlug={program.slug} />
+  return <CircleScreen />
 }
 
 createRoot(container).render(

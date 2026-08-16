@@ -2,11 +2,20 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// CORS bucketa lotos-balance przepuszcza tylko :5173 i :8788 — stąd strictPort.
-// Bez niego Vite po cichu bierze kolejny wolny port, a talia przestaje się wczytywać
-// bez żadnego sensownego komunikatu.
+// `npm run dev` to samo Vite, bez Functions — więc /api/deck (na produkcji funkcja
+// proxy do R2) w devie leci prosto do bucketa. Proxy działa po stronie serwera,
+// więc CORS bucketa nie ma tu nic do rzeczy i port może być dowolny.
 export default defineConfig({
   plugins: [react()],
-  server: { host: true, port: 5173, strictPort: true },
-  preview: { host: true, port: 8788, strictPort: true },
+  server: {
+    host: true,
+    proxy: {
+      '/api/deck': {
+        target: 'https://pub-b800680ed48f426cab8c4693966aa056.r2.dev',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/deck/, ''),
+      },
+    },
+  },
+  preview: { host: true },
 })

@@ -385,14 +385,6 @@
   white-space: nowrap;
 }
 
-/* Cel i stan jeden pod drugim — pasek zostaje jednowierszowy obok kropek. */
-.map-goal {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-1);
-  min-width: 0;
-}
-
 .map-progress .area-dots {
   flex-wrap: nowrap;
 }

@@ -114,7 +114,7 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
         }}
         aria-hidden="true"
       >
-        <Icon name="Moon" size={16} />
+        <Icon name="ChevronLeft" size={16} />
         Pomiń
       </span>
       {children}

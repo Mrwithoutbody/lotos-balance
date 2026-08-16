@@ -16,23 +16,34 @@ export function defaultState(): AppState {
   }
 }
 
-/** Uzupełnia braki i odrzuca pola o złych typach — zamiast wywalać całą aplikację. */
-// ponytail: sprawdzamy tylko typ pola, nie kształt elementów w tablicach — uszkodzony
-// wpis w snapshots/sessions przechodzi do komponentów; walidacja schematem gdy dane
-// zaczną przychodzić z serwera zamiast wyłącznie z localStorage tej przeglądarki.
+/** Zostawia tylko elementy o wymaganych polach — jeden uszkodzony wpis nie kasuje reszty. */
+function keep<T>(value: unknown, fields: string[]): T[] {
+  if (!Array.isArray(value)) return []
+  return value.filter(
+    (item): item is T =>
+      Boolean(item) &&
+      typeof item === 'object' &&
+      fields.every((f) => typeof (item as Record<string, unknown>)[f] === 'string'),
+  )
+}
+
+const strings = (value: unknown): string[] =>
+  Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
+
+/** Uzupełnia braki i odrzuca uszkodzone wpisy — zamiast wywalać całą aplikację. */
 function migrate(raw: unknown): AppState {
   const base = defaultState()
   if (!raw || typeof raw !== 'object') return base
   const data = raw as Partial<AppState>
   return {
     profile: data.profile && typeof data.profile === 'object' ? data.profile : base.profile,
-    snapshots: Array.isArray(data.snapshots) ? data.snapshots : base.snapshots,
-    checkIns: Array.isArray(data.checkIns) ? data.checkIns : base.checkIns,
-    sessions: Array.isArray(data.sessions) ? data.sessions : base.sessions,
-    calendar: Array.isArray(data.calendar) ? data.calendar : base.calendar,
-    favorites: Array.isArray(data.favorites) ? data.favorites : base.favorites,
-    swipes: Array.isArray(data.swipes) ? data.swipes : base.swipes,
-    brainSteps: Array.isArray(data.brainSteps) ? data.brainSteps : base.brainSteps,
+    snapshots: keep(data.snapshots, ['id', 'date']),
+    checkIns: keep(data.checkIns, ['id', 'date', 'need']),
+    sessions: keep(data.sessions, ['id', 'date', 'cardId']),
+    calendar: keep(data.calendar, ['id', 'date', 'cardId']),
+    favorites: strings(data.favorites),
+    swipes: keep(data.swipes, ['id', 'cardId', 'area', 'direction']),
+    brainSteps: strings(data.brainSteps),
   }
 }
 

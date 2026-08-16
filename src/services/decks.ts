@@ -4,12 +4,8 @@
 import { useQuery } from '@tanstack/react-query'
 import type { DeckManifest } from '../types/deck'
 
-/** Publiczny URL bucketa lotos-balance. */
-// ponytail: surowy r2.dev — CORS na buckecie ma sztywną listę origin (localhost:5173
-// dla `npm run dev`, localhost:8788 dla `wrangler pages dev`), więc program nie wstaje
-// na żadnym innym porcie, i nie ma kontroli nad Cache-Control; własna domena na
-// buckecie gdy dojdzie kolejne środowisko albo własne nagłówki cache.
-const DECKS_URL = 'https://pub-b800680ed48f426cab8c4693966aa056.r2.dev'
+/** Programy idą przez własną funkcję (functions/api/deck) — same-origin, bez CORS. */
+const DECKS_URL = '/api/deck'
 
 export function deckAssetUrl(creatorSlug: string, ...path: string[]): string {
   return [DECKS_URL, creatorSlug, ...path].join('/')
