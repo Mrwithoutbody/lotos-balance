@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { AREA_BY_ID } from '../data/areas'
 import { CARD_ART } from '../data/cards'
 import type { ActivationCard as Card } from '../types'
+import { plural } from '../utils/plural'
 import { Icon } from './Icon'
 
 interface Props {
@@ -64,29 +65,14 @@ export function ActivationCardView({ card, reasons, isFavorite, onToggleFavorite
       <p className="activation-desc">{card.description}</p>
 
       <div className="row wrap activation-meta">
-        <span
-          className="meta-badge"
-          role="img"
-          aria-label={`Energia: ${card.energy}`}
-          title={`Energia: ${card.energy}`}
-        >
+        {/* Słowa zamiast kropek i gołej liczby — bez podpisu obie plakietki były szumem. */}
+        <span className="meta-badge">
           <Icon name="Zap" size={13} />
-          <span className="energy-dots">
-            {[1, 2, 3].map((n) => (
-              <i
-                key={n}
-                className={
-                  n <= (card.energy === 'niska' ? 1 : card.energy === 'srednia' ? 2 : 3)
-                    ? 'is-on'
-                    : undefined
-                }
-              />
-            ))}
-          </span>
+          {card.energy === 'srednia' ? 'średnia' : card.energy} energia
         </span>
-        <span className="meta-badge" role="img" aria-label={`${card.steps.length} kroki`}>
+        <span className="meta-badge">
           <Icon name="CheckCircle2" size={13} />
-          {card.steps.length}
+          {card.steps.length} {plural(card.steps.length, 'krok', 'kroki', 'kroków')}
         </span>
         {secondary && (
           <span

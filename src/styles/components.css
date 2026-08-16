@@ -421,22 +421,6 @@
   font-weight: 600;
 }
 
-.energy-dots {
-  display: inline-flex;
-  gap: 3px;
-}
-
-.energy-dots i {
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: rgba(51, 41, 31, 0.15);
-}
-
-.energy-dots i.is-on {
-  background: currentColor;
-}
-
 .area-dots {
   display: inline-flex;
   gap: 5px;
@@ -458,6 +442,26 @@
 .area-dot.is-known {
   border-style: solid;
   border-color: transparent;
+}
+
+/* Zapalenie kropki po odpowiedzi na pytanie — jedyny moment, w którym mapa rośnie. */
+@keyframes area-dot-lit {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  35% {
+    transform: scale(1.5);
+    box-shadow: 0 0 0 7px rgba(197, 122, 91, 0.28);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 12px rgba(197, 122, 91, 0);
+  }
+}
+
+.area-dot.is-lit {
+  animation: area-dot-lit 1.4s ease-out;
 }
 
 .reasons {

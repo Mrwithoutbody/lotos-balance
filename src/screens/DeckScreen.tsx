@@ -58,12 +58,15 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
   const [query, setQuery] = useState('')
   const [onlyFavorites, setOnlyFavorites] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
+  /** Obszar zapalony ostatnią odpowiedzią — trzyma animację kropki przez chwilę po swipie. */
+  const [justLit, setJustLit] = useState<AreaId | null>(null)
   const [detail, setDetail] = useState<ActivationCard | null>(null)
   const [planTarget, setPlanTarget] = useState<ActivationCard | null>(null)
 
   const snapshot = latestSnapshot(state.snapshots)
   const levels = snapshot?.levels ?? {}
   const known = knownAreas(levels).length
+  const mapaPelna = known === AREAS.length
 
   // Plan sond ustalamy raz na wejściu, żeby stos nie przeskakiwał po odpowiedzi.
   const [probePlan] = useState<AreaId[]>(() => unknownAreas(levels))
@@ -137,7 +140,8 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
             onClick={() => setMode(m)}
           >
             <Icon name={m === 'stos' ? 'Layers' : 'Search'} size={16} />
-            {m === 'stos' ? 'Ćwiczenia' : 'Biblioteka'}
+            {/* Obie zakładki mają ćwiczenia — nazwa musi mówić o sposobie podania. */}
+            {m === 'stos' ? 'Po jednym' : 'Wszystkie'}
           </button>
         ))}
       </div>
@@ -149,14 +153,26 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
             role="img"
             aria-label={`Mapa Balansu: poznane ${known} z ${AREAS.length} obszarów`}
           >
-            <span className="eyebrow">Twoja mapa</span>
+            <span className="map-goal">
+              <span className="eyebrow">
+                {mapaPelna
+                  ? 'Mapa pełna'
+                  : `Poznaj wszystkie ${AREAS.length} ${plural(AREAS.length, 'obszar', 'obszary', 'obszarów')}`}
+              </span>
+              <span className="tiny">
+                {mapaPelna
+                  ? 'Znasz już cały swój balans'
+                  : `${known} z ${AREAS.length} — odpowiedz na pytanie, zapali się kolejny`}
+              </span>
+            </span>
             <span className="area-dots">
               {AREAS.map((a) => {
                 const isKnown = levels[a.id] !== undefined
                 return (
                   <span
                     key={a.id}
-                    className={`area-dot${isKnown ? ' is-known' : ''}`}
+                    className={`area-dot${isKnown ? ' is-known' : ''}${justLit === a.id ? ' is-lit' : ''}`}
+                    onAnimationEnd={() => justLit === a.id && setJustLit(null)}
                     style={isKnown ? { background: a.softColor, color: a.color } : undefined}
                     title={`${a.name}: ${isKnown ? 'poznany' : 'jeszcze nie'}`}
                   >
@@ -174,7 +190,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
               {current.kind === 'karta' ? (
                 <SwipeCard
                   onSwipe={handleSwipe}
-                  label={`${current.card.title}. Przeciągnij w prawo, aby zatrzymać, w lewo, aby odłożyć.`}
+                  label={`${current.card.title}. Przeciągnij w prawo — do ulubionych, w lewo — pomiń.`}
                 >
                   <ActivationCardView
                     card={current.card}
@@ -191,6 +207,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
                     area={current.area}
                     onAnswer={(value: Scale5) => {
                       setAreaAnswer(current.area, value)
+                      setJustLit(current.area)
                       advance()
                     }}
                     onSkip={advance}
@@ -209,7 +226,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
                   onClick={() => handleSwipe('w-lewo')}
                 >
                   <Icon name="ChevronLeft" size={16} />
-                  Nie teraz
+                  Pomiń
                 </button>
                 <button
                   type="button"
@@ -217,7 +234,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
                   onClick={() => handleSwipe('w-prawo')}
                 >
                   <Icon name="Star" size={16} />
-                  To o mnie
+                  Do ulubionych
                 </button>
                 <button
                   type="button"
@@ -253,8 +270,8 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
               type="button"
               className="chip chip-icon chip-ghost"
               aria-pressed={onlyFavorites}
-              aria-label="Tylko moje ćwiczenia"
-              title="Tylko moje"
+              aria-label="Tylko ulubione"
+              title="Ulubione"
               onClick={() => setOnlyFavorites((v) => !v)}
             >
               <Icon name="Star" size={17} fill={onlyFavorites ? 'currentColor' : 'none'} />

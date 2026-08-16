@@ -103,7 +103,7 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
         aria-hidden="true"
       >
         <Icon name="Star" size={16} fill="currentColor" />
-        To o mnie
+        Do ulubionych
       </span>
       <span
         className="swipe-stamp swipe-stamp-no"
@@ -115,7 +115,7 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
         aria-hidden="true"
       >
         <Icon name="Moon" size={16} />
-        Nie teraz
+        Pomiń
       </span>
       {children}
     </div>
