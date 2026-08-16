@@ -22,7 +22,8 @@ localStorage, bez backendu. Pełna dokumentacja produktu i algorytmu: README.md.
   potem edycja. „Karta” znaczy tu 4 różne rzeczy — zgadywanie kosztowało już całą sesję.
 - Diagnoza z pomiaru w przeglądarce (`getComputedStyle`, `getBoundingClientRect`), nie z oka.
   Pustka wewnątrz komponentu wygląda jak „odstęp”, a nie jest `gap`-em.
-- Deploy tylko na wyraźną prośbę. Jedna zmiana na raz, diff przed wdrożeniem.
+- Deploy po każdej zaakceptowanej zmianie, bez dopytywania (decyzja 2026-08-16 —
+  odwraca poprzednią regułę „tylko na prośbę”). Diff nadal pokazać, ale nie czekać z wdrożeniem.
 
 ## Kluczowe decyzje produktowe
 
