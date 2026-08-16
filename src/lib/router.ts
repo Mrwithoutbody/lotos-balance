@@ -1,5 +1,8 @@
 // src/lib/router.ts
 // Dwie trasy nie zasługują na bibliotekę: pathname + pushState + popstate.
+// ponytail: brak parametrów w ścieżce, zagnieżdżeń i strażników trasy — dopasowanie
+// idzie na surowym pathname; prawdziwy router gdy dojdą trasy z parametrem
+// albo ekran wymagający przekierowania przy braku sesji.
 import { useSyncExternalStore } from 'react'
 
 function subscribe(onChange: () => void): () => void {

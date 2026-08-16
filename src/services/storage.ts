@@ -20,6 +20,9 @@ export function defaultState(): AppState {
 }
 
 /** Uzupełnia braki i odrzuca pola o złych typach — zamiast wywalać całą aplikację. */
+// ponytail: sprawdzamy tylko typ pola, nie kształt elementów w tablicach — uszkodzony
+// wpis w snapshots/sessions przechodzi do komponentów; walidacja schematem gdy dane
+// zaczną przychodzić z serwera zamiast wyłącznie z localStorage tej przeglądarki.
 function migrate(raw: unknown): AppState {
   const base = defaultState()
   if (!raw || typeof raw !== 'object') return base
@@ -51,6 +54,8 @@ export function saveState(state: AppState): void {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch {
     // Brak miejsca lub tryb prywatny — aplikacja działa dalej na stanie w pamięci.
+    // ponytail: cisza — użytkowniczka traci dane po zamknięciu karty i nie wie o tym;
+    // komunikat w UI gdy pojawią się dłuższe sesje albo dane warte odzyskania.
   }
 }
 

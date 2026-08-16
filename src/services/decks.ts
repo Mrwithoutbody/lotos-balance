@@ -4,7 +4,10 @@
 import { useQuery } from '@tanstack/react-query'
 import type { DeckManifest } from '../types/deck'
 
-/** Publiczny URL bucketa lotos-balance. Do produkcji: własna domena zamiast r2.dev. */
+/** Publiczny URL bucketa lotos-balance. */
+// ponytail: surowy r2.dev — brak CORS dla localhost (talia nie wstaje lokalnie),
+// brak kontroli nad cache i limitami; własna domena na buckecie gdy ruszy dev lokalny
+// albo gdy potrzebny będzie własny nagłówek Cache-Control.
 export const DECKS_URL = 'https://pub-b800680ed48f426cab8c4693966aa056.r2.dev'
 
 export function deckAssetUrl(creatorSlug: string, ...path: string[]): string {
