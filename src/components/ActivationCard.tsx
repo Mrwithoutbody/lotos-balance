@@ -29,7 +29,7 @@ export function ActivationCardView({ card, reasons, isFavorite, onToggleFavorite
     >
       {art && (
         <span
-          className="activation-art"
+          className="card-art"
           style={{ backgroundImage: `url(${art})` }}
           aria-hidden="true"
         />

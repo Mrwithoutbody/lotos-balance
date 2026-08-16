@@ -4,6 +4,7 @@ import { ActivationCardView } from '../components/ActivationCard'
 import { CardDetail } from '../components/CardDetail'
 import { CardTile } from '../components/CardTile'
 import { Icon } from '../components/Icon'
+import { Modal } from '../components/Modal'
 import { PlanSheet } from '../components/PlanSheet'
 import { ProbeCard } from '../components/ProbeCard'
 import { SwipeCard } from '../components/SwipeCard'
@@ -56,6 +57,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
   const [minutes, setMinutes] = useState<Minutes | 'dowolny'>('dowolny')
   const [query, setQuery] = useState('')
   const [onlyFavorites, setOnlyFavorites] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [detail, setDetail] = useState<ActivationCard | null>(null)
   const [planTarget, setPlanTarget] = useState<ActivationCard | null>(null)
 
@@ -235,78 +237,41 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
 
       {mode === 'biblioteka' && (
         <section className="stack">
-          <div className="search-wrap">
-            <Icon name="Search" size={17} />
-            <input
-              type="search"
-              className="input"
-              placeholder="Szukaj po tytule"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              aria-label="Szukaj ćwiczenia po tytule"
-            />
-          </div>
-
-          <div className="filter-scroll" aria-label="Filtruj po obszarze">
+          <div className="row">
+            <div className="search-wrap grow">
+              <Icon name="Search" size={17} />
+              <input
+                type="search"
+                className="input"
+                placeholder={`Szukaj wśród ${CARDS.length} ćwiczeń`}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                aria-label="Szukaj ćwiczenia po tytule"
+              />
+            </div>
             <button
               type="button"
-              className="chip"
-              aria-pressed={area === 'wszystkie'}
-              onClick={() => setArea('wszystkie')}
-            >
-              Wszystkie
-            </button>
-            {AREAS.map((a) => (
-              <button
-                key={a.id}
-                type="button"
-                className="chip"
-                aria-pressed={area === a.id}
-                onClick={() => setArea(a.id)}
-              >
-                <Icon name={a.icon} size={14} />
-                {a.name}
-              </button>
-            ))}
-          </div>
-
-          <div className="row wrap">
-            <button
-              type="button"
-              className="chip"
-              aria-pressed={minutes === 'dowolny'}
-              onClick={() => setMinutes('dowolny')}
-            >
-              Każdy czas
-            </button>
-            {TIME_OPTIONS.map((t) => (
-              <button
-                key={t.value}
-                type="button"
-                className="chip"
-                aria-pressed={minutes === t.value}
-                onClick={() => setMinutes(t.value)}
-              >
-                <Icon name="Clock" size={14} />
-                {t.value} min
-              </button>
-            ))}
-            <button
-              type="button"
-              className="chip"
+              className="chip chip-icon chip-ghost"
               aria-pressed={onlyFavorites}
+              aria-label="Tylko moje ćwiczenia"
+              title="Tylko moje"
               onClick={() => setOnlyFavorites((v) => !v)}
             >
-              <Icon name="Star" size={14} fill={onlyFavorites ? 'currentColor' : 'none'} />
-              Moje
+              <Icon name="Star" size={17} fill={onlyFavorites ? 'currentColor' : 'none'} />
+            </button>
+            <button
+              type="button"
+              className="chip chip-icon chip-ghost"
+              aria-pressed={area !== 'wszystkie' || minutes !== 'dowolny'}
+              aria-label="Filtry ćwiczeń"
+              title="Filtry"
+              onClick={() => setFiltersOpen(true)}
+            >
+              <Icon name="SlidersHorizontal" size={17} />
             </button>
           </div>
 
-          <p className="tiny">
-            {filtered.length === 0
-              ? 'Brak ćwiczeń dla tych filtrów.'
-              : `${filtered.length} ${plural(filtered.length, 'ćwiczenie', 'ćwiczenia', 'ćwiczeń')} do wyboru.`}
-          </p>
+          {filtered.length === 0 && <p className="tiny">Brak ćwiczeń dla tych filtrów.</p>}
 
           <div className="tile-grid">
             {filtered.map((card) => (
@@ -320,6 +285,76 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
             ))}
           </div>
         </section>
+      )}
+
+      {filtersOpen && (
+        <Modal
+          title="Filtry"
+          onClose={() => setFiltersOpen(false)}
+          footer={
+            <button
+              type="button"
+              className="btn btn-primary btn-block"
+              onClick={() => setFiltersOpen(false)}
+            >
+              Pokaż {filtered.length}{' '}
+              {plural(filtered.length, 'ćwiczenie', 'ćwiczenia', 'ćwiczeń')}
+            </button>
+          }
+        >
+          <div className="stack">
+            <div className="stack-sm">
+              <span className="h3">Obszar</span>
+              {/* Klik w aktywny chip czyści filtr, więc bez osobnego chipa „wszystkie". */}
+              <div className="row wrap">
+                {AREAS.map((a) => (
+                  <button
+                    key={a.id}
+                    type="button"
+                    className="chip"
+                    aria-pressed={area === a.id}
+                    onClick={() => setArea((v) => (v === a.id ? 'wszystkie' : a.id))}
+                  >
+                    <Icon name={a.icon} size={14} />
+                    {a.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="stack-sm">
+              <span className="h3">Czas</span>
+              <div className="row wrap">
+                {TIME_OPTIONS.map((t) => (
+                  <button
+                    key={t.value}
+                    type="button"
+                    className="chip"
+                    aria-pressed={minutes === t.value}
+                    onClick={() => setMinutes((v) => (v === t.value ? 'dowolny' : t.value))}
+                  >
+                    <Icon name="Clock" size={14} />
+                    {t.value} min
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {(area !== 'wszystkie' || minutes !== 'dowolny') && (
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => {
+                  setArea('wszystkie')
+                  setMinutes('dowolny')
+                }}
+              >
+                <Icon name="X" size={16} />
+                Wyczyść filtry
+              </button>
+            )}
+          </div>
+        </Modal>
       )}
 
       {detail && (
