@@ -161,12 +161,6 @@ export function CircleScreen() {
 
       <main className="app-main">
         <div className="stack-lg">
-          <section className="stack-sm">
-            <p className="muted">
-              Twórczynie i ich programy. Wybierz jeden i pracuj na nim.
-            </p>
-          </section>
-
           {hasFeed && (
             <div className="segmented" role="tablist" aria-label="Widok kręgu">
               {(['programy', 'feed'] as const).map((t) => (
