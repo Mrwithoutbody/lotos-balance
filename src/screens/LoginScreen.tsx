@@ -35,7 +35,6 @@ export function LoginScreen() {
             }}
           >
             <span className="brand-mark">LOTOS BALANCE</span>
-            <span className="brand-sub">krąg</span>
           </a>
         </div>
       </header>
