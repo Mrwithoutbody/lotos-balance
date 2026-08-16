@@ -98,7 +98,6 @@ export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose
             <Icon name={card.icon} size={30} strokeWidth={1.6} />
           </div>
           <div className="stack-sm center">
-            <h3 className="h1">{card.title}</h3>
             <p className="muted">{card.description}</p>
           </div>
           <ScaleInput
@@ -194,7 +193,6 @@ export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose
       {phase === 'after' && (
         <div className="stack-lg animate-in">
           <div className="stack-sm center">
-            <h3 className="h1">Jak jest teraz?</h3>
             <p className="muted">Każda odpowiedź jest dobra. To informacja, nie ocena.</p>
           </div>
           <ScaleInput

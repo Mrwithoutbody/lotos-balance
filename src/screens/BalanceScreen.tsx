@@ -53,7 +53,6 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
     <div className="stack-lg">
       <header className="hero hero-slim" style={{ backgroundImage: `url(${zielenImg})` }}>
         <div className="hero-overlay">
-          <p className="hero-eyebrow">Mapa Balansu</p>
           <h1 className="display hero-title">
             Twój obecny <em>balans</em>
           </h1>
@@ -148,18 +147,14 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
               {avgDelta === null
                 ? 'Brak ocenionych ćwiczeń w tym tygodniu.'
                 : `Średnia zmiana po ćwiczeniu: ${avgDelta > 0 ? '+' : ''}${avgDelta.toFixed(1)} punktu.`}
+              {trend !== null &&
+                ` Poziom mapy: ${trend > 0 ? '+' : ''}${trend} od poprzedniego badania.`}
             </p>
-            {trend !== null && (
-              <p className="muted">
-                Średni poziom Mapy Balansu zmienił się o {trend > 0 ? '+' : ''}
-                {trend} punktu od poprzedniego badania.
-              </p>
-            )}
           </section>
         </>
       ) : (
         <section className="surface stack">
-          <p className="muted">Mapa powstaje sama, gdy przeglądasz program.</p>
+          <p className="muted">Mapa powstaje sama — bez testu na wejściu.</p>
           <button type="button" className="btn btn-primary" onClick={() => onNavigate('talia')}>
             <Icon name="Layers" size={17} />
             Przejrzyj program

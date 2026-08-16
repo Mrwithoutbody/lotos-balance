@@ -106,14 +106,11 @@ function CreatorCard({ creator }: { creator: CreatorRow }) {
       style={cover ? { backgroundImage: `url(${cover})` } : undefined}
     >
       <div className="brain-card-scrim">
-        <p className="eyebrow" style={{ color: 'inherit' }}>
-          {creator.name}
-        </p>
-        <h2 className="brain-title">{deck.data?.title ?? creator.name}</h2>
+        <h2 className="brain-title">{creator.name}</h2>
         {deck.data?.creator.bio && <p className="brain-hint">{deck.data.creator.bio}</p>}
         <p className="brain-hint">
           {deck.data
-            ? `${deck.data.cards.length} ${plural(deck.data.cards.length, 'ćwiczenie', 'ćwiczenia', 'ćwiczeń')} · 3–15 min`
+            ? `${deck.data.cards.length} ${plural(deck.data.cards.length, 'ćwiczenie', 'ćwiczenia', 'ćwiczeń')}`
             : 'Wczytywanie programu…'}
           {followers >= 10 && ` · ${followers} ${plural(followers, 'osoba', 'osoby', 'osób')} w kręgu`}
         </p>
@@ -151,7 +148,6 @@ export function CircleScreen() {
         <div className="app-bar-inner">
           <span className="brand-row">
             <span className="brand-mark">LOTOS BALANCE</span>
-            <span className="brand-sub">krąg</span>
           </span>
           {/* Logowanie schowane do weryfikacji domeny w Resend — realna osoba dostałaby błąd. */}
           {loggedIn && (
@@ -169,8 +165,7 @@ export function CircleScreen() {
               Krąg<em>.</em>
             </h1>
             <p className="muted">
-              Twórczynie i ich programy krótkich ćwiczeń. Wybierz program i pracuj na nim — 3, 7
-              albo 15 minut dziennie.
+              Twórczynie i ich programy. Wybierz jeden i pracuj na nim.
             </p>
           </section>
 

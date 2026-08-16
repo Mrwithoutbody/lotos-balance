@@ -82,7 +82,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
 
       {!todayCheckIn ? (
         <section className="surface stack">
-          <h2 className="h1">Czego najbardziej potrzebujesz teraz?</h2>
+          <h2 className="h1">Nie wiesz, od czego zacząć?</h2>
           <p className="muted">Kilkanaście sekund — jedno ćwiczenie na teraz.</p>
           <button
             type="button"
@@ -151,7 +151,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
         <div className="row-between">
           <p className="eyebrow">Dzisiaj w kalendarzu</p>
           <button type="button" className="btn btn-ghost btn-sm" onClick={() => onNavigate('kalendarz')}>
-            Kalendarz
+            Zobacz wszystko
             <Icon name="ChevronRight" size={15} />
           </button>
         </div>
@@ -212,7 +212,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
       ) : (
         <section className="surface stack-sm">
           <p className="eyebrow">Twój balans</p>
-          <p className="muted">Mapa buduje się w programie — bez testu na wejściu.</p>
+          <p className="muted">Buduje się sama — bez testu na wejściu.</p>
           <button
             type="button"
             className="btn btn-secondary btn-block"

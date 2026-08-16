@@ -37,8 +37,7 @@ export function PlanSheet({ card, onClose, onPlan, mode = 'plan', initialDate }:
     >
       <div className="stack">
         <p className="muted">
-          Karta „{card.title}” ({card.minutes} min){' '}
-          {mode === 'plan' ? 'trafi do Twojego kalendarza.' : 'zmieni termin w kalendarzu.'}
+          Karta „{card.title}” ({card.minutes} min)
         </p>
         <div className="row wrap">
           {quick.map((q) => (

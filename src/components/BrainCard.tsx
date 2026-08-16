@@ -28,7 +28,7 @@ export function BrainCard({ onAbout }: Props) {
             type="button"
             className="icon-btn icon-btn-glass"
             onClick={onAbout}
-            aria-label="O metodzie"
+            aria-label="O module Mózg na lata"
           >
             <Icon name="Info" size={16} />
           </button>

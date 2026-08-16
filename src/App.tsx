@@ -104,7 +104,7 @@ export default function App({ creatorSlug }: Props) {
         {deck.isError && creatorSlug !== 'anna-rysnik' && (
           <section className="surface stack-sm">
             <h2 className="h1">Nie ma takiego programu.</h2>
-            <p className="muted">Sprawdź adres albo wróć do kręgu.</p>
+            <p className="muted">Sprawdź adres.</p>
             <button type="button" className="btn btn-primary btn-block" onClick={() => navigate('/')}>
               Wróć do kręgu
             </button>
