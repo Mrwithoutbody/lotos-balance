@@ -31,7 +31,7 @@ export function CheckInSheet({ initialNeed, initialMinutes, onClose, onSubmit }:
           disabled={!canSubmit}
           onClick={() => canSubmit && onSubmit(need, minutes, state)}
         >
-          Dobierz aktywację
+          Dobierz ćwiczenie
           <Icon name="ChevronRight" size={18} />
         </button>
       }

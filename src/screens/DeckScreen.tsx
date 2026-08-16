@@ -121,9 +121,9 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
 
   return (
     <div className={mode === 'stos' ? 'deck-screen' : 'stack-lg'}>
-      <h1 className="sr-only">Talia aktywacji</h1>
+      <h1 className="sr-only">Program ćwiczeń</h1>
 
-      <div className="segmented" role="tablist" aria-label="Widok talii">
+      <div className="segmented" role="tablist" aria-label="Widok programu">
         {(['stos', 'biblioteka'] as Mode[]).map((m) => (
           <button
             key={m}

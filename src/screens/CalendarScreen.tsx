@@ -147,7 +147,7 @@ export function CalendarScreen({ onPlay }: Props) {
         </div>
 
         {selectedEntries.length === 0 ? (
-          <p className="muted">Brak zaplanowanych aktywacji na ten dzień.</p>
+          <p className="muted">Brak zaplanowanych ćwiczeń na ten dzień.</p>
         ) : (
           <ul className="entry-list">
             {selectedEntries.map((entry) => {

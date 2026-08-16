@@ -5,7 +5,7 @@ export type TabId = 'dzisiaj' | 'talia' | 'kalendarz' | 'balans'
 
 const TABS: { id: TabId; label: string; icon: string }[] = [
   { id: 'dzisiaj', label: 'Dzisiaj', icon: 'Home' },
-  { id: 'talia', label: 'Talia', icon: 'Layers' },
+  { id: 'talia', label: 'Program', icon: 'Layers' },
   { id: 'kalendarz', label: 'Kalendarz', icon: 'CalendarDays' },
   { id: 'balans', label: 'Balans', icon: 'Compass' },
 ]

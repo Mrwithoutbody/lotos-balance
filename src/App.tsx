@@ -98,12 +98,12 @@ export default function App({ creatorSlug }: Props) {
       <main className="app-main">
         {deck.isPending && (
           <p className="muted center" style={{ padding: 'var(--sp-5)' }}>
-            Chwila — talia się otwiera…
+            Chwila — program się otwiera…
           </p>
         )}
         {deck.isError && creatorSlug !== 'anna-rysnik' && (
           <section className="surface stack-sm">
-            <h2 className="h1">Nie ma takiej talii.</h2>
+            <h2 className="h1">Nie ma takiego programu.</h2>
             <p className="muted">Sprawdź adres albo wróć do kręgu.</p>
             <button type="button" className="btn btn-primary btn-block" onClick={() => navigate('/')}>
               Wróć do kręgu

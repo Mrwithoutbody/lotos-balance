@@ -74,7 +74,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
             </span>
             <span className="pill pill-glass">
               <Icon name="Check" size={13} />
-              {doneToday} {doneToday === 1 ? 'aktywacja dziś' : 'aktywacji dziś'}
+              {doneToday} {doneToday === 1 ? 'ćwiczenie dziś' : doneToday < 5 ? 'ćwiczenia dziś' : 'ćwiczeń dziś'}
             </span>
           </div>
         </div>
@@ -83,7 +83,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
       {!todayCheckIn ? (
         <section className="surface stack">
           <h2 className="h1">Czego najbardziej potrzebujesz teraz?</h2>
-          <p className="muted">Kilkanaście sekund — jedna aktywacja na teraz.</p>
+          <p className="muted">Kilkanaście sekund — jedno ćwiczenie na teraz.</p>
           <button
             type="button"
             className="btn btn-primary btn-block"
@@ -97,7 +97,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
         <section className="stack">
           <div className="row-between">
             <div>
-              <p className="eyebrow">Twoja aktywacja na teraz</p>
+              <p className="eyebrow">Twoje ćwiczenie na teraz</p>
               <p className="tiny">
                 {NEED_BY_ID[todayCheckIn.need].label.toLowerCase()} · {todayCheckIn.minutes} min
               </p>
@@ -212,14 +212,14 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
       ) : (
         <section className="surface stack-sm">
           <p className="eyebrow">Twój balans</p>
-          <p className="muted">Mapa buduje się w talii — bez testu na wejściu.</p>
+          <p className="muted">Mapa buduje się w programie — bez testu na wejściu.</p>
           <button
             type="button"
             className="btn btn-secondary btn-block"
             onClick={() => onNavigate('talia')}
           >
             <Icon name="Layers" size={16} />
-            Przejrzyj talię
+            Przejrzyj program
           </button>
         </section>
       )}

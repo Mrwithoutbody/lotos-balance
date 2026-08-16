@@ -26,7 +26,7 @@ export function PlanSheet({ card, onClose, onPlan, mode = 'plan', initialDate }:
 
   return (
     <Modal
-      title={mode === 'plan' ? 'Zaplanuj aktywację' : 'Przełóż aktywację'}
+      title={mode === 'plan' ? 'Zaplanuj ćwiczenie' : 'Przełóż ćwiczenie'}
       onClose={onClose}
       footer={
         <button type="button" className="btn btn-primary btn-block" onClick={() => onPlan(date)}>

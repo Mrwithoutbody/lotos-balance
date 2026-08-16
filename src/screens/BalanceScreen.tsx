@@ -90,10 +90,10 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
                   type="button"
                   className="btn btn-ghost btn-sm"
                   onClick={() => onNavigate('talia')}
-                  aria-label="Uzupełnij w talii"
+                  aria-label="Uzupełnij w programie"
                 >
                   <Icon name="Layers" size={15} />
-                  W talii
+                  W programie
                 </button>
               </div>
             )}
@@ -112,7 +112,7 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
                   </p>
                 ))
               )}
-              <p className="tiny">Stąd zaczyna się dobór aktywacji.</p>
+              <p className="tiny">Stąd zaczyna się dobór ćwiczeń.</p>
             </div>
             <div className="surface-quiet stack-sm">
               <p className="eyebrow">Twoja mocna strona</p>
@@ -126,14 +126,14 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
                   </p>
                 </>
               ) : (
-                <p className="tiny">Poznamy ją, gdy odpowiesz na kilka pytań w talii.</p>
+                <p className="tiny">Poznamy ją, gdy odpowiesz na kilka pytań w programie.</p>
               )}
             </div>
           </section>
 
           <section className="surface stack-sm">
             <p className="eyebrow">Ostatnie siedem dni</p>
-            <div className="spark" role="img" aria-label="Aktywacje w ostatnich siedmiu dniach">
+            <div className="spark" role="img" aria-label="Ćwiczenia w ostatnich siedmiu dniach">
               {activity.map((day) => (
                 <div key={day.date} className="spark-col">
                   <span
@@ -146,8 +146,8 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
             </div>
             <p className="muted">
               {avgDelta === null
-                ? 'Brak ocenionych aktywacji w tym tygodniu.'
-                : `Średnia zmiana po aktywacji: ${avgDelta > 0 ? '+' : ''}${avgDelta.toFixed(1)} punktu.`}
+                ? 'Brak ocenionych ćwiczeń w tym tygodniu.'
+                : `Średnia zmiana po ćwiczeniu: ${avgDelta > 0 ? '+' : ''}${avgDelta.toFixed(1)} punktu.`}
             </p>
             {trend !== null && (
               <p className="muted">
@@ -159,10 +159,10 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
         </>
       ) : (
         <section className="surface stack">
-          <p className="muted">Mapa powstaje sama, gdy przeglądasz talię.</p>
+          <p className="muted">Mapa powstaje sama, gdy przeglądasz program.</p>
           <button type="button" className="btn btn-primary" onClick={() => onNavigate('talia')}>
             <Icon name="Layers" size={17} />
-            Przejrzyj talię
+            Przejrzyj program
           </button>
           <button type="button" className="btn btn-ghost" onClick={() => setQuizAreas(missing)}>
             Wolę odpowiedzieć na wszystkie pytania naraz

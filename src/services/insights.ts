@@ -90,7 +90,7 @@ export function personalManual(state: AppState): string[] {
   const rated = completedWithRating(state)
 
   if (rated.length < 3) {
-    rules.push('Potrzebujemy więcej danych, aby zobaczyć wzorzec. Wykonaj kilka aktywacji i oceń je przed i po.')
+    rules.push('Potrzebujemy więcej danych, aby zobaczyć wzorzec. Wykonaj kilka ćwiczeń i oceń je przed i po.')
     return rules
   }
 
@@ -135,7 +135,7 @@ export function personalManual(state: AppState): string[] {
     if (!bestMinutes || avg > bestMinutes.avg) bestMinutes = { minutes, avg }
   }
   if (bestMinutes && bestMinutes.avg > 0) {
-    rules.push(`Najwięcej dawały Ci aktywacje ${bestMinutes.minutes}-minutowe.`)
+    rules.push(`Najwięcej dawały Ci ćwiczenia ${bestMinutes.minutes}-minutowe.`)
   }
 
   // 3. Pora dnia.
@@ -150,7 +150,7 @@ export function personalManual(state: AppState): string[] {
   }
   if (topPart && topPart.count >= 3) {
     const label = topPart.part === 'rano' ? 'Rano' : topPart.part === 'popołudnie' ? 'Po południu' : 'Wieczorem'
-    rules.push(`${label} najczęściej sięgałaś po aktywacje — to Twoja naturalna pora.`)
+    rules.push(`${label} najczęściej sięgałaś po ćwiczenia — to Twoja naturalna pora.`)
   }
 
   // 4. Plan kontra wykonanie.
@@ -182,7 +182,7 @@ export function personalManual(state: AppState): string[] {
   }
 
   if (rules.length === 0) {
-    rules.push('Twoje wyniki są na razie równe. Kolejne aktywacje pokażą wyraźniejszy wzorzec.')
+    rules.push('Twoje wyniki są na razie równe. Kolejne ćwiczenia pokażą wyraźniejszy wzorzec.')
   }
   return rules.slice(0, 4)
 }

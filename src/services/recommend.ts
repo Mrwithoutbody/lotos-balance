@@ -74,7 +74,7 @@ export function scoreCards(state: AppState, input: RecommendationInput): ScoredC
 
     if (areas.some((a) => goalAreas.has(a))) {
       score += 2
-      reasons.push('Podobne karty zatrzymywałaś w talii')
+      reasons.push('Podobne karty zatrzymywałaś w programie')
     }
 
     // Karty odrzucone w lewo schodzą niżej — bez blokowania ich na stałe.

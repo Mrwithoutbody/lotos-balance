@@ -28,9 +28,9 @@ function formatTime(seconds: number): string {
 
 function summaryText(before: Scale5, after: Scale5): string {
   const delta = after - before
-  if (delta > 0) return `Ta aktywacja dała dziś zmianę +${delta}.`
+  if (delta > 0) return `To ćwiczenie dało dziś zmianę +${delta}.`
   if (delta === 0) return 'Nie zauważyłaś zmiany — to też cenna informacja.'
-  return 'Dziś ta aktywacja nie pomogła. Następnym razem spróbujemy innego podejścia.'
+  return 'Dziś to ćwiczenie nie pomogło. Następnym razem spróbujemy innego podejścia.'
 }
 
 export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose }: Props) {
@@ -102,7 +102,7 @@ export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose
             <p className="muted">{card.description}</p>
           </div>
           <ScaleInput
-            legend="Jak się czujesz przed aktywacją?"
+            legend="Jak się czujesz przed ćwiczeniem?"
             value={before}
             onChange={setBefore}
             lowLabel="ciężko"
@@ -118,7 +118,7 @@ export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose
             }}
           >
             <Icon name="Play" size={18} />
-            Przejdź do aktywacji
+            Przejdź do ćwiczenia
           </button>
         </div>
       )}
@@ -198,7 +198,7 @@ export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose
             <p className="muted">Każda odpowiedź jest dobra. To informacja, nie ocena.</p>
           </div>
           <ScaleInput
-            legend="Jak się czujesz po aktywacji?"
+            legend="Jak się czujesz po ćwiczeniu?"
             value={after}
             onChange={setAfter}
             lowLabel="ciężko"
