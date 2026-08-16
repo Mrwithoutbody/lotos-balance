@@ -23,13 +23,13 @@ interface PlayerTarget {
 }
 
 interface Props {
-  /** Slug twórczyni z trasy /<slug> — folder talii w R2. */
+  /** Slug twórczyni z trasy /<slug> — folder programu w R2. */
   creatorSlug: string
 }
 
 export default function App({ creatorSlug }: Props) {
   const { state } = useAppState()
-  // Talia z R2. Ekrany montują się dopiero po hydracji (albo po błędzie —
+  // Program z R2. Ekrany montują się dopiero po hydracji (albo po błędzie —
   // wtedy zostaje statyczny fallback z data/cards.ts), więc konsumenci CARDS
   // nigdy nie widzą stanu „w połowie podmienione”.
   const deck = useDeck(creatorSlug)
@@ -42,16 +42,16 @@ export default function App({ creatorSlug }: Props) {
     )
     hydrateCards(deck.data.cards, art)
   }
-  // Fallback statyczny to talia Anny — dla obcego sluga byłby kłamstwem.
+  // Fallback statyczny to program Anny — dla obcego sluga byłby kłamstwem.
   const deckReady = !deck.isPending && (!deck.isError || creatorSlug === 'anna-rysnik')
-  // Bez onboardingu: przy pustym profilu zaczynamy od talii, bo to ona buduje mapę.
-  const [tab, setTab] = useState<TabId>(() => (state.snapshots.length === 0 ? 'talia' : 'dzisiaj'))
+  // Bez onboardingu: przy pustym profilu zaczynamy od programu, bo to on buduje mapę.
+  const [tab, setTab] = useState<TabId>(() => (state.snapshots.length === 0 ? 'program' : 'dzisiaj'))
   const [player, setPlayer] = useState<PlayerTarget | null>(null)
   const [aboutOpen, setAboutOpen] = useState(false)
 
   // Wejście na stronę twórczyni = dołączenie do jej kręgu (link działa jak
   // zaproszenie). Serwer jest idempotentny (onConflictDoNothing), więc
-  // wystarczy strzelić raz po zalogowaniu; błąd sieci nie blokuje talii.
+  // wystarczy strzelić raz po zalogowaniu; błąd sieci nie blokuje programu.
   const loggedIn = Boolean(useSession().data)
   useEffect(() => {
     if (!loggedIn || !deck.data) return
@@ -113,7 +113,7 @@ export default function App({ creatorSlug }: Props) {
         {deckReady && tab === 'dzisiaj' && (
           <TodayScreen onPlay={openPlayer} onAbout={() => setAboutOpen(true)} onNavigate={setTab} />
         )}
-        {deckReady && tab === 'talia' && <DeckScreen onPlay={openPlayer} onNavigate={setTab} />}
+        {deckReady && tab === 'program' && <DeckScreen onPlay={openPlayer} onNavigate={setTab} />}
         {deckReady && tab === 'kalendarz' && <CalendarScreen onPlay={openPlayer} />}
         {deckReady && tab === 'balans' && (
           <BalanceScreen onAbout={() => setAboutOpen(true)} onNavigate={setTab} />

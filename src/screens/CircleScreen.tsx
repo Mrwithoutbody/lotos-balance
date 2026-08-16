@@ -10,6 +10,7 @@ import { navigate } from '../lib/router'
 import { streak } from '../services/insights'
 import { deckAssetUrl, useDeck } from '../services/decks'
 import { shortDate } from '../utils/date'
+import { plural } from '../utils/plural'
 
 interface CreatorRow {
   slug: string
@@ -31,10 +32,6 @@ interface FeedRow {
 
 /** Dev (vite) nie ma Pages Functions, a krąg musi żyć — stąd fallback. */
 const KNOWN_CREATORS: CreatorRow[] = [{ slug: 'anna-rysnik', name: 'Anna Ryśnik' }]
-
-/** Polska liczba mnoga: plural(3, 'osoba', 'osoby', 'osób'). */
-const plural = (n: number, one: string, few: string, many: string) =>
-  n === 1 ? one : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? few : many
 
 function useCreators() {
   return useQuery<CreatorRow[]>({
@@ -65,7 +62,7 @@ function useFeed() {
   })
 }
 
-/** Wiersz feedu — tytuł karty dociągamy z manifestu talii (react-query deduplikuje). */
+/** Wiersz feedu — tytuł karty dociągamy z manifestu programu (react-query deduplikuje). */
 function FeedEntry({ row }: { row: FeedRow }) {
   const deck = useDeck(row.creatorSlug)
   const title = deck.data?.cards.find((c) => c.id === row.cardId)?.title ?? 'ćwiczenie'

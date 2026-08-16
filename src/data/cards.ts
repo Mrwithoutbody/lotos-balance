@@ -3,7 +3,7 @@ import type { ActivationCard } from '../types'
 import { AREA_BY_ID } from './areas'
 
 /**
- * Talia aktywacji: 28 kart, po cztery dla każdego z siedmiu obszarów.
+ * Program: 28 ćwiczeń, po cztery dla każdego z siedmiu obszarów.
  * Wszystkie ćwiczenia są łagodne — bez wstrzymywania oddechu, bez ekspozycji
  * na zimno, bez treści diagnostycznych.
  */
@@ -523,13 +523,13 @@ export const CARD_BY_ID: Record<string, ActivationCard> = CARDS.reduce(
   {} as Record<string, ActivationCard>,
 )
 
-/** Pełne URL-e grafik tła per obszar — hydrowane z manifestu talii. */
+/** Pełne URL-e grafik tła per obszar — hydrowane z manifestu programu. */
 export const CARD_ART: Partial<Record<ActivationCard['area'], string>> = {}
 
 /**
- * Podmienia talię na wersję z bucketa R2 — mutacja w miejscu, żeby wszystkie
+ * Podmienia program na wersję z bucketa R2 — mutacja w miejscu, żeby wszystkie
  * moduły trzymające referencję do CARDS/CARD_BY_ID widziały nowe karty.
- * Wołane w App przed renderem ekranów; statyczna talia wyżej zostaje
+ * Wołane w App przed renderem ekranów; statyczny program wyżej zostaje
  * fallbackiem, gdy bucket nie odpowiada.
  */
 export function hydrateCards(

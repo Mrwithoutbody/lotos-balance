@@ -143,7 +143,7 @@ export function buildDemoState(): AppState {
       after,
       completed: true,
       note: gain >= 2 ? 'Wyraźnie lżej po tym ćwiczeniu.' : undefined,
-      source: rand() < 0.5 ? 'dzisiaj' : 'talia',
+      source: rand() < 0.5 ? 'dzisiaj' : 'program',
     })
 
     if (rand() < 0.3) {

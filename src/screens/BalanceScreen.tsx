@@ -23,7 +23,7 @@ import zielenImg from '../assets/anna/hero-balans.webp'
 
 interface Props {
   onAbout: () => void
-  onNavigate: (tab: 'dzisiaj' | 'talia' | 'kalendarz' | 'balans') => void
+  onNavigate: (tab: 'dzisiaj' | 'program' | 'kalendarz' | 'balans') => void
 }
 
 export function BalanceScreen({ onAbout, onNavigate }: Props) {
@@ -88,7 +88,7 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
                 <button
                   type="button"
                   className="btn btn-ghost btn-sm"
-                  onClick={() => onNavigate('talia')}
+                  onClick={() => onNavigate('program')}
                   aria-label="Uzupełnij w programie"
                 >
                   <Icon name="Layers" size={15} />
@@ -155,7 +155,7 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
       ) : (
         <section className="surface stack">
           <p className="muted">Mapa powstaje sama — bez testu na wejściu.</p>
-          <button type="button" className="btn btn-primary" onClick={() => onNavigate('talia')}>
+          <button type="button" className="btn btn-primary" onClick={() => onNavigate('program')}>
             <Icon name="Layers" size={17} />
             Przejrzyj program
           </button>

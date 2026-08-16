@@ -10,7 +10,7 @@ import * as schema from './db/schema'
 
 export interface Env {
   DB: D1Database
-  TALIE: R2Bucket
+  PROGRAMY: R2Bucket
   BETTER_AUTH_SECRET: string
   BETTER_AUTH_URL: string
   GOOGLE_CLIENT_ID: string

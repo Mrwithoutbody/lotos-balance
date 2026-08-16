@@ -1,6 +1,6 @@
 // src/server/db/schema.ts
 // Tabele Better Auth (user/session/account/verification) + tabele kręgu.
-// Podział pracy: treść talii mieszka w R2 (deck.json), D1 trzyma relacje —
+// Podział pracy: treść programów mieszka w R2 (deck.json), D1 trzyma relacje —
 // kto jest twórcą, kto kogo obserwuje, kto co ukończył.
 import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core'
 
@@ -56,7 +56,7 @@ export const verification = sqliteTable('verification', {
 
 // ——— Krąg ———
 
-/** Twórczyni talii. Slug = folder w buckecie R2 i trasa /<slug>. */
+/** Twórczyni programu. Slug = folder w buckecie R2 i trasa /<slug>. */
 export const creators = sqliteTable('creators', {
   slug: text('slug').primaryKey(),
   name: text('name').notNull(),
@@ -65,7 +65,7 @@ export const creators = sqliteTable('creators', {
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 })
 
-/** Kto pracuje na czyjej talii — z tego krąg liczy „ilu znajomych tu jest”. */
+/** Kto pracuje na czyim programie — z tego krąg liczy „ilu znajomych tu jest”. */
 export const follows = sqliteTable(
   'follows',
   {

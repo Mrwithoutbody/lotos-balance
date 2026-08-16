@@ -70,7 +70,7 @@ export interface BalanceSnapshot {
 export type SwipeDirection = 'w-lewo' | 'w-prawo'
 
 /**
- * Reakcja na kartę w talii. „W prawo” to sygnał, że temat jest na czasie,
+ * Reakcja na ćwiczenie w programie. „W prawo” to sygnał, że temat jest na czasie,
  * „w lewo” — że nie teraz. Oba zdejmują kartę, ale znaczą co innego.
  */
 export interface Swipe {
@@ -82,7 +82,7 @@ export interface Swipe {
   createdAt: string
 }
 
-/** Karta aktywacji z talii. */
+/** Ćwiczenie z programu. */
 export interface ActivationCard {
   id: string
   title: string
@@ -127,7 +127,7 @@ export interface ActivationSession {
   after?: Scale5
   note?: string
   completed: boolean
-  source: 'dzisiaj' | 'talia' | 'kalendarz'
+  source: 'dzisiaj' | 'program' | 'kalendarz'
 }
 
 /** Karta zaplanowana na konkretny dzień. */

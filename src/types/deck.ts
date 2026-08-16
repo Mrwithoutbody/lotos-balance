@@ -1,6 +1,6 @@
 // src/types/deck.ts
-// Format talii w R2. Źródłem prawdy jest folder karty (card.json + media obok),
-// deck.json to zbudowany z nich manifest — front czyta talię jednym fetchem.
+// Format programu w R2. Źródłem prawdy jest folder karty (card.json + media obok),
+// deck.json to zbudowany z nich manifest — front czyta program jednym fetchem.
 //
 //   <bucket>/<creatorSlug>/deck.json
 //   <bucket>/<creatorSlug>/karty/<cardSlug>/card.json
@@ -20,20 +20,20 @@ export type DeckCard = ActivationCard & {
   }
 }
 
-/** deck.json — manifest talii jednego twórcy. */
+/** deck.json — manifest programu jednego twórcy. */
 export interface DeckManifest {
   /** Wersja formatu, na wypadek migracji. */
   format: 1
   creator: {
     slug: string
     name: string
-    /** Nazwa pliku okładki w folderze talii, np. "okladka.webp". */
+    /** Nazwa pliku okładki w folderze programu, np. "okladka.webp". */
     cover?: string
-    /** Kilka zdań od twórcy — nagłówek talii. */
+    /** Kilka zdań od twórcy — nagłówek programu. */
     bio?: string
   }
   title: string
-  /** Grafiki tła kart per obszar — nazwy plików w folderze art/ talii. */
+  /** Grafiki tła kart per obszar — nazwy plików w folderze art/ programu. */
   art?: Partial<Record<AreaId, string>>
   /** Pełne karty w kolejności ustalonej przez twórcę. */
   cards: DeckCard[]

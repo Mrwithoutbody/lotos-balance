@@ -25,6 +25,14 @@ Otwarte zostaje tylko zadanie 3 — wiadomość do Anny, nie kod.
      wymieciony z całej apki satelity (Dzisiaj/Program/Kalendarz/Balans,
      odtwarzacz, arkusze, insighty) — tylko stringi UI, identyfikatory
      (`'talia'` w TabId/source) zostały, żeby nie psuć zapisanych sesji.
+   - Druga dogrywka: `7c8133d` minęło trzecie słowo — „karta". Kalendarz mówił
+     „Dodaj kartę" tuż nad „Brak zaplanowanych ćwiczeń", ten sam byt pod dwiema
+     nazwami. Domknięte: „karta"→„ćwiczenie" w Kalendarzu, `CardPicker`,
+     `PlanSheet`, `CardPlayer`, `DeckScreen`; `plural()` wyjęty do
+     `utils/plural.ts` (był lokalny w `CircleScreen`, `DeckScreen` miał własny
+     błędny wariant „2 kart"). Przy okazji odmiana: „na niedziela, 16 sierpnia"
+     → myślnik, bo `longDate` daje mianownik. `kind: 'karta'` w kolejce talii
+     zostaje — identyfikator.
 
 3. **Link w bio Anny na `/anna-rysnik`**
    - Problem: `/` to agregator dla całej branży, a fan Anny przychodzi po nią, nie po katalog.

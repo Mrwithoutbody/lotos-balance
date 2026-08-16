@@ -15,7 +15,7 @@ interface Props {
   source: ActivationSession['source']
   /** Wpis kalendarza, który zostanie oznaczony jako wykonany. */
   calendarEntryId?: string
-  /** Talia, z której grana jest karta — do zapisu postępu na serwerze. */
+  /** Program, z którego grane jest ćwiczenie — do zapisu postępu na serwerze. */
   creatorSlug?: string
   onClose: () => void
 }
@@ -230,7 +230,7 @@ export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose
           <div className="stack-sm">
             <h3 className="h1">{summaryText(before, after)}</h3>
             <p className="muted">
-              Zapisałyśmy to w Twojej historii. Kolejne wyniki pomogą lepiej dobierać karty.
+              Zapisałyśmy to w Twojej historii. Kolejne wyniki pomogą lepiej dobierać ćwiczenia.
             </p>
           </div>
           <button type="button" className="btn btn-primary btn-block" onClick={onClose}>

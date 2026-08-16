@@ -31,13 +31,14 @@ export function PlanSheet({ card, onClose, onPlan, mode = 'plan', initialDate }:
       footer={
         <button type="button" className="btn btn-primary btn-block" onClick={() => onPlan(date)}>
           <Icon name="CalendarDays" size={18} />
-          {mode === 'plan' ? 'Zaplanuj na' : 'Przenieś na'} {longDate(date)}
+          {/* Myślnik zamiast „na …” — longDate daje mianownik („niedziela”), a „na” chce biernika. */}
+          {mode === 'plan' ? 'Zaplanuj' : 'Przenieś'} — {longDate(date)}
         </button>
       }
     >
       <div className="stack">
         <p className="muted">
-          Karta „{card.title}” ({card.minutes} min)
+          Ćwiczenie „{card.title}” ({card.minutes} min)
         </p>
         <div className="row wrap">
           {quick.map((q) => (

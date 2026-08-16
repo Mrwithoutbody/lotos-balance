@@ -19,7 +19,7 @@ if (!container) throw new Error('Nie znaleziono elementu #root')
 
 const queryClient = new QueryClient()
 
-/** "/" → krąg, "/logowanie" → logowanie, "/<slug>" → aplikacja talii twórczyni. */
+/** "/" → krąg, "/logowanie" → logowanie, "/<slug>" → program twórczyni. */
 function Root() {
   const path = usePath()
   if (path === '/') return <CircleScreen />

@@ -1,5 +1,5 @@
 // scripts/export-deck.ts
-// Buduje pliki talii Anny z data/cards.ts do seed/ — w formacie bucketa R2.
+// Buduje pliki programu Anny z data/cards.ts do seed/ — w formacie bucketa R2.
 // Uruchomienie: npx tsx scripts/export-deck.ts
 import { mkdirSync, writeFileSync, copyFileSync } from 'node:fs'
 import { join } from 'node:path'

@@ -20,7 +20,7 @@ import {
 } from '../utils/date'
 
 interface Props {
-  onPlay: (card: ActivationCard, source: 'dzisiaj' | 'talia' | 'kalendarz', entryId?: string) => void
+  onPlay: (card: ActivationCard, source: 'dzisiaj' | 'program' | 'kalendarz', entryId?: string) => void
 }
 
 export function CalendarScreen({ onPlay }: Props) {
@@ -62,7 +62,7 @@ export function CalendarScreen({ onPlay }: Props) {
         <h1 className="display">
           Zaplanuj swój <em>tydzień</em>
         </h1>
-        <p className="muted">Jedna karta dziennie w zupełności wystarczy.</p>
+        <p className="muted">Jedno ćwiczenie dziennie w zupełności wystarczy.</p>
       </header>
 
       <section className="surface stack">
@@ -142,7 +142,7 @@ export function CalendarScreen({ onPlay }: Props) {
           </div>
           <button type="button" className="btn btn-secondary btn-sm" onClick={() => setPickerOpen(true)}>
             <Icon name="Layers" size={16} />
-            Dodaj kartę
+            Dodaj ćwiczenie
           </button>
         </div>
 
@@ -207,7 +207,7 @@ export function CalendarScreen({ onPlay }: Props) {
                       type="button"
                       className="btn btn-danger btn-sm"
                       onClick={() => removeEntry(entry.id)}
-                      aria-label={`Usuń „${card.title}” z ${longDate(entry.date)}`}
+                      aria-label={`Usuń „${card.title}” (${longDate(entry.date)})`}
                     >
                       <Icon name="Trash2" size={15} />
                       Usuń
@@ -258,7 +258,8 @@ export function CalendarScreen({ onPlay }: Props) {
 
       {pickerOpen && (
         <CardPicker
-          title={`Dodaj kartę na ${longDate(selected)}`}
+          // Myślnik zamiast „na …” — longDate daje mianownik („niedziela”), a „na” chce biernika.
+          title={`Dodaj ćwiczenie — ${longDate(selected)}`}
           onClose={() => setPickerOpen(false)}
           onPick={(cardId) => {
             planCard(selected, cardId)

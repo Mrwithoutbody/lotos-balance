@@ -19,7 +19,7 @@ import type { TabId } from '../components/BottomNav'
 import heroImg from '../assets/anna/hero-dzisiaj.webp'
 
 interface Props {
-  onPlay: (card: ActivationCard, source: 'dzisiaj' | 'talia' | 'kalendarz', entryId?: string) => void
+  onPlay: (card: ActivationCard, source: 'dzisiaj' | 'program' | 'kalendarz', entryId?: string) => void
   onAbout: () => void
   onNavigate: (tab: TabId) => void
 }
@@ -216,7 +216,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
           <button
             type="button"
             className="btn btn-secondary btn-block"
-            onClick={() => onNavigate('talia')}
+            onClick={() => onNavigate('program')}
           >
             <Icon name="Layers" size={16} />
             Przejrzyj program

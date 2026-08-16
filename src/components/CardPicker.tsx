@@ -35,8 +35,8 @@ export function CardPicker({ title, onClose, onPick }: Props) {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Szukaj karty"
-            aria-label="Szukaj karty"
+            placeholder="Szukaj ćwiczenia"
+            aria-label="Szukaj ćwiczenia"
           />
         </div>
         <div className="filter-scroll">
@@ -83,7 +83,7 @@ export function CardPicker({ title, onClose, onPick }: Props) {
               </li>
             )
           })}
-          {list.length === 0 && <li className="muted">Brak kart dla tego wyszukiwania.</li>}
+          {list.length === 0 && <li className="muted">Brak ćwiczeń dla tego wyszukiwania.</li>}
         </ul>
       </div>
     </Modal>

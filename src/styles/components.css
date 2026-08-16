@@ -329,7 +329,7 @@
 }
 
 /*
- * Grafika talii jako tło karty. Desaturacja + niska nieprzezroczystość:
+ * Grafika programu jako tło ćwiczenia. Desaturacja + niska nieprzezroczystość:
  * kolor obszaru z gradientu karty prześwituje i „barwi” ilustrację.
  * Maska wygasza ją ku dołowi, żeby nie kolidowała z treścią.
  */

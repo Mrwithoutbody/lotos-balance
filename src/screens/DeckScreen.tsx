@@ -13,10 +13,11 @@ import { TIME_OPTIONS } from '../data/goals'
 import { useAppState } from '../hooks/useAppState'
 import type { ActivationCard, AreaId, Minutes, Scale5, SwipeDirection } from '../types'
 import { knownAreas, latestSnapshot, unknownAreas } from '../utils/balance'
+import { plural } from '../utils/plural'
 import type { TabId } from '../components/BottomNav'
 
 interface Props {
-  onPlay: (card: ActivationCard, source: 'dzisiaj' | 'talia' | 'kalendarz', entryId?: string) => void
+  onPlay: (card: ActivationCard, source: 'dzisiaj' | 'program' | 'kalendarz', entryId?: string) => void
   onNavigate: (tab: TabId) => void
 }
 
@@ -219,7 +220,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
                 <button
                   type="button"
                   className="btn btn-primary grow"
-                  onClick={() => onPlay(current.card, 'talia')}
+                  onClick={() => onPlay(current.card, 'program')}
                 >
                   <Icon name="Play" size={16} />
                   Wykonaj
@@ -242,7 +243,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
               placeholder="Szukaj po tytule"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              aria-label="Szukaj karty po tytule"
+              aria-label="Szukaj ćwiczenia po tytule"
             />
           </div>
 
@@ -303,8 +304,8 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
 
           <p className="tiny">
             {filtered.length === 0
-              ? 'Brak kart dla tych filtrów.'
-              : `${filtered.length} ${filtered.length === 1 ? 'karta' : 'kart'} do wyboru.`}
+              ? 'Brak ćwiczeń dla tych filtrów.'
+              : `${filtered.length} ${plural(filtered.length, 'ćwiczenie', 'ćwiczenia', 'ćwiczeń')} do wyboru.`}
           </p>
 
           <div className="tile-grid">
@@ -329,7 +330,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
           onStart={() => {
             const card = detail
             setDetail(null)
-            onPlay(card, 'talia')
+            onPlay(card, 'program')
           }}
           onPlan={() => {
             setPlanTarget(detail)

@@ -207,7 +207,7 @@
   color: #4d6b4b;
 }
 
-/* ——— Talia ——— */
+/* ——— Program ——— */
 
 .segmented {
   display: grid;
@@ -263,7 +263,7 @@
   animation: fade-up 0.3s ease both;
 }
 
-/* Duchy stosu: pełnowymiarowe karty pod spodem — jak prawdziwa talia.
+/* Duchy stosu: pełnowymiarowe karty pod spodem — jak prawdziwy stos.
    Ten sam obrys co żywa karta (top 12px = padding-top sceny), pomniejszone
    i wysunięte lekko w górę, żeby wystawał tylko czubek. */
 .deck-ghost {
