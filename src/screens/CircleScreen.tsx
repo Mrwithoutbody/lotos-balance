@@ -2,7 +2,7 @@
 // Krąg na "/": feed wspólnej pracy + programy twórczyń, w tabach.
 // Bez atrap — liczby przychodzą z D1, a sekcje bez danych po prostu się nie renderują.
 import { useState } from 'react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { Icon } from '../components/Icon'
 import { useAppState } from '../hooks/useAppState'
 import { signOut, useSession } from '../lib/auth-client'
@@ -31,6 +31,10 @@ interface FeedRow {
 
 /** Dev (vite) nie ma Pages Functions, a krąg musi żyć — stąd fallback. */
 const KNOWN_CREATORS: CreatorRow[] = [{ slug: 'anna-rysnik', name: 'Anna Ryśnik' }]
+
+/** Polska liczba mnoga: plural(3, 'osoba', 'osoby', 'osób'). */
+const plural = (n: number, one: string, few: string, many: string) =>
+  n === 1 ? one : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? few : many
 
 function useCreators() {
   return useQuery<CreatorRow[]>({
@@ -64,11 +68,11 @@ function useFeed() {
 /** Wiersz feedu — tytuł karty dociągamy z manifestu talii (react-query deduplikuje). */
 function FeedEntry({ row }: { row: FeedRow }) {
   const deck = useDeck(row.creatorSlug)
-  const title = deck.data?.cards.find((c) => c.id === row.cardId)?.title ?? 'aktywacja'
+  const title = deck.data?.cards.find((c) => c.id === row.cardId)?.title ?? 'ćwiczenie'
   return (
     <li className="entry-row">
       <div className="entry-row-block">
-        <p className="entry-title">Ktoś ukończył „{title}”</p>
+        <p className="entry-title">Ukończone: „{title}”</p>
         <p className="tiny">
           {row.creatorName} · {shortDate(row.date)}
         </p>
@@ -89,29 +93,8 @@ function useMe(loggedIn: boolean) {
   })
 }
 
-function CreatorCard({
-  creator,
-  isFollowing,
-  loggedIn,
-}: {
-  creator: CreatorRow
-  isFollowing: boolean
-  loggedIn: boolean
-}) {
+function CreatorCard({ creator }: { creator: CreatorRow }) {
   const deck = useDeck(creator.slug)
-  const queryClient = useQueryClient()
-  const follow = useMutation({
-    mutationFn: (join: boolean) =>
-      fetch('/api/follow', {
-        method: join ? 'POST' : 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: creator.slug }),
-      }),
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['creators'] })
-      queryClient.invalidateQueries({ queryKey: ['me'] })
-    },
-  })
   const cover = deck.data?.creator.cover
     ? deckAssetUrl(creator.slug, deck.data.creator.cover)
     : undefined
@@ -129,9 +112,10 @@ function CreatorCard({
         <h2 className="brain-title">{deck.data?.title ?? creator.name}</h2>
         {deck.data?.creator.bio && <p className="brain-hint">{deck.data.creator.bio}</p>}
         <p className="brain-hint">
-          {deck.data ? `${deck.data.cards.length} kart · 3–15 min` : 'Wczytywanie talii…'}
-          {followers > 0 &&
-            ` · ${followers} ${followers === 1 ? 'osoba' : followers < 5 ? 'osoby' : 'osób'} w kręgu`}
+          {deck.data
+            ? `${deck.data.cards.length} ${plural(deck.data.cards.length, 'ćwiczenie', 'ćwiczenia', 'ćwiczeń')} · 3–15 min`
+            : 'Wczytywanie programu…'}
+          {followers >= 10 && ` · ${followers} ${plural(followers, 'osoba', 'osoby', 'osób')} w kręgu`}
         </p>
         <div className="row wrap">
           <button
@@ -139,20 +123,9 @@ function CreatorCard({
             className="btn btn-glass"
             onClick={() => navigate(`/${creator.slug}`)}
           >
-            <Icon name="Layers" size={16} />
-            Wejdź do talii
+            <Icon name="Play" size={16} />
+            Zacznij pierwsze ćwiczenie (3 min)
           </button>
-          {loggedIn && (
-            <button
-              type="button"
-              className={isFollowing ? 'btn btn-glass-done' : 'btn btn-glass'}
-              disabled={follow.isPending}
-              onClick={() => follow.mutate(!isFollowing)}
-            >
-              <Icon name={isFollowing ? 'Check' : 'UserPlus'} size={16} />
-              {isFollowing ? 'Jesteś w kręgu' : 'Dołącz do kręgu'}
-            </button>
-          )}
         </div>
       </div>
     </article>
@@ -168,7 +141,9 @@ export function CircleScreen() {
   const { state } = useAppState()
   const done = state.sessions.filter((s) => s.completed).length
   const days = streak(state)
-  const [tab, setTab] = useState<'feed' | 'programy'>('feed')
+  const [tab, setTab] = useState<'feed' | 'programy'>('programy')
+  // Pusty feed nie dostaje własnego tabu — nowa osoba nie może wylądować w martwej apce.
+  const hasFeed = (feed.data?.length ?? 0) > 0
 
   return (
     <div className="app">
@@ -178,17 +153,10 @@ export function CircleScreen() {
             <span className="brand-mark">LOTOS BALANCE</span>
             <span className="brand-sub">krąg</span>
           </span>
-          {loggedIn ? (
+          {/* Logowanie schowane do weryfikacji domeny w Resend — realna osoba dostałaby błąd. */}
+          {loggedIn && (
             <button type="button" className="btn btn-ghost btn-sm" onClick={() => signOut()}>
               Wyloguj
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn btn-secondary btn-sm"
-              onClick={() => navigate('/logowanie')}
-            >
-              Zaloguj się
             </button>
           )}
         </div>
@@ -201,20 +169,49 @@ export function CircleScreen() {
               Krąg<em>.</em>
             </h1>
             <p className="muted">
-              Twórczynie i ich talie krótkich ćwiczeń. Wybierz talię i pracuj na niej — 3, 7 albo
-              15 minut dziennie.
+              Twórczynie i ich programy krótkich ćwiczeń. Wybierz program i pracuj na nim — 3, 7
+              albo 15 minut dziennie.
             </p>
           </section>
 
-          {(done > 0 || loggedIn) && (
+          {hasFeed && (
+            <div className="segmented" role="tablist" aria-label="Widok kręgu">
+              {(['programy', 'feed'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === t}
+                  className={`segmented-btn${tab === t ? ' is-active' : ''}`}
+                  onClick={() => setTab(t)}
+                >
+                  <Icon name={t === 'feed' ? 'Activity' : 'Layers'} size={16} />
+                  {t === 'feed' ? 'Aktywność' : 'Programy'}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {tab === 'feed' && hasFeed && (
+            <ul className="entry-list">
+              {feed.data!.map((row, i) => (
+                <FeedEntry key={`${row.creatorSlug}-${row.cardId}-${row.date}-${i}`} row={row} />
+              ))}
+            </ul>
+          )}
+
+          {(tab === 'programy' || !hasFeed) &&
+            (creators.data ?? KNOWN_CREATORS).map((c) => <CreatorCard key={c.slug} creator={c} />)}
+
+          {done > 0 && (
             <section className="surface stack-sm">
               <p className="eyebrow">
-                {me.data?.user.name ? `Twoja praca, ${me.data.user.name}` : 'Twoja praca'}
+                {me.data?.user.name ? `Twoje postępy, ${me.data.user.name}` : 'Twoje postępy'}
               </p>
               <div className="row wrap">
                 <span className="pill">
                   <Icon name="Check" size={13} />
-                  {done} {done === 1 ? 'aktywacja' : 'aktywacji'}
+                  {done} {plural(done, 'ćwiczenie', 'ćwiczenia', 'ćwiczeń')}
                 </span>
                 {days > 0 && (
                   <span className="pill">
@@ -224,57 +221,6 @@ export function CircleScreen() {
                 )}
               </div>
             </section>
-          )}
-
-          <div className="segmented" role="tablist" aria-label="Widok kręgu">
-            {(['feed', 'programy'] as const).map((t) => (
-              <button
-                key={t}
-                type="button"
-                role="tab"
-                aria-selected={tab === t}
-                className={`segmented-btn${tab === t ? ' is-active' : ''}`}
-                onClick={() => setTab(t)}
-              >
-                <Icon name={t === 'feed' ? 'Activity' : 'Layers'} size={16} />
-                {t === 'feed' ? 'Feed' : 'Programy'}
-              </button>
-            ))}
-          </div>
-
-          {tab === 'feed' &&
-            ((feed.data?.length ?? 0) > 0 ? (
-              <ul className="entry-list">
-                {feed.data!.map((row, i) => (
-                  <FeedEntry key={`${row.creatorSlug}-${row.cardId}-${row.date}-${i}`} row={row} />
-                ))}
-              </ul>
-            ) : (
-              <p className="muted center">
-                {feed.isPending
-                  ? 'Wczytywanie…'
-                  : 'Jeszcze cicho. Pierwsza ukończona aktywacja pojawi się tutaj.'}
-              </p>
-            ))}
-
-          {tab === 'programy' && (
-            <>
-              {(creators.data ?? KNOWN_CREATORS).map((c) => (
-                <CreatorCard
-                  key={c.slug}
-                  creator={c}
-                  loggedIn={loggedIn}
-                  isFollowing={me.data?.follows.includes(c.slug) ?? false}
-                />
-              ))}
-
-              {!loggedIn && (
-                <p className="tiny center">
-                  Zaloguj się, aby dołączyć do kręgu twórczyni — Twoja praca zacznie się liczyć
-                  razem z innymi.
-                </p>
-              )}
-            </>
           )}
         </div>
       </main>

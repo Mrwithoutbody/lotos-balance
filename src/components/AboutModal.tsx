@@ -15,8 +15,8 @@ export function AboutModal({ onClose }: Props) {
           <p className="eyebrow">Jak to działa</p>
           <p className="muted">
             Najpierw poznajesz swój balans w siedmiu obszarach. Potem aplikacja dobiera krótkie
-            aktywacje do Twojej aktualnej potrzeby, dostępnego czasu i wcześniejszych reakcji.
-            Personalizacja nie oznacza losowych porad — oznacza dobór sprawdzonych aktywacji do
+            ćwiczenia do Twojej aktualnej potrzeby, dostępnego czasu i wcześniejszych reakcji.
+            Personalizacja nie oznacza losowych porad — oznacza dobór sprawdzonych ćwiczeń do
             konkretnej osoby.
           </p>
         </section>
