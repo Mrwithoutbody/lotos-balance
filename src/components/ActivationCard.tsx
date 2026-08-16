@@ -10,12 +10,12 @@ interface Props {
   card: Card
   /** Krótkie uzasadnienia z algorytmu rekomendacji. */
   reasons?: string[]
-  isFavorite?: boolean
-  onToggleFavorite?: () => void
+  /** Otwiera pełny opis ćwiczenia — ikona „i” w rogu karty. */
+  onInfo?: () => void
   footer?: ReactNode
 }
 
-export function ActivationCardView({ card, reasons, isFavorite, onToggleFavorite, footer }: Props) {
+export function ActivationCardView({ card, reasons, onInfo, footer }: Props) {
   const area = AREA_BY_ID[card.area]
   const secondary = card.secondaryArea ? AREA_BY_ID[card.secondaryArea] : null
   const art = CARD_ART[card.area]
@@ -44,15 +44,16 @@ export function ActivationCardView({ card, reasons, isFavorite, onToggleFavorite
           <Icon name="Clock" size={13} />
           {card.minutes} min
         </span>
-        {onToggleFavorite && (
+        {onInfo && (
           <button
             type="button"
-            className={`fav-btn${isFavorite ? ' is-on' : ''}`}
-            onClick={onToggleFavorite}
-            aria-pressed={isFavorite}
-            aria-label={isFavorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}
+            className="fav-btn"
+            // Karta siedzi w SwipeCard — bez tego pierwszy dotyk startuje przeciąganie.
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={onInfo}
+            title="Opis ćwiczenia"
           >
-            <Icon name="Star" size={18} fill={isFavorite ? 'currentColor' : 'none'} />
+            <Icon name="Info" size={18} />
           </button>
         )}
       </div>

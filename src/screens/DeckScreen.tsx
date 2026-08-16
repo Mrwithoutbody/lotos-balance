@@ -181,7 +181,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
                   label={`${current.card.title}. Przeciągnij w prawo — do ulubionych, w lewo — pomiń.`}
                 >
                   {/* Bez gwiazdki na karcie — ulubione robi gest w prawo albo ikona pod kartą. */}
-                  <ActivationCardView card={current.card} />
+                  <ActivationCardView card={current.card} onInfo={() => setDetail(current.card)} />
                 </SwipeCard>
               ) : (
                 <SwipeCard
