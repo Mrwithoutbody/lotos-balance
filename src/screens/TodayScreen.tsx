@@ -1,7 +1,7 @@
 // src/screens/TodayScreen.tsx
 import { useMemo, useState } from 'react'
 import { ActivationCardView } from '../components/ActivationCard'
-import { BalanceMap } from '../components/BalanceMap'
+import { BalanceWheel } from '../components/BalanceWheel'
 import { BrainCard } from '../components/BrainCard'
 import { CheckInSheet } from '../components/CheckInSheet'
 import { Icon } from '../components/Icon'
@@ -207,7 +207,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
               <Icon name="ChevronRight" size={15} />
             </button>
           </div>
-          <BalanceMap levels={snapshot.levels} compact highlight={weak} />
+          <BalanceWheel levels={snapshot.levels} highlight={weak} />
         </section>
       ) : (
         <section className="surface stack-sm">

@@ -134,7 +134,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
             onClick={() => setMode(m)}
           >
             <Icon name={m === 'stos' ? 'Layers' : 'Search'} size={16} />
-            {m === 'stos' ? 'Stos kart' : 'Biblioteka'}
+            {m === 'stos' ? 'Ćwiczenia' : 'Biblioteka'}
           </button>
         ))}
       </div>

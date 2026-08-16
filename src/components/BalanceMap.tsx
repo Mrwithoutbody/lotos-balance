@@ -7,14 +7,12 @@ import { Icon } from './Icon'
 
 interface Props {
   levels: Levels
-  /** Kompaktowa wersja bez opisów — używana na ekranie „Dzisiaj”. */
-  compact?: boolean
   highlight?: AreaId[]
 }
 
-export function BalanceMap({ levels, compact, highlight = [] }: Props) {
+export function BalanceMap({ levels, highlight = [] }: Props) {
   return (
-    <ul className={`balance-map${compact ? ' is-compact' : ''}`}>
+    <ul className="balance-map">
       {AREAS.map((area) => {
         const level = levels[area.id]
         const known = level !== undefined
@@ -27,7 +25,7 @@ export function BalanceMap({ levels, compact, highlight = [] }: Props) {
             }`}
           >
             <span className="balance-icon" style={{ background: area.softColor, color: area.color }}>
-              <Icon name={area.icon} size={compact ? 15 : 17} />
+              <Icon name={area.icon} size={17} />
             </span>
             <div className="grow">
               <div className="balance-head">
@@ -48,7 +46,7 @@ export function BalanceMap({ levels, compact, highlight = [] }: Props) {
                   />
                 )}
               </div>
-              {!compact && <p className="balance-status">{status}</p>}
+              <p className="balance-status">{status}</p>
             </div>
           </li>
         )
