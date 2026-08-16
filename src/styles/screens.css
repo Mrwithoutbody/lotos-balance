@@ -273,7 +273,15 @@
   top: 12px;
   bottom: 0;
   border-radius: var(--radius-lg);
-  background: var(--paper);
+  /* Rewers: skośna kreska jak na spodzie stosu. Widać tylko czubek,
+     więc raster musi być drobny — grubszy zlewa się w szarość. */
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(51, 41, 31, 0.07) 0 1px,
+      transparent 1px 7px
+    ),
+    var(--paper);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
   transform-origin: center top;
