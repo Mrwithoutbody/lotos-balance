@@ -7,3 +7,6 @@ dist
 .dev.vars
 seed
 .wrangler
+
+# futurestack (narzędzia deploy/proxy — nie część aplikacji)
+.fs/

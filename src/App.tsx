@@ -1,5 +1,5 @@
 // src/App.tsx
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AboutModal } from './components/AboutModal'
 import { BottomNav } from './components/BottomNav'
 import type { TabId } from './components/BottomNav'
@@ -7,6 +7,7 @@ import { CardPlayer } from './components/CardPlayer'
 import { Icon } from './components/Icon'
 import { hydrateCards } from './data/cards'
 import { useAppState } from './hooks/useAppState'
+import { useSession } from './lib/auth-client'
 import { navigate } from './lib/router'
 import { deckAssetUrl, useDeck } from './services/decks'
 import { BalanceScreen } from './screens/BalanceScreen'
@@ -47,6 +48,19 @@ export default function App({ creatorSlug }: Props) {
   const [tab, setTab] = useState<TabId>(() => (state.snapshots.length === 0 ? 'talia' : 'dzisiaj'))
   const [player, setPlayer] = useState<PlayerTarget | null>(null)
   const [aboutOpen, setAboutOpen] = useState(false)
+
+  // Wejście na stronę twórczyni = dołączenie do jej kręgu (link działa jak
+  // zaproszenie). Serwer jest idempotentny (onConflictDoNothing), więc
+  // wystarczy strzelić raz po zalogowaniu; błąd sieci nie blokuje talii.
+  const loggedIn = Boolean(useSession().data)
+  useEffect(() => {
+    if (!loggedIn || !deck.data) return
+    fetch('/api/follow', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug: creatorSlug }),
+    }).catch(() => {})
+  }, [loggedIn, creatorSlug, deck.data])
 
   const openPlayer = (
     card: ActivationCard,

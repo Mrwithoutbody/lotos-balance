@@ -1,6 +1,7 @@
 // src/screens/CircleScreen.tsx
-// Krąg na "/": twórczynie, ilu ludzi z nimi pracuje, Twoje miejsce w tym.
+// Krąg na "/": feed wspólnej pracy + programy twórczyń, w tabach.
 // Bez atrap — liczby przychodzą z D1, a sekcje bez danych po prostu się nie renderują.
+import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Icon } from '../components/Icon'
 import { useAppState } from '../hooks/useAppState'
@@ -8,6 +9,7 @@ import { signOut, useSession } from '../lib/auth-client'
 import { navigate } from '../lib/router'
 import { streak } from '../services/insights'
 import { deckAssetUrl, useDeck } from '../services/decks'
+import { shortDate } from '../utils/date'
 
 interface CreatorRow {
   slug: string
@@ -18,6 +20,13 @@ interface CreatorRow {
 interface Me {
   user: { name: string; email: string }
   follows: string[]
+}
+
+interface FeedRow {
+  creatorSlug: string
+  creatorName: string
+  cardId: string
+  date: string
 }
 
 /** Dev (vite) nie ma Pages Functions, a krąg musi żyć — stąd fallback. */
@@ -38,6 +47,34 @@ function useCreators() {
     },
     staleTime: 60 * 1000,
   })
+}
+
+function useFeed() {
+  return useQuery<FeedRow[]>({
+    queryKey: ['feed'],
+    queryFn: async () => {
+      const res = await fetch('/api/feed')
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      return res.json()
+    },
+    staleTime: 60 * 1000,
+  })
+}
+
+/** Wiersz feedu — tytuł karty dociągamy z manifestu talii (react-query deduplikuje). */
+function FeedEntry({ row }: { row: FeedRow }) {
+  const deck = useDeck(row.creatorSlug)
+  const title = deck.data?.cards.find((c) => c.id === row.cardId)?.title ?? 'aktywacja'
+  return (
+    <li className="entry-row">
+      <div className="entry-row-block">
+        <p className="entry-title">Ktoś ukończył „{title}”</p>
+        <p className="tiny">
+          {row.creatorName} · {shortDate(row.date)}
+        </p>
+      </div>
+    </li>
+  )
 }
 
 function useMe(loggedIn: boolean) {
@@ -127,9 +164,11 @@ export function CircleScreen() {
   const loggedIn = Boolean(session.data)
   const creators = useCreators()
   const me = useMe(loggedIn)
+  const feed = useFeed()
   const { state } = useAppState()
   const done = state.sessions.filter((s) => s.completed).length
   const days = streak(state)
+  const [tab, setTab] = useState<'feed' | 'programy'>('feed')
 
   return (
     <div className="app">
@@ -187,20 +226,55 @@ export function CircleScreen() {
             </section>
           )}
 
-          {(creators.data ?? KNOWN_CREATORS).map((c) => (
-            <CreatorCard
-              key={c.slug}
-              creator={c}
-              loggedIn={loggedIn}
-              isFollowing={me.data?.follows.includes(c.slug) ?? false}
-            />
-          ))}
+          <div className="segmented" role="tablist" aria-label="Widok kręgu">
+            {(['feed', 'programy'] as const).map((t) => (
+              <button
+                key={t}
+                type="button"
+                role="tab"
+                aria-selected={tab === t}
+                className={`segmented-btn${tab === t ? ' is-active' : ''}`}
+                onClick={() => setTab(t)}
+              >
+                <Icon name={t === 'feed' ? 'Activity' : 'Layers'} size={16} />
+                {t === 'feed' ? 'Feed' : 'Programy'}
+              </button>
+            ))}
+          </div>
 
-          {!loggedIn && (
-            <p className="tiny center">
-              Zaloguj się, aby dołączyć do kręgu twórczyni — Twoja praca zacznie się liczyć razem
-              z innymi.
-            </p>
+          {tab === 'feed' &&
+            ((feed.data?.length ?? 0) > 0 ? (
+              <ul className="entry-list">
+                {feed.data!.map((row, i) => (
+                  <FeedEntry key={`${row.creatorSlug}-${row.cardId}-${row.date}-${i}`} row={row} />
+                ))}
+              </ul>
+            ) : (
+              <p className="muted center">
+                {feed.isPending
+                  ? 'Wczytywanie…'
+                  : 'Jeszcze cicho. Pierwsza ukończona aktywacja pojawi się tutaj.'}
+              </p>
+            ))}
+
+          {tab === 'programy' && (
+            <>
+              {(creators.data ?? KNOWN_CREATORS).map((c) => (
+                <CreatorCard
+                  key={c.slug}
+                  creator={c}
+                  loggedIn={loggedIn}
+                  isFollowing={me.data?.follows.includes(c.slug) ?? false}
+                />
+              ))}
+
+              {!loggedIn && (
+                <p className="tiny center">
+                  Zaloguj się, aby dołączyć do kręgu twórczyni — Twoja praca zacznie się liczyć
+                  razem z innymi.
+                </p>
+              )}
+            </>
           )}
         </div>
       </main>
