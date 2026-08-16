@@ -29,9 +29,8 @@ interface Props {
 
 export default function App({ creatorSlug }: Props) {
   const { state } = useAppState()
-  // Program z R2. Ekrany montują się dopiero po hydracji (albo po błędzie —
-  // wtedy zostaje statyczny fallback z data/cards.ts), więc konsumenci CARDS
-  // nigdy nie widzą stanu „w połowie podmienione”.
+  // Program z R2 to jedyne źródło kart. Ekrany montują się dopiero po hydracji,
+  // więc konsumenci CARDS nigdy nie widzą pustego magazynu.
   const deck = useDeck(creatorSlug)
   if (deck.data) {
     const art = Object.fromEntries(
@@ -42,8 +41,7 @@ export default function App({ creatorSlug }: Props) {
     )
     hydrateCards(deck.data.cards, art)
   }
-  // Fallback statyczny to program Anny — dla obcego sluga byłby kłamstwem.
-  const deckReady = !deck.isPending && (!deck.isError || creatorSlug === 'anna-rysnik')
+  const deckReady = Boolean(deck.data)
   // Bez onboardingu: przy pustym profilu zaczynamy od programu, bo to on buduje mapę.
   const [tab, setTab] = useState<TabId>(() => (state.snapshots.length === 0 ? 'program' : 'dzisiaj'))
   const [player, setPlayer] = useState<PlayerTarget | null>(null)
@@ -101,7 +99,7 @@ export default function App({ creatorSlug }: Props) {
             Chwila — program się otwiera…
           </p>
         )}
-        {deck.isError && creatorSlug !== 'anna-rysnik' && (
+        {deck.isError && (
           <section className="surface stack-sm">
             <h2 className="h1">Nie ma takiego programu.</h2>
             <p className="muted">Sprawdź adres.</p>

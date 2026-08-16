@@ -20,7 +20,6 @@ interface CreatorRow {
 
 interface Me {
   user: { name: string; email: string }
-  follows: string[]
 }
 
 interface FeedRow {
@@ -30,21 +29,13 @@ interface FeedRow {
   date: string
 }
 
-/** Dev (vite) nie ma Pages Functions, a krąg musi żyć — stąd fallback. */
-const KNOWN_CREATORS: CreatorRow[] = [{ slug: 'anna-rysnik', name: 'Anna Ryśnik' }]
-
 function useCreators() {
   return useQuery<CreatorRow[]>({
     queryKey: ['creators'],
     queryFn: async () => {
-      try {
-        const res = await fetch('/api/creators')
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const rows: CreatorRow[] = await res.json()
-        return rows.length > 0 ? rows : KNOWN_CREATORS
-      } catch {
-        return KNOWN_CREATORS
-      }
+      const res = await fetch('/api/creators')
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      return res.json()
     },
     staleTime: 60 * 1000,
   })
@@ -182,7 +173,7 @@ export function CircleScreen() {
           )}
 
           {(tab === 'programy' || !hasFeed) &&
-            (creators.data ?? KNOWN_CREATORS).map((c) => <CreatorCard key={c.slug} creator={c} />)}
+            (creators.data ?? []).map((c) => <CreatorCard key={c.slug} creator={c} />)}
 
           {done > 0 && (
             <section className="surface stack-sm">

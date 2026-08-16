@@ -9,8 +9,7 @@ import type {
   Scale5,
   SwipeDirection,
 } from '../types'
-import { buildDemoState } from '../services/demo'
-import { clearState, defaultState, exportState, loadState, saveState } from '../services/storage'
+import { clearState, defaultState, loadState, saveState } from '../services/storage'
 import { latestSnapshot, levelsFromAnswers } from '../utils/balance'
 import { makeId } from '../utils/id'
 import { todayKey } from '../utils/date'
@@ -29,9 +28,7 @@ interface AppStateContextValue {
   rescheduleEntry: (entryId: string, date: string) => void
   setEntryDone: (entryId: string, done: boolean, sessionId?: string) => void
   markBrainStep: (date: string) => void
-  loadDemo: () => void
   resetAll: () => void
-  exportData: () => void
 }
 
 const AppStateContext = createContext<AppStateContextValue | null>(null)
@@ -179,17 +176,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
         )
       },
 
-      loadDemo() {
-        setState(buildDemoState())
-      },
-
       resetAll() {
         clearState()
         setState(defaultState())
-      },
-
-      exportData() {
-        exportState(state)
       },
     }
   }, [state])

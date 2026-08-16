@@ -9,19 +9,14 @@
   --plum-soft: #6f6154;
   --plum-faint: #a2937f;
   --coral: #c17862;
-  --coral-soft: #f0e0d8;
   --sage: #7b9a78;
   --blue: #6c87a8;
   --violet: #8b79b0;
-  --gold: #9a8352;
-  --dark: #453a30;
-  --dark-2: #3a3027;
   --dark-text: #efe7de;
   --dark-muted: #b8a996;
   --line: rgba(51, 41, 31, 0.1);
   --line-strong: rgba(51, 41, 31, 0.18);
 
-  --radius-xs: 10px;
   --radius-sm: 14px;
   --radius: 20px;
   --radius-lg: 28px;

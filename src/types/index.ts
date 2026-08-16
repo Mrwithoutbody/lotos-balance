@@ -44,9 +44,6 @@ export interface BalanceArea {
   color: string
   /** Delikatniejszy odcień używany jako tło. */
   softColor: string
-  description: string
-  /** Trzy składowe obszaru, np. napięcie / nastrój / regulacja emocjonalna. */
-  aspects: string[]
   /** Pytanie z Mapy Balansu (skala 1–5, ostatnie 7 dni). */
   question: string
 }

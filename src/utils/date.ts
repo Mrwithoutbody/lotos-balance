@@ -2,12 +2,9 @@
 
 export const WEEKDAYS_SHORT = ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So', 'Nd']
 
-/** Klucz dnia YYYY-MM-DD w czasie lokalnym (bez przesunięć UTC). */
+/** Klucz dnia YYYY-MM-DD w czasie lokalnym — locale sv-SE ma dokładnie ten format. */
 export function dateKey(d: Date = new Date()): string {
-  const y = d.getFullYear()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${y}-${m}-${day}`
+  return d.toLocaleDateString('sv-SE')
 }
 
 export function todayKey(): string {

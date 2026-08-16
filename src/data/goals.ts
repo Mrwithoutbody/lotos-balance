@@ -18,13 +18,10 @@ export const NEEDS: NeedDef[] = [
   { id: 'kierunek', label: 'Poczucia kierunku', icon: 'Compass' },
 ]
 
-export const NEED_BY_ID: Record<NeedId, NeedDef> = NEEDS.reduce(
-  (acc, n) => {
-    acc[n.id] = n
-    return acc
-  },
-  {} as Record<NeedId, NeedDef>,
-)
+export const NEED_BY_ID = Object.fromEntries(NEEDS.map((n) => [n.id, n])) as Record<
+  NeedId,
+  NeedDef
+>
 
 export const TIME_OPTIONS: { value: Minutes; label: string }[] = [
   { value: 3, label: '3 minuty' },

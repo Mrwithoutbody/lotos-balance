@@ -8,6 +8,7 @@ import { AREA_BY_ID, AREA_IDS } from '../data/areas'
 import { NEED_BY_ID } from '../data/goals'
 import { useAppState } from '../hooks/useAppState'
 import { helpfulCards, neutralCards, personalManual, weekActivity, weekAverageDelta } from '../services/insights'
+import { exportState } from '../services/storage'
 import {
   averageLevel,
   latestSnapshot,
@@ -27,7 +28,7 @@ interface Props {
 }
 
 export function BalanceScreen({ onAbout, onNavigate }: Props) {
-  const { state, addSnapshot, loadDemo, resetAll, exportData } = useAppState()
+  const { state, addSnapshot, resetAll } = useAppState()
   const [quizAreas, setQuizAreas] = useState<AreaId[] | null>(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -255,11 +256,11 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
           Wszystko zostaje na tym urządzeniu.
         </p>
         <div className="stack-sm">
-          <button type="button" className="btn btn-secondary btn-block" onClick={loadDemo}>
-            <Icon name="Sparkles" size={16} />
-            Załaduj dane demonstracyjne
-          </button>
-          <button type="button" className="btn btn-secondary btn-block" onClick={exportData}>
+          <button
+            type="button"
+            className="btn btn-secondary btn-block"
+            onClick={() => exportState(state)}
+          >
             <Icon name="Download" size={16} />
             Eksportuj moje dane
           </button>

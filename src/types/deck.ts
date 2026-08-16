@@ -1,29 +1,16 @@
 // src/types/deck.ts
-// Format programu w R2. Źródłem prawdy jest folder karty (card.json + media obok),
+// Format programu w R2. Źródłem prawdy jest folder karty (card.json),
 // deck.json to zbudowany z nich manifest — front czyta program jednym fetchem.
 //
 //   <bucket>/<creatorSlug>/deck.json
 //   <bucket>/<creatorSlug>/karty/<cardSlug>/card.json
-//   <bucket>/<creatorSlug>/karty/<cardSlug>/audio.mp3 | video.mp4  (opcjonalnie)
 import type { ActivationCard, AreaId } from './index'
 
-/** Rodzaj karty — dyskryminator dla treści w buckecie. */
-export type CardKind = 'tekst' | 'audio' | 'wideo'
-
-/** Zawartość card.json. Pola ćwiczenia jak w ActivationCard, plus media obok pliku. */
-export type DeckCard = ActivationCard & {
-  kind: CardKind
-  /** Nazwy plików w folderze karty, np. "audio.mp3" — URL składa front. */
-  media?: {
-    audio?: string
-    video?: string
-  }
-}
+/** Zawartość card.json — dokładnie pola ćwiczenia. */
+export type DeckCard = ActivationCard
 
 /** deck.json — manifest programu jednego twórcy. */
 export interface DeckManifest {
-  /** Wersja formatu, na wypadek migracji. */
-  format: 1
   creator: {
     slug: string
     name: string

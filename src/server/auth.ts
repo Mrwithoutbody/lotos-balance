@@ -1,7 +1,7 @@
 // src/server/auth.ts
 // Fabryka Better Auth — instancja powstaje per-request, bo bindingi (D1, sekrety)
 // przychodzą w env dopiero w czasie żądania (Cloudflare Pages Functions).
-import type { D1Database, R2Bucket } from '@cloudflare/workers-types'
+import type { D1Database } from '@cloudflare/workers-types'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { magicLink } from 'better-auth/plugins'
@@ -10,7 +10,6 @@ import * as schema from './db/schema'
 
 export interface Env {
   DB: D1Database
-  PROGRAMY: R2Bucket
   BETTER_AUTH_SECRET: string
   BETTER_AUTH_URL: string
   GOOGLE_CLIENT_ID: string

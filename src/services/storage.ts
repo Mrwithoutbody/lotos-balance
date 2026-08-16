@@ -1,10 +1,7 @@
 // src/services/storage.ts
-import type { ActivationSession, AppState } from '../types'
+import type { AppState } from '../types'
 
-export const STORAGE_KEY = 'lotos-balance:v1'
-
-/** Poprzednia nazwa aplikacji — odczyt awaryjny, żeby nie zgubić danych testerek. */
-const LEGACY_KEY = 'mental-balance:v1'
+const STORAGE_KEY = 'lotos-balance:v1'
 
 export function defaultState(): AppState {
   return {
@@ -19,10 +16,6 @@ export function defaultState(): AppState {
   }
 }
 
-/** Sesje sprzed zmiany nazwy ekranu mają source 'talia' — czytamy je jako 'program'. */
-const renameSource = (s: ActivationSession): ActivationSession =>
-  (s?.source as string) === 'talia' ? { ...s, source: 'program' } : s
-
 /** Uzupełnia braki i odrzuca pola o złych typach — zamiast wywalać całą aplikację. */
 // ponytail: sprawdzamy tylko typ pola, nie kształt elementów w tablicach — uszkodzony
 // wpis w snapshots/sessions przechodzi do komponentów; walidacja schematem gdy dane
@@ -35,7 +28,7 @@ function migrate(raw: unknown): AppState {
     profile: data.profile && typeof data.profile === 'object' ? data.profile : base.profile,
     snapshots: Array.isArray(data.snapshots) ? data.snapshots : base.snapshots,
     checkIns: Array.isArray(data.checkIns) ? data.checkIns : base.checkIns,
-    sessions: Array.isArray(data.sessions) ? data.sessions.map(renameSource) : base.sessions,
+    sessions: Array.isArray(data.sessions) ? data.sessions : base.sessions,
     calendar: Array.isArray(data.calendar) ? data.calendar : base.calendar,
     favorites: Array.isArray(data.favorites) ? data.favorites : base.favorites,
     swipes: Array.isArray(data.swipes) ? data.swipes : base.swipes,
@@ -45,7 +38,7 @@ function migrate(raw: unknown): AppState {
 
 export function loadState(): AppState {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(LEGACY_KEY)
+    const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return defaultState()
     return migrate(JSON.parse(raw))
   } catch {
