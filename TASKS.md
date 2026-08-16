@@ -11,50 +11,49 @@ Kolejność = priorytet. Źródło: audyt UX 3 agentów (2026-08-16) + wiadomoś
 
 ## A. Satelita Anny — może wkleić link (jedna sesja)
 
-1. **Domyślny tab „Programy"**
-   - Problem: nowa osoba ląduje w pustym feedzie i widzi „Jeszcze cicho".
-   - Zrobić: `useState('programy')` w `CircleScreen.tsx:171` + tab Feed renderowany dopiero gdy `feed.data.length > 0`.
-   - Rozwiązuje: pierwsze wrażenie „martwa apka".
+Zrobione 2026-08-16, commit `48a3ed1` (1–2, 4–9; wdrożone na produkcję).
+Otwarte zostaje tylko zadanie 3 — wiadomość do Anny, nie kod.
 
-2. **Copy bez żargonu**
-   - Problem: „aktywacja", „talia", „Feed", „Twoja praca" są niezrozumiałe dla odbiorczyń Anny.
-   - Zrobić: zamiana na „ćwiczenie", „program", „Aktywność", „Twoje postępy, {imię}" w `CircleScreen.tsx` i `AboutModal.tsx`.
-   - Rozwiązuje: znany z testów blocker zrozumiałości.
+1. ✅ **Domyślny tab „Programy"**
+   - Zrobione: `useState('programy')`; tab „Aktywność" (segmented) renderowany
+     tylko gdy feed ma wpisy — pusty krąg nie pokazuje tabów wcale.
+
+2. ✅ **Copy bez żargonu**
+   - Zrobione: „ćwiczenie/ćwiczenia/ćwiczeń" (helper `plural()`), „program",
+     „Aktywność", „Twoje postępy, {imię}" w `CircleScreen.tsx`; „aktywacje"→
+     „ćwiczenia" w `AboutModal.tsx`. Żargon w samej talii (`/anna-rysnik`)
+     nietknięty — sekcja A dotyczyła kręgu.
 
 3. **Link w bio Anny na `/anna-rysnik`**
    - Problem: `/` to agregator dla całej branży, a fan Anny przychodzi po nią, nie po katalog.
    - Zrobić: przekazać Annie adres `transformness.space/anna-rysnik` jako jedyny link do promocji (auto-follow już tam działa).
    - Rozwiązuje: rozjazd między wejściem platformowym a satelitarnym.
 
-4. **Schować „Zaloguj się" na `/`**
-   - Problem: magic link działa tylko na dadmor@gmail.com, Google tylko dla test users — realna osoba dostanie błąd.
-   - Zrobić: ukryć przycisk logowania do czasu weryfikacji domeny w Resend (zadanie 17).
-   - Rozwiązuje: spalone zaufanie przy pierwszym kontakcie.
+4. ✅ **Schować „Zaloguj się" na `/`**
+   - Zrobione: przycisk w app-barze kręgu usunięty (komentarz odsyła do zad. 17);
+     zniknął też dopisek „Zaloguj się, aby dołączyć…" pod kartą twórczyni.
+     `/logowanie` nadal działa po wpisaniu adresu ręcznie.
 
-5. **Jeden primary CTA na karcie twórczyni**
-   - Problem: „Wejdź do talii" i „Dołącz do kręgu" mają równą wagę i żaden nie mówi „zacznij".
-   - Zrobić: jeden przycisk „Zacznij pierwsze ćwiczenie (3 min)", follow zostaje automatyczny.
-   - Rozwiązuje: punkt porzucenia przy wyborze między dwiema niejasnymi akcjami.
+5. ✅ **Jeden primary CTA na karcie twórczyni**
+   - Zrobione: jeden przycisk „Zacznij pierwsze ćwiczenie (3 min)" → talia;
+     „Dołącz do kręgu" + cała mutacja follow usunięte z `CreatorCard`
+     (follow automatyczny przy wejściu na talię, z commita `9f844e9`).
 
-6. **Statystyki użytkowniczki pod taby**
-   - Problem: „Twoja praca, Grzesiek Durtan" renderuje się nad treścią Anny.
-   - Zrobić: przenieść sekcję `done`/`streak` poniżej tabów.
-   - Rozwiązuje: odwróconą hierarchię twórczyni → wartość → moje postępy.
+6. ✅ **Statystyki użytkowniczki pod taby**
+   - Zrobione: sekcja `done`/`streak` przeniesiona pod treść tabów; renderuje
+     się tylko przy `done > 0` (wcześniej też dla zalogowanych z zerem).
 
-7. **Licznik osób w kręgu od ≥10**
-   - Problem: „1 osoba w kręgu" pod influencerką z tysiącami followersów to anty-dowód.
-   - Zrobić: warunek `followers >= 10` zamiast `> 0` w `CircleScreen.tsx:133`.
-   - Rozwiązuje: obniżanie statusu twórczyni małymi liczbami.
+7. ✅ **Licznik osób w kręgu od ≥10**
+   - Zrobione: `followers >= 10` + poprawna odmiana przez `plural()`.
 
-8. **Akcja w pustym feedzie**
-   - Problem: empty state nie daje żadnego wyjścia i maskuje też błąd API.
-   - Zrobić: dodać przycisk „Zrób pierwsze ćwiczenie" + osobną gałąź dla `feed.isError`.
-   - Rozwiązuje: ślepy zaułek na najczęstszym pierwszym ekranie.
+8. ✅ **Akcja w pustym feedzie**
+   - Zrobione inaczej niż w opisie: pusty/błędny feed w ogóle się nie renderuje
+     (zad. 1) — user ląduje w „Programach" z CTA „Zacznij pierwsze ćwiczenie",
+     więc osobny przycisk i gałąź `feed.isError` stały się zbędne.
 
-9. **Feed bez rodzaju męskiego**
-   - Problem: „Ktoś ukończył" w aplikacji mówiącej do kobiet w rodzaju żeńskim.
-   - Zrobić: zamiana na bezpodmiotowe „Ukończone przed chwilą: «{tytuł}»".
-   - Rozwiązuje: niespójność językową marki.
+9. ✅ **Feed bez rodzaju męskiego**
+   - Zrobione: „Ukończone: «{tytuł}»" (bez „przed chwilą" — pod spodem i tak
+     stoi data, dublowałaby się).
 
 ## B. Wartość satelity — jest po co wracać
 
