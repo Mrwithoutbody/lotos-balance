@@ -15,16 +15,16 @@ const MAX = 80
 const STEP = 360 / AREAS.length
 /** Rozwarcie płatka w stopniach — 0.42 kroku zostawia szczelinę między sąsiadami. */
 const SPREAD = STEP * 0.42
-/** Promień pierścienia ikon, w procentach połowy kontenera. */
-const ICON_RING = 46
+/** Promień pierścienia ikon, w jednostkach viewBox. */
+const ICON_RING = 92
 
-function polar(angle: number, radius: number, origin: number): [number, number] {
+function polar(angle: number, radius: number): [number, number] {
   const rad = ((angle - 90) * Math.PI) / 180
-  return [origin + radius * Math.cos(rad), origin + radius * Math.sin(rad)]
+  return [CENTER + radius * Math.cos(rad), CENTER + radius * Math.sin(rad)]
 }
 
 function point(angle: number, radius: number): string {
-  const [x, y] = polar(angle, radius, CENTER)
+  const [x, y] = polar(angle, radius)
   return `${x.toFixed(1)} ${y.toFixed(1)}`
 }
 
@@ -40,12 +40,12 @@ function petal(angle: number, radius: number): string {
 }
 
 export function BalanceWheel({ levels, highlight = [] }: Props) {
-  const known = AREAS.filter((a) => levels[a.id] !== undefined)
+  const knownCount = AREAS.filter((a) => levels[a.id] !== undefined).length
   // Średnia z części obszarów czytałaby się jak wynik całości — pokazujemy ją
   // dopiero przy komplecie, wcześniej licznik poznanych.
   const average =
-    known.length === AREAS.length
-      ? Math.round(known.reduce((sum, a) => sum + (levels[a.id] ?? 0), 0) / AREAS.length)
+    knownCount === AREAS.length
+      ? Math.round(AREAS.reduce((sum, a) => sum + (levels[a.id] ?? 0), 0) / AREAS.length)
       : null
 
   const label = AREAS.map((a) => {
@@ -78,20 +78,21 @@ export function BalanceWheel({ levels, highlight = [] }: Props) {
         })}
         <circle cx={CENTER} cy={CENTER} r={CORE - 3} className="wheel-core" />
         <text x={CENTER} y={CENTER} className="wheel-center">
-          {average ?? `${known.length}/${AREAS.length}`}
+          {average ?? `${knownCount}/${AREAS.length}`}
         </text>
       </svg>
 
       {AREAS.map((area, i) => {
-        const [x, y] = polar(i * STEP, ICON_RING, 50)
+        // viewBox ma 200 jednostek na całą szerokość kontenera, stąd /2 na procenty.
+        const [x, y] = polar(i * STEP, ICON_RING)
         const isKnown = levels[area.id] !== undefined
         return (
           <span
             key={area.id}
             className={`wheel-icon${isKnown ? '' : ' is-unknown'}`}
             style={{
-              left: `${x}%`,
-              top: `${y}%`,
+              left: `${x / 2}%`,
+              top: `${y / 2}%`,
               background: area.softColor,
               color: area.color,
             }}

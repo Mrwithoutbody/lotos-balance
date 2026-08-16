@@ -146,9 +146,7 @@ export function CircleScreen() {
     <div className="app">
       <header className="app-bar">
         <div className="app-bar-inner">
-          <span className="brand-row">
-            <span className="brand-mark">LOTOS BALANCE</span>
-          </span>
+          <span className="brand-mark">LOTOS BALANCE</span>
           {/* Logowanie schowane do weryfikacji domeny w Resend — realna osoba dostałaby błąd. */}
           {loggedIn && (
             <button type="button" className="btn btn-ghost btn-sm" onClick={() => signOut()}>
