@@ -82,7 +82,7 @@ export default function App({ creatorSlug }: Props) {
             aria-label="Wróć do kręgu"
           >
             <span className="brand-mark">LOTOS BALANCE</span>
-            <span className="brand-sub">{deck.data ? `— ${deck.data.creator.name}` : ''}</span>
+            <span className="brand-sub">{deck.data?.creator.name ?? ''}</span>
           </a>
           <button
             type="button"

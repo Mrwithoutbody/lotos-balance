@@ -148,6 +148,7 @@ export function CircleScreen() {
         <div className="app-bar-inner">
           <span className="brand-row">
             <span className="brand-mark">LOTOS BALANCE</span>
+            <span className="brand-sub">krąg</span>
           </span>
           {/* Logowanie schowane do weryfikacji domeny w Resend — realna osoba dostałaby błąd. */}
           {loggedIn && (
@@ -161,9 +162,6 @@ export function CircleScreen() {
       <main className="app-main">
         <div className="stack-lg">
           <section className="stack-sm">
-            <h1 className="display">
-              Krąg<em>.</em>
-            </h1>
             <p className="muted">
               Twórczynie i ich programy. Wybierz jeden i pracuj na nim.
             </p>
