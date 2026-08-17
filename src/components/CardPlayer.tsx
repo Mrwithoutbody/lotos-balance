@@ -5,6 +5,7 @@ import { useAppState } from '../hooks/useAppState'
 import type { ActivationCard, ActivationSession, Scale5 } from '../types'
 import { todayKey } from '../utils/date'
 import { Icon } from './Icon'
+import { InstallButton } from './InstallButton'
 import { Modal } from './Modal'
 import { ScaleInput } from './ScaleInput'
 
@@ -233,7 +234,10 @@ export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose
               Zapisałyśmy to w Twojej historii. Kolejne wyniki pomogą lepiej dobierać ćwiczenia.
             </p>
           </div>
-          <button type="button" className="btn btn-primary btn-block" onClick={onClose}>
+          {/* Jedyny moment, w którym prośba o miejsce na telefonie ma pokrycie —
+              ćwiczenie za nią, nie przed. Wróć schodzi na drugi plan. */}
+          <InstallButton />
+          <button type="button" className="btn btn-secondary btn-block" onClick={onClose}>
             Wróć
           </button>
         </div>

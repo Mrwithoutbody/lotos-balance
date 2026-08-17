@@ -50,8 +50,8 @@ export function InstallButton() {
   }
 
   return (
-    <div className="install-bar">
-      <button type="button" className="btn btn-ghost btn-sm" onClick={install}>
+    <div className="stack-sm">
+      <button type="button" className="btn btn-primary btn-block" onClick={install}>
         <Icon name="Home" size={16} />
         Dodaj do ekranu telefonu
       </button>

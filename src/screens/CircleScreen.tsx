@@ -4,7 +4,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Icon } from '../components/Icon'
-import { InstallButton } from '../components/InstallButton'
 import { useAppState } from '../hooks/useAppState'
 import { signOut, useSession } from '../lib/auth-client'
 import { navigate } from '../lib/router'
@@ -195,8 +194,6 @@ export function CircleScreen() {
               </div>
             </section>
           )}
-
-          <InstallButton />
         </div>
       </main>
     </div>
