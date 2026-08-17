@@ -8,7 +8,7 @@ import { Icon } from '../components/Icon'
 import { Modal } from '../components/Modal'
 import { useAppState } from '../hooks/useAppState'
 import { useProgram } from '../hooks/useProgram'
-import { buildStarMap, starProgress } from '../services/starmap'
+import { ARM_SHAPE, brakujaceKarty, buildStarMap, starProgress } from '../services/starmap'
 import type { StarNode } from '../services/starmap'
 import type { ActivationCard } from '../types'
 import { latestSnapshot } from '../utils/balance'
@@ -30,6 +30,7 @@ export function StarMapScreen({ onPlay }: Props) {
     [state, program.cards, snapshot],
   )
   const { zrobione, wszystkie } = starProgress(arms)
+  const brak = brakujaceKarty(arms)
   const zbadane = arms.filter((a) => a.poziom !== undefined).length
 
   return (
@@ -43,20 +44,25 @@ export function StarMapScreen({ onPlay }: Props) {
 
       <div className="star-board">
         <svg className="star-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          {arms.map((arm) => {
-            const punkty = [{ x: 50, y: 50 }, ...arm.nodes]
-            return punkty.slice(1).map((p, i) => (
-              <line
-                key={`${arm.area}-${i}`}
-                x1={punkty[i].x}
-                y1={punkty[i].y}
-                x2={p.x}
-                y2={p.y}
-                stroke={arm.color}
-                className={arm.nodes[i].state === 'zrobione' ? 'star-line is-open' : 'star-line'}
-              />
-            ))
-          })}
+          {arms.flatMap((arm) =>
+            arm.nodes.map((node) => {
+              // Korzeń wychodzi z rdzenia, reszta z własnego rodzica.
+              const od = node.rodzic ? arm.nodes.find((n) => n.card.id === node.rodzic) : undefined
+              const x1 = od?.x ?? 50
+              const y1 = od?.y ?? 50
+              return (
+                <line
+                  key={`l-${node.card.id}`}
+                  x1={x1}
+                  y1={y1}
+                  x2={node.x}
+                  y2={node.y}
+                  stroke={arm.color}
+                  className={node.state === 'zamkniete' ? 'star-line' : 'star-line is-open'}
+                />
+              )
+            }),
+          )}
         </svg>
 
         <button
@@ -118,7 +124,7 @@ export function StarMapScreen({ onPlay }: Props) {
             <h2 className="h2">{wybrany.card.title}</h2>
             <p className="muted">{wybrany.card.description}</p>
             {wybrany.state === 'zamkniete' ? (
-              <p className="tiny">Otworzy się, gdy zrobisz poprzednią kartę na tym ramieniu.</p>
+              <p className="tiny">Otworzy się, gdy zrobisz kartę, z której wychodzi ta gałąź.</p>
             ) : (
               <button
                 type="button"
@@ -134,10 +140,15 @@ export function StarMapScreen({ onPlay }: Props) {
           <>
             <p className="eyebrow">Jak to czytać</p>
             <p className="muted">
-              Każde ramię to jeden obszar, każdy węzeł to karta z talii. Zrobiona karta otwiera
-              następną. Rdzeń prowadzi do badania — po nim przy nazwach obszarów pojawiają się
-              poziomy z Mapy Balansu.
+              Każde ramię to jeden obszar, a na nim małe drzewo:{' '}
+              {ARM_SHAPE.join(' → ')} karty. Zrobiona karta otwiera te, które z niej wychodzą.
+              Rdzeń prowadzi do badania — po nim przy obszarach pojawiają się poziomy.
             </p>
+            {brak > 0 && (
+              <p className="tiny">
+                Do pełnych drzew brakuje {brak} kart w talii — dojdą przy kolejnej publikacji.
+              </p>
+            )}
             {snapshot && <p className="tiny">Ostatnie badanie: {longDate(snapshot.date)}.</p>}
           </>
         )}

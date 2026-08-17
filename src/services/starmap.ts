@@ -1,7 +1,7 @@
 // src/services/starmap.ts
 // Rozgwiazda: jedna przestrzeń zamiast trzech. Ramiona to siedem obszarów,
-// węzły na ramieniu to karty talii w kolejności twórczyni, a stan węzła bierze
-// się z historii — karta odblokowuje kolejną w swoim obszarze.
+// a każde ramię jest małym drzewem: korzeń → dwa węzły → po jednym z każdego.
+// Docelowo pięć kart na obszar; przy czterech ostatni poziom ma jeden węzeł.
 import { AREAS } from '../data/areas.ts'
 import type { ActivationCard, AppState, AreaId } from '../types/index.ts'
 
@@ -12,6 +12,10 @@ export interface StarNode {
   state: NodeState
   /** Ile razy ukończone — węzeł rośnie z powtórzeniami. */
   powtorzenia: number
+  /** 0 = korzeń ramienia, 1 = rozwidlenie, 2 = liście. */
+  poziom: number
+  /** Id karty-rodzica; korzeń wychodzi wprost z rdzenia. */
+  rodzic?: string
   x: number
   y: number
 }
@@ -24,14 +28,14 @@ export interface StarArm {
   /** Poziom 0–100 z ostatniego badania Mapy Balansu; brak = obszar niezbadany. */
   poziom?: number
   nodes: StarNode[]
-  /** Koniec ramienia — tam siada podpis obszaru. */
-  labelX: number
-  labelY: number
 }
 
-/** Promień pierwszego węzła i odstęp kolejnych, w procentach planszy. */
-const R0 = 16
-const DR = 9.5
+/** Ile kart mieści się na kolejnych poziomach ramienia. */
+export const ARM_SHAPE = [1, 2, 2]
+
+/** Promień poziomów i rozstaw gałęzi w stopniach. */
+const R = [15, 28, 41]
+const SPREAD = 15
 
 export function buildStarMap(
   state: AppState,
@@ -44,27 +48,52 @@ export function buildStarMap(
   }
 
   return AREAS.map((area, armIndex) => {
-    // Ramiona rozchodzą się równo, pierwsze do góry.
-    const kat = (-Math.PI / 2) + (armIndex * 2 * Math.PI) / AREAS.length
+    const kat = -90 + (armIndex * 360) / AREAS.length
     const wArm = cards.filter((c) => c.area === area.id)
+    const nodes: StarNode[] = []
 
-    let poprzedniaZrobiona = true
-    const nodes = wArm.map((card, i) => {
-      const powtorzenia = zrobione.get(card.id) ?? 0
-      const state: NodeState = powtorzenia > 0 ? 'zrobione' : poprzedniaZrobiona ? 'otwarte' : 'zamkniete'
-      poprzedniaZrobiona = powtorzenia > 0
-      const r = R0 + i * DR
-      return {
-        card,
-        state,
-        powtorzenia,
-        x: 50 + r * Math.cos(kat),
-        y: 50 + r * Math.sin(kat),
+    let i = 0
+    let poprzedniPoziom: StarNode[] = []
+
+    for (let poziom = 0; poziom < ARM_SHAPE.length && i < wArm.length; poziom += 1) {
+      const ile = Math.min(ARM_SHAPE[poziom], wArm.length - i)
+      const warstwa: StarNode[] = []
+
+      for (let k = 0; k < ile; k += 1, i += 1) {
+        // Rodzicem jest węzeł z poprzedniego poziomu — dzieci rozkładają się po kolei.
+        const rodzic = poprzedniPoziom.length
+          ? poprzedniPoziom[k % poprzedniPoziom.length]
+          : undefined
+        // Gałęzie rozchodzą się symetrycznie wokół osi ramienia.
+        const offset = ile === 1 ? 0 : (k - (ile - 1) / 2) * SPREAD
+        const radian = ((kat + offset) * Math.PI) / 180
+        const r = R[poziom]
+
+        const card = wArm[i]
+        const powtorzenia = zrobione.get(card.id) ?? 0
+        warstwa.push({
+          card,
+          powtorzenia,
+          poziom,
+          rodzic: rodzic?.card.id,
+          state: 'zamkniete',
+          x: 50 + r * Math.cos(radian),
+          y: 50 + r * Math.sin(radian),
+        })
       }
-    })
 
-    // Podpis siada tuż za ostatnim węzłem, ale nie wychodzi poza planszę.
-    const rLabel = Math.min(R0 + Math.max(0, wArm.length - 1) * DR + 8, 44)
+      nodes.push(...warstwa)
+      poprzedniPoziom = warstwa
+    }
+
+    // Otwarte jest to, co nie ma rodzica albo czyj rodzic został zrobiony.
+    for (const node of nodes) {
+      const rodzicZrobiony = node.rodzic
+        ? (zrobione.get(node.rodzic) ?? 0) > 0
+        : true
+      node.state = node.powtorzenia > 0 ? 'zrobione' : rodzicZrobiony ? 'otwarte' : 'zamkniete'
+    }
+
     return {
       area: area.id,
       name: area.name,
@@ -72,17 +101,18 @@ export function buildStarMap(
       icon: area.icon,
       poziom: levels[area.id],
       nodes,
-      labelX: clamp(50 + rLabel * Math.cos(kat)),
-      labelY: clamp(50 + rLabel * Math.sin(kat)),
     }
   })
 }
-
-/** Podpisy trzymamy w środku planszy, żeby nie ucinała ich krawędź. */
-const clamp = (v: number) => Math.min(92, Math.max(8, v))
 
 /** Ile kart odblokowanych z całej talii — licznik nad planszą. */
 export function starProgress(arms: StarArm[]): { zrobione: number; wszystkie: number } {
   const nodes = arms.flatMap((a) => a.nodes)
   return { zrobione: nodes.filter((n) => n.state === 'zrobione').length, wszystkie: nodes.length }
+}
+
+/** Ilu kart brakuje twórczyni do pełnego drzewa na każdym ramieniu. */
+export function brakujaceKarty(arms: StarArm[]): number {
+  const pelne = ARM_SHAPE.reduce((a, b) => a + b, 0)
+  return arms.reduce((brak, arm) => brak + Math.max(0, pelne - arm.nodes.length), 0)
 }
