@@ -14,8 +14,8 @@ export interface Env {
   BETTER_AUTH_URL: string
   GOOGLE_CLIENT_ID: string
   GOOGLE_CLIENT_SECRET: string
-  RESEND_API_KEY: string
-  /** Adres nadawcy — do produkcji zweryfikowana domena w Resend. */
+  BREVO_API_KEY: string
+  /** Sam adres nadawcy, bez nazwy — domena musi być uwierzytelniona w Brevo. */
   MAIL_FROM: string
 }
 
@@ -33,26 +33,27 @@ export function createAuth(env: Env) {
     plugins: [
       magicLink({
         async sendMagicLink({ email, url }) {
-          // Dev bez klucza Resend: link ląduje w logu wranglera zamiast w mailu.
+          // Dev bez klucza: link ląduje w logu wranglera zamiast w mailu.
           // Tylko localhost — na produkcji brak klucza ma być błędem, nie ciszą.
-          if (!env.RESEND_API_KEY && env.BETTER_AUTH_URL?.startsWith('http://localhost')) {
+          if (!env.BREVO_API_KEY && env.BETTER_AUTH_URL?.startsWith('http://localhost')) {
             console.log(`[dev] Magic link dla ${email}: ${url}`)
             return
           }
-          const res = await fetch('https://api.resend.com/emails', {
+          const res = await fetch('https://api.brevo.com/v3/smtp/email', {
             method: 'POST',
             headers: {
-              Authorization: `Bearer ${env.RESEND_API_KEY}`,
+              'api-key': env.BREVO_API_KEY,
               'Content-Type': 'application/json',
+              Accept: 'application/json',
             },
             body: JSON.stringify({
-              from: env.MAIL_FROM,
-              to: email,
+              sender: { email: env.MAIL_FROM, name: 'Lotos Balance' },
+              to: [{ email }],
               subject: 'Twój link do logowania — Lotos Balance',
-              html: `<p>Kliknij, aby się zalogować:</p><p><a href="${url}">Zaloguj się do Lotos Balance</a></p><p>Link wygasa po kilku minutach. Jeśli to nie Ty — zignoruj tę wiadomość.</p>`,
+              htmlContent: `<p>Kliknij, aby się zalogować:</p><p><a href="${url}">Zaloguj się do Lotos Balance</a></p><p>Link wygasa po kilku minutach. Jeśli to nie Ty — zignoruj tę wiadomość.</p>`,
             }),
           })
-          if (!res.ok) throw new Error(`Resend: ${res.status} ${await res.text()}`)
+          if (!res.ok) throw new Error(`Brevo: ${res.status} ${await res.text()}`)
         },
       }),
     ],
