@@ -1,11 +1,13 @@
 // src/screens/StartScreen.tsx
 // Trasa "/": lista talii. Jedna talia = jedna twórczyni = jeden folder w R2.
-import type { ReactNode } from 'react'
+import { AppBar } from '../components/AppBar'
+import { ProfileSwitch } from '../components/ProfileSwitch'
 import { Icon } from '../components/Icon'
 import { InstallButton } from '../components/InstallButton'
 import { navigate } from '../lib/router'
 import { deckAssetUrl, useCreators, useDeck } from '../services/decks'
 import type { Creator } from '../services/decks'
+import { useViewer } from '../services/viewer'
 import { exercisesLabel } from '../utils/format'
 
 /** Kafel talii — okładka, opis i liczba ćwiczeń lecą z manifestu w R2. */
@@ -39,32 +41,23 @@ function DeckTile({ creator }: { creator: Creator }) {
   )
 }
 
-interface Props {
-  /** Przełącznik profilu — tylko dla kont z rolą. */
-  switcher?: ReactNode
-}
-
-export function StartScreen({ switcher }: Props) {
+export function StartScreen() {
   const creators = useCreators()
+  const role = useViewer().data?.role ?? 'user'
 
   return (
     <div className="app">
-      <header className="app-bar">
-        <div className="app-bar-inner">
-          <span className="brand-mark">LOTOS BALANCE</span>
-          <div className="row">
-            {switcher}
-            <button
-              type="button"
-              className="icon-btn"
-              onClick={() => navigate('/profil')}
-              aria-label="Profil"
-            >
-              <Icon name="UserRound" size={18} />
-            </button>
-          </div>
-        </div>
-      </header>
+      <AppBar>
+        <ProfileSwitch role={role} />
+        <button
+          type="button"
+          className="icon-btn"
+          onClick={() => navigate('/profil')}
+          aria-label="Profil"
+        >
+          <Icon name="UserRound" size={18} />
+        </button>
+      </AppBar>
 
       <main className="app-main">
         <div className="stack-lg">

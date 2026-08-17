@@ -88,7 +88,7 @@ export function StarMapScreen({ onPlay }: Props) {
                 top: `${node.y}%`,
                 ...(node.state === 'zrobione' ? { background: arm.color, borderColor: arm.color } : { borderColor: arm.color }),
               }}
-              onClick={() => setWybrany(node)}
+              onClick={() => setWybrany((w) => (w?.card.id === node.card.id ? null : node))}
               aria-label={`${node.card.title}, ${node.state}`}
             >
               <Icon name={node.state === 'zamkniete' ? 'CircleDot' : node.card.icon} size={15} />
@@ -153,12 +153,6 @@ export function StarMapScreen({ onPlay }: Props) {
           </>
         )}
       </section>
-
-      {wybrany && wybrany.state !== 'zamkniete' && (
-        <button type="button" className="btn btn-ghost btn-block" onClick={() => setWybrany(null)}>
-          Zamknij podgląd
-        </button>
-      )}
 
       {quizOpen && (
         <Modal title="Mapa Balansu" onClose={() => setQuizOpen(false)}>

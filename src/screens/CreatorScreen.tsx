@@ -5,7 +5,6 @@ import { useCreatorPanel } from '../services/viewer'
 import type { CreatorDeck } from '../services/viewer'
 import { useDeck } from '../services/decks'
 import { navigate } from '../lib/router'
-import { exercisesLabel } from '../utils/format'
 import { Icon } from '../components/Icon'
 
 function DeckPanel({ deck }: { deck: CreatorDeck }) {
@@ -72,7 +71,7 @@ function DeckPanel({ deck }: { deck: CreatorDeck }) {
 }
 
 export function CreatorScreen() {
-  const panel = useCreatorPanel(true)
+  const panel = useCreatorPanel()
 
   return (
     <div className="stack-lg">
@@ -96,12 +95,6 @@ export function CreatorScreen() {
         <DeckPanel key={deck.slug} deck={deck} />
       ))}
 
-      {(panel.data?.decks.length ?? 0) > 0 && (
-        <p className="tiny">
-          {exercisesLabel(panel.data!.decks.reduce((n, d) => n + d.ukonczenia, 0))} ukończonych w
-          Twoich taliach od początku.
-        </p>
-      )}
     </div>
   )
 }

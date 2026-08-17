@@ -4,6 +4,7 @@
 // preferencja zapisana lokalnie — przełącznik nigdy nie nadaje uprawnień.
 import { useQuery } from '@tanstack/react-query'
 import { useSyncExternalStore } from 'react'
+import { dateKey } from '../utils/date'
 
 export type Role = 'user' | 'creator' | 'specialist'
 export type ViewMode = 'uzytkowniczka' | 'tworczyni'
@@ -11,12 +12,11 @@ export type ViewMode = 'uzytkowniczka' | 'tworczyni'
 export interface Viewer {
   name: string
   role: Role
-  /** Talie, którymi zarządza to konto. */
-  decks: { slug: string; name: string }[]
 }
 
 const VIEW_KEY = 'lotos-balance:widok'
-const listeners = new Set<() => void>()
+/** Zdarzenie okna zamiast własnej listy słuchaczy — subskrypcję robi platforma. */
+const VIEW_EVENT = 'lotos:widok'
 
 function readView(): ViewMode {
   try {
@@ -32,15 +32,15 @@ export function setViewMode(mode: ViewMode): void {
   } catch {
     // tryb prywatny — widok zostaje do końca sesji
   }
-  listeners.forEach((l) => l())
+  window.dispatchEvent(new Event(VIEW_EVENT))
 }
 
 /** Wybrany widok. Zmiana odświeża każdy komponent, który go czyta. */
 export function useViewMode(): ViewMode {
   return useSyncExternalStore(
-    (l) => {
-      listeners.add(l)
-      return () => listeners.delete(l)
+    (onChange) => {
+      window.addEventListener(VIEW_EVENT, onChange)
+      return () => window.removeEventListener(VIEW_EVENT, onChange)
     },
     readView,
     () => 'uzytkowniczka',
@@ -61,13 +61,12 @@ export function useViewer() {
 }
 
 /** Panel twórczyni: talie z licznikami. Serwer sam sprawdza rolę. */
-export function useCreatorPanel(enabled: boolean) {
+export function useCreatorPanel() {
   return useQuery<{ decks: CreatorDeck[] }>({
     queryKey: ['creator-panel'],
-    enabled,
     staleTime: 60 * 1000,
     queryFn: async () => {
-      const res = await fetch('/api/creator')
+      const res = await fetch(`/api/creator?dzien=${dateKey()}`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       return res.json()
     },

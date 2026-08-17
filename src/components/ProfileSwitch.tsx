@@ -6,11 +6,6 @@ import { setViewMode, useViewMode } from '../services/viewer'
 import type { Role } from '../services/viewer'
 import { Icon } from './Icon'
 
-const LABEL: Record<Exclude<Role, 'user'>, string> = {
-  creator: 'Twórczyni',
-  specialist: 'Specjalistka',
-}
-
 export function ProfileSwitch({ role }: { role: Role }) {
   const view = useViewMode()
   if (role === 'user') return null
@@ -33,7 +28,7 @@ export function ProfileSwitch({ role }: { role: Role }) {
         onClick={() => setViewMode('tworczyni')}
       >
         <Icon name="Layers" size={14} />
-        {LABEL[role]}
+        {role === 'creator' ? 'Twórczyni' : 'Specjalistka'}
       </button>
     </div>
   )

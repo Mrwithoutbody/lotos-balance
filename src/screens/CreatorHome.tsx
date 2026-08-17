@@ -3,6 +3,7 @@
 // się na swój widok. Rola przychodzi z serwera; przełącznik tylko wybiera ekran.
 import { CreatorScreen } from './CreatorScreen'
 import { StartScreen } from './StartScreen'
+import { AppBar } from '../components/AppBar'
 import { ProfileSwitch } from '../components/ProfileSwitch'
 import { Icon } from '../components/Icon'
 import { InstallButton } from '../components/InstallButton'
@@ -16,27 +17,22 @@ export function CreatorHome() {
 
   // Bez roli albo w widoku praktyki wchodzi zwykła lista talii.
   if (role === 'user' || view === 'uzytkowniczka') {
-    return <StartScreen switcher={role === 'user' ? null : <ProfileSwitch role={role} />} />
+    return <StartScreen />
   }
 
   return (
     <div className="app">
-      <header className="app-bar">
-        <div className="app-bar-inner">
-          <span className="brand-mark">LOTOS BALANCE</span>
-          <div className="row">
-            <ProfileSwitch role={role} />
-            <button
-              type="button"
-              className="icon-btn"
-              onClick={() => navigate('/profil')}
-              aria-label="Profil"
-            >
-              <Icon name="UserRound" size={18} />
-            </button>
-          </div>
-        </div>
-      </header>
+      <AppBar>
+        <ProfileSwitch role={role} />
+        <button
+          type="button"
+          className="icon-btn"
+          onClick={() => navigate('/profil')}
+          aria-label="Profil"
+        >
+          <Icon name="UserRound" size={18} />
+        </button>
+      </AppBar>
       <main className="app-main">
         <div className="stack-lg">
           <CreatorScreen />

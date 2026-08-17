@@ -1,6 +1,7 @@
 // src/App.tsx
 import { useEffect, useState } from 'react'
 import { AboutModal } from './components/AboutModal'
+import { AppBar } from './components/AppBar'
 import { BottomNav } from './components/BottomNav'
 import type { TabId } from './components/BottomNav'
 import { CardPlayer } from './components/CardPlayer'
@@ -36,40 +37,24 @@ export default function App({ creatorSlug }: Props) {
 
   return (
     <div className="app">
-      <header className="app-bar">
-        <div className="app-bar-inner">
-          <a
-            className="brand-row"
-            href="/"
-            onClick={(e) => {
-              e.preventDefault()
-              navigate('/')
-            }}
-            aria-label="Wróć do listy talii"
-          >
-            <span className="brand-mark">LOTOS BALANCE</span>
-            {deck.data && <span className="brand-sub">{deck.data.creator.name}</span>}
-          </a>
-          <div className="row">
-            <button
-              type="button"
-              className="icon-btn"
-              onClick={() => setAboutOpen(true)}
-              aria-label="O metodzie"
-            >
-              <Icon name="Info" size={18} />
-            </button>
-            <button
-              type="button"
-              className="icon-btn"
-              onClick={() => navigate('/profil')}
-              aria-label="Profil"
-            >
-              <Icon name="UserRound" size={18} />
-            </button>
-          </div>
-        </div>
-      </header>
+      <AppBar sub={deck.data?.creator.name}>
+        <button
+          type="button"
+          className="icon-btn"
+          onClick={() => setAboutOpen(true)}
+          aria-label="O metodzie"
+        >
+          <Icon name="Info" size={18} />
+        </button>
+        <button
+          type="button"
+          className="icon-btn"
+          onClick={() => navigate('/profil')}
+          aria-label="Profil"
+        >
+          <Icon name="UserRound" size={18} />
+        </button>
+      </AppBar>
 
       <main className="app-main">
         {saveFailed && (
