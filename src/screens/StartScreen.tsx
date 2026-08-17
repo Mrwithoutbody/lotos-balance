@@ -1,5 +1,6 @@
 // src/screens/StartScreen.tsx
 // Trasa "/": lista talii. Jedna talia = jedna twórczyni = jeden folder w R2.
+import type { ReactNode } from 'react'
 import { Icon } from '../components/Icon'
 import { InstallButton } from '../components/InstallButton'
 import { navigate } from '../lib/router'
@@ -38,7 +39,12 @@ function DeckTile({ creator }: { creator: Creator }) {
   )
 }
 
-export function StartScreen() {
+interface Props {
+  /** Przełącznik profilu — tylko dla kont z rolą. */
+  switcher?: ReactNode
+}
+
+export function StartScreen({ switcher }: Props) {
   const creators = useCreators()
 
   return (
@@ -46,6 +52,7 @@ export function StartScreen() {
       <header className="app-bar">
         <div className="app-bar-inner">
           <span className="brand-mark">LOTOS BALANCE</span>
+          {switcher}
         </div>
       </header>
 

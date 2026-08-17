@@ -4,12 +4,17 @@
 // kto jest twórcą, kto kogo obserwuje, kto co ukończył.
 import { sqliteTable, text, integer, primaryKey } from 'drizzle-orm/sqlite-core'
 
+/** Rola konta — decyduje, jakie widoki są dostępne po zalogowaniu. */
+export type Role = 'user' | 'creator' | 'specialist'
+
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
   emailVerified: integer('email_verified', { mode: 'boolean' }).notNull().default(false),
   image: text('image'),
+  /** 'user' | 'creator' | 'specialist'; nadawana ręcznie, nigdy przez rejestrację. */
+  role: text('role').$type<Role>().notNull().default('user'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).notNull(),
 })

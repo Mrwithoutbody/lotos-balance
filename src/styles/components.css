@@ -755,3 +755,58 @@
   box-shadow: var(--shadow-sm);
 }
 
+
+/* ——— Przełącznik profilu ——— */
+
+.profile-switch {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(51, 41, 31, 0.06);
+}
+
+.profile-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--plum-soft);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-switch-btn.is-active {
+  background: var(--paper);
+  color: var(--plum);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ——— Liczby w panelu twórczyni ——— */
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--sp-2);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--card-pad);
+  border-radius: var(--radius-sm);
+  background: rgba(244, 237, 231, 0.7);
+  border: 1px solid var(--line);
+}
+
+.stat-value {
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}

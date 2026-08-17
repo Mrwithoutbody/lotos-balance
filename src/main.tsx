@@ -6,6 +6,7 @@ import App from './App'
 import { AppStateProvider } from './hooks/useAppState'
 import { match, usePath } from './lib/router'
 import { LoginScreen } from './screens/LoginScreen'
+import { CreatorHome } from './screens/CreatorHome'
 import { StartScreen } from './screens/StartScreen'
 import '@fontsource-variable/newsreader'
 import '@fontsource-variable/newsreader/wght-italic.css'
@@ -42,7 +43,7 @@ if ('serviceWorker' in navigator) {
 /** "/" → wejście, "/logowanie" → logowanie, "/<slug>" → program twórczyni. */
 function Root() {
   const path = usePath()
-  if (match('/', path)) return <StartScreen />
+  if (match('/', path)) return <CreatorHome />
   if (match('/logowanie', path)) return <LoginScreen />
   const program = match('/:slug', path)
   if (program) return <App creatorSlug={program.slug} />
