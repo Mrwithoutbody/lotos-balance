@@ -1,0 +1,17 @@
+{
+  "name": "LOTOS BALANCE by Anna",
+  "short_name": "LOTOS",
+  "description": "Codzienne ćwiczenia wspierające balans i zdrowie mózgu.",
+  "lang": "pl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4ede7",
+  "theme_color": "#f4ede7",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

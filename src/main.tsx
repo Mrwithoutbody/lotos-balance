@@ -19,6 +19,13 @@ if (!container) throw new Error('Nie znaleziono elementu #root')
 
 const queryClient = new QueryClient()
 
+// SW tylko na produkcji — w dev cache powłoki tylko myli.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {})
+  })
+}
+
 /** "/" → krąg, "/logowanie" → logowanie, "/<slug>" → program twórczyni. */
 function Root() {
   const path = usePath()
