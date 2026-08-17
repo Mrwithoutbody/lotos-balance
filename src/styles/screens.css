@@ -556,3 +556,83 @@
   border: 1px solid rgba(180, 60, 60, 0.3);
   background: rgba(193, 120, 98, 0.08);
 }
+
+/* ——— Drzewo osiągnięć ——— */
+
+.tree-board {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  /* Ciemna plansza jak w drzewku umiejętności — jedyny taki ekran w apce. */
+  background:
+    radial-gradient(120% 90% at 20% 10%, rgba(139, 121, 176, 0.28) 0%, transparent 55%),
+    radial-gradient(100% 80% at 85% 75%, rgba(193, 120, 98, 0.22) 0%, transparent 60%),
+    #241d29;
+  box-shadow: var(--shadow);
+}
+
+.tree-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.tree-line {
+  stroke: rgba(244, 237, 231, 0.14);
+  stroke-width: 0.4;
+  vector-effect: non-scaling-stroke;
+}
+
+.tree-line.is-open {
+  stroke: rgba(244, 237, 231, 0.42);
+  stroke-width: 0.8;
+}
+
+.tree-node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1.5px solid rgba(244, 237, 231, 0.16);
+  background: rgba(36, 29, 41, 0.9);
+  color: rgba(244, 237, 231, 0.4);
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.tree-node:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+/* Dostępne: obrys w kolorze szałwii — widać, gdzie można sięgnąć. */
+.tree-node.is-dostepne {
+  border-color: var(--sage);
+  color: #dff0da;
+  background: rgba(123, 154, 120, 0.18);
+}
+
+/* Zdobyte: pełny kolor i poświata. */
+.tree-node.is-zdobyte {
+  border-color: transparent;
+  color: #fff6f1;
+  background: linear-gradient(150deg, var(--coral) 0%, #a85f4c 100%);
+  box-shadow: 0 0 0 4px rgba(193, 120, 98, 0.18), var(--shadow-sm);
+}
+
+.tree-node.is-picked {
+  outline: 2px solid rgba(244, 237, 231, 0.75);
+  outline-offset: 3px;
+}
+
+@media (min-width: 700px) {
+  .tree-board {
+    aspect-ratio: 1 / 1;
+  }
+}

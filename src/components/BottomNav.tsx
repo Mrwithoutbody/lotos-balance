@@ -1,11 +1,12 @@
 // src/components/BottomNav.tsx
 import { Icon } from './Icon'
 
-export type TabId = 'talia' | 'karty' | 'mapa' | 'postepy'
+export type TabId = 'talia' | 'karty' | 'drzewo' | 'mapa' | 'postepy'
 
 const TABS: { id: TabId; label: string; icon: string }[] = [
   { id: 'talia', label: 'Talia', icon: 'Home' },
   { id: 'karty', label: 'Karty', icon: 'Layers' },
+  { id: 'drzewo', label: 'Drzewo', icon: 'Milestone' },
   { id: 'mapa', label: 'Mapa', icon: 'Compass' },
   { id: 'postepy', label: 'Postępy', icon: 'Activity' },
 ]

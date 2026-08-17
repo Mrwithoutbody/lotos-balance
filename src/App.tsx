@@ -13,6 +13,7 @@ import { CardsScreen } from './screens/CardsScreen'
 import { DeckHomeScreen } from './screens/DeckHomeScreen'
 import { MapScreen } from './screens/MapScreen'
 import { ProgressScreen } from './screens/ProgressScreen'
+import { TreeScreen } from './screens/TreeScreen'
 import type { ActivationCard } from './types'
 import { dateKey } from './utils/date'
 
@@ -101,6 +102,7 @@ export default function App({ creatorSlug }: Props) {
             {tab === 'karty' && (
               <CardsScreen onPlay={(card, entryId) => setPlayer({ card, entryId })} />
             )}
+            {tab === 'drzewo' && <TreeScreen />}
             {tab === 'mapa' && <MapScreen />}
             {tab === 'postepy' && <ProgressScreen onAbout={() => setAboutOpen(true)} />}
 

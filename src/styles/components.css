@@ -27,7 +27,9 @@
 
 .bottom-nav-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* Liczba zakładek bywa różna — kolumny mają się dobierać same. */
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   gap: 4px;
   max-width: var(--page-max);
   margin: 0 auto;
