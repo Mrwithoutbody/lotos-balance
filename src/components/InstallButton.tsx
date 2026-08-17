@@ -23,6 +23,19 @@ export function InstallButton() {
   const [hint, setHint] = useState(false)
 
   useEffect(() => {
+    // Jedyny sposób, żeby z zakładki dowiedzieć się o istniejącej ikonie — działa
+    // w Chromium i tylko dzięki wpisowi related_applications w manifeście.
+    // Safari tej metody nie ma, więc na iOS przycisk zostaje widoczny zawsze.
+    const nav = navigator as Navigator & {
+      getInstalledRelatedApps?: () => Promise<unknown[]>
+    }
+    void nav
+      .getInstalledRelatedApps?.()
+      .then((apps) => {
+        if (apps.length > 0) setInstalled(true)
+      })
+      .catch(() => {})
+
     const onPrompt = (e: Event) => {
       e.preventDefault()
       setPrompt(e as InstallPromptEvent)
