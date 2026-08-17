@@ -2,6 +2,11 @@
 
 Vite + React + TS, zwykły CSS, Cloudflare Pages Functions + D1 + R2. Reszta w kodzie i README.
 
+## Git
+
+- **Pracujemy tylko na `main`.** Zero gałęzi roboczych, commit prosto na `main`.
+- Deploy z innej gałęzi ląduje na preview (`<branch>.lotos-balance.pages.dev`), a produkcja zostaje na starym buildzie.
+
 ## Deploy
 
 - `npm run build && CLOUDFLARE_ACCOUNT_ID=5ac2ce215d670d3c2f2cd33317caaaba npx wrangler pages deploy dist --project-name lotos-balance`
