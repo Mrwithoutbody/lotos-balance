@@ -24,7 +24,13 @@ Vite + React + TS, zwykły CSS, Cloudflare Pages Functions + D1 + R2. Reszta w k
 
 ## Fakty spoza repo
 
-- Magic link leci z sandboxa Resend → dociera tylko na dadmor@gmail.com. Google OAuth: test users.
+- Magic link leci przez Brevo (`BREVO_API_KEY`, `MAIL_FROM`); domena musi być uwierzytelniona w Brevo. Google OAuth: test users.
 - R2 `lotos-balance` i D1 `lotos-db` — konta i klucze w `.dev.vars`.
 - `/api/progress` zbiera oceny samopoczucia = RODO art. 9.
 - Zdjęcia w `src/assets/anna/` bez pisemnej zgody Anny, przy publicznym repo.
+
+## Treść programu w R2 — zamrożona
+
+- Skrypty publikowania (`export-deck.ts`, `upload-deck.sh`) usunięte 2026-08-17. Nie ma czym zmienić treści w buckecie. Źródło ćwiczeń: `git show 63ce87c^:scripts/export-deck.ts`.
+- `deck.json` w buckecie ma pola, których żaden kod nie generuje ani nie czyta: `format: 1` w manifeście i `kind: "tekst"` na każdej karcie. Pochodzenie nieznane. **Nie nadpisywać bucketa bez decyzji Maćka** — `kind` prawdopodobnie znaczy ćwiczenia nietekstowe pod programy na medytacje i diety.
+- Docelowo zapis idzie panelem twórcy, nie skryptem: `POST /api/deck/:slug` sprawdzający `creators.userId === session.user.id` (kolumna czeka w D1, nieużywana) + binding R2. Binding zdjęty z `wrangler.toml`, bo wskazywał na nieistniejący bucket `lotos-programy` — prawdziwy to `lotos-balance`.
