@@ -92,7 +92,7 @@ test('niepełne ramię nie wymyśla węzłów, a braki są policzone', () => {
 test('węzły trzymają się planszy i nie wchodzą w rdzeń', () => {
   for (const n of buildStarMap(state(), cards).flatMap((a) => a.nodes)) {
     const r = Math.hypot(n.x - 50, n.y - 50)
-    assert.ok(r >= 14 && r <= 46, `promień poza planszą: ${r}`)
+    assert.ok(r >= 18 && r <= 49, `promień poza planszą: ${r}`)
   }
 })
 

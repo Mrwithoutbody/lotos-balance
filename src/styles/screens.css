@@ -580,14 +580,15 @@
 }
 
 .star-line {
-  opacity: 0.22;
-  stroke-width: 0.6;
+  opacity: 0.3;
+  stroke-width: 1;
+  stroke-linecap: round;
   vector-effect: non-scaling-stroke;
 }
 
 .star-line.is-open {
-  opacity: 0.85;
-  stroke-width: 1.2;
+  opacity: 0.9;
+  stroke-width: 2;
 }
 
 .star-core {
@@ -628,8 +629,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 11px;
   border: 1.5px solid;
   background: rgba(36, 29, 41, 0.9);

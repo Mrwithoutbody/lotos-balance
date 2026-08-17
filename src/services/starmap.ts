@@ -33,9 +33,9 @@ export interface StarArm {
 /** Ile kart mieści się na kolejnych poziomach ramienia. */
 export const ARM_SHAPE = [1, 2, 2]
 
-/** Promień poziomów i rozstaw gałęzi w stopniach. */
-const R = [15, 28, 41]
-const SPREAD = 15
+/** Promień poziomów i rozstaw gałęzi w stopniach — luźno, żeby karty oddychały. */
+const R = [19, 34, 48]
+const SPREAD = 19
 
 export function buildStarMap(
   state: AppState,
