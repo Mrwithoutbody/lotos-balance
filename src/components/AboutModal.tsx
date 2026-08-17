@@ -1,5 +1,8 @@
 // src/components/AboutModal.tsx
-import { BRAIN_STEPS, SOURCES } from '../data/brain'
+// Jedyne miejsce z zastrzeżeniami, źródłami i prawami do danych (eksport, usunięcie).
+import { useState } from 'react'
+import { useAppState } from '../hooks/useAppState'
+import { exportState } from '../services/storage'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
 
@@ -7,33 +10,34 @@ interface Props {
   onClose: () => void
 }
 
+const SOURCES = [
+  {
+    label: 'The Lancet Commission / UCL — 14 modyfikowalnych czynników ryzyka',
+    url: 'https://www.ucl.ac.uk/news/2024/jul/nearly-half-dementia-cases-could-be-prevented-or-delayed-tackling-14-risk-factors',
+  },
+  {
+    label: 'US POINTER / JAMA — badanie nad stylem życia a funkcjami poznawczymi',
+    url: 'https://jamanetwork.com/journals/jama/fullarticle/2837046',
+  },
+  {
+    label: 'Brain Care Score / Mass General Brigham — jak dbać o zdrowie mózgu',
+    url: 'https://www.massgeneralbrigham.org/en/about/newsroom/articles/improve-your-brain-health',
+  },
+]
+
 export function AboutModal({ onClose }: Props) {
+  const { state, resetAll } = useAppState()
+  const [confirmDelete, setConfirmDelete] = useState(false)
+
   return (
     <Modal title="O metodzie" onClose={onClose}>
       <div className="stack-lg">
         <section className="stack-sm">
           <p className="eyebrow">Jak to działa</p>
           <p className="muted">
-            Najpierw poznajesz swój balans w siedmiu obszarach. Potem aplikacja dobiera krótkie
-            ćwiczenia do Twojej aktualnej potrzeby, dostępnego czasu i wcześniejszych reakcji.
-            Personalizacja nie oznacza losowych porad — oznacza dobór sprawdzonych ćwiczeń do
-            konkretnej osoby.
+            Codziennie jedno krótkie ćwiczenie z programu twórczyni. Aplikacja podaje najkrótsze
+            ćwiczenia i pomija te, które zrobiłaś dziś. Bez AI, bez losowania.
           </p>
-        </section>
-
-        <section className="stack-sm">
-          <p className="eyebrow">Mózg na lata</p>
-          <p className="muted">Moduł opiera się na czterech filarach codziennych nawyków:</p>
-          <ul className="bullets">
-            {BRAIN_STEPS.map((s) => (
-              <li key={s.pillar}>
-                <Icon name={s.icon} size={15} color={s.color} />
-                <span>
-                  <strong>{s.pillarLabel}</strong> — {s.hint}
-                </span>
-              </li>
-            ))}
-          </ul>
         </section>
 
         <section className="stack-sm notice">
@@ -71,11 +75,51 @@ export function AboutModal({ onClose }: Props) {
         <section className="stack-sm">
           <p className="eyebrow">Twoje dane</p>
           <p className="muted">
-            Twoja historia i mapa balansu są zapisane w pamięci przeglądarki na tym urządzeniu. Jeśli
-            się zalogujesz, ukończone ćwiczenia wraz z ocenami samopoczucia przed i po trafiają
-            dodatkowo do naszej bazy w Unii Europejskiej — stamtąd bierze się wspólna aktywność
-            kręgu. Inni widzą tam tylko tytuł ćwiczenia i datę, nigdy Twojego imienia ani ocen.
+            <Icon name="Shield" size={14} style={{ verticalAlign: '-2px', marginRight: 6 }} />
+            Historia ukończonych ćwiczeń zostaje w pamięci przeglądarki na tym urządzeniu. Jeśli się
+            zalogujesz, tytuł ćwiczenia i data trafiają dodatkowo do naszej bazy w Unii Europejskiej.
           </p>
+          <button
+            type="button"
+            className="btn btn-secondary btn-block"
+            onClick={() => exportState(state)}
+          >
+            <Icon name="Download" size={16} />
+            Eksportuj moje dane
+          </button>
+          {confirmDelete ? (
+            <div className="stack-sm confirm-box">
+              <p className="muted">Na pewno usunąć wszystkie dane? Tej operacji nie da się cofnąć.</p>
+              <div className="row">
+                <button
+                  type="button"
+                  className="btn btn-danger grow"
+                  onClick={() => {
+                    resetAll()
+                    setConfirmDelete(false)
+                  }}
+                >
+                  Tak, usuń
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary grow"
+                  onClick={() => setConfirmDelete(false)}
+                >
+                  Anuluj
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              className="btn btn-danger btn-block"
+              onClick={() => setConfirmDelete(true)}
+            >
+              <Icon name="Trash2" size={16} />
+              Usuń wszystkie dane
+            </button>
+          )}
         </section>
       </div>
     </Modal>

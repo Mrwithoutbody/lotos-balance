@@ -14,8 +14,8 @@ interface Props {
 const THRESHOLD = 88
 
 /**
- * Karta reagująca na przeciągnięcie palcem lub myszą.
- * W prawo znaczy „to o mnie”, w lewo „nie teraz” — oba zdejmują kartę ze stosu.
+ * Karta reagująca na przeciągnięcie palcem lub myszą. Gest przewija talię:
+ * w lewo następna karta, w prawo poprzednia. Nic nie ocenia i nic nie zapisuje.
  */
 export function SwipeCard({ children, onSwipe, label }: Props) {
   const [dx, setDx] = useState(0)
@@ -101,8 +101,8 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
         }}
         aria-hidden="true"
       >
-        <Icon name="Star" size={16} fill="currentColor" />
-        Do ulubionych
+        <Icon name="Clock" size={16} />
+        Nie teraz
       </span>
       <span
         className="swipe-stamp swipe-stamp-no"
@@ -113,8 +113,8 @@ export function SwipeCard({ children, onSwipe, label }: Props) {
         }}
         aria-hidden="true"
       >
-        <Icon name="ChevronLeft" size={16} />
-        Pomiń
+        <Icon name="X" size={16} />
+        Nie dla mnie
       </span>
       {children}
     </div>

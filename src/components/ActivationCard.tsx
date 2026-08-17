@@ -3,8 +3,9 @@ import type { CSSProperties, ReactNode } from 'react'
 import { AREA_BY_ID } from '../data/areas'
 import { useProgram } from '../hooks/useProgram'
 import type { ActivationCard as Card } from '../types'
-import { plural } from '../utils/plural'
+import { stepsLabel } from '../utils/format'
 import { Icon } from './Icon'
+import { Pill } from './Pill'
 
 interface Props {
   card: Card
@@ -33,14 +34,10 @@ export function ActivationCardView({ card, reasons, onInfo, footer }: Props) {
         />
       )}
       <div className="activation-top">
-        <span className="pill" style={{ color: area.color }}>
-          <Icon name={area.icon} size={13} />
+        <Pill icon={area.icon} color={area.color}>
           {area.name}
-        </span>
-        <span className="pill">
-          <Icon name="Clock" size={13} />
-          {card.minutes} min
-        </span>
+        </Pill>
+        <Pill icon="Clock">{card.minutes} min</Pill>
         {onInfo && (
           <button
             type="button"
@@ -56,7 +53,7 @@ export function ActivationCardView({ card, reasons, onInfo, footer }: Props) {
       </div>
 
       <div className="activation-emblem" style={{ background: area.color }}>
-        <Icon name={card.icon} size={26} strokeWidth={1.6} color="#fffaf7" />
+        <Icon name={card.icon} size={26} strokeWidth={1.6} color="var(--paper)" />
       </div>
 
       <h3 className="activation-title">{card.title}</h3>
@@ -70,7 +67,7 @@ export function ActivationCardView({ card, reasons, onInfo, footer }: Props) {
         </span>
         <span className="meta-badge">
           <Icon name="CheckCircle2" size={13} />
-          {card.steps.length} {plural(card.steps.length, 'krok', 'kroki', 'kroków')}
+          {stepsLabel(card.steps.length)}
         </span>
         {secondary && (
           <span

@@ -66,6 +66,7 @@ export const creators = sqliteTable('creators', {
 })
 
 /** Kto pracuje na czyim programie — z tego krąg liczy „ilu znajomych tu jest”. */
+/** Tabela istnieje w D1 z czasów kręgu; dziś nieużywana — nie usuwać bez migracji. */
 export const follows = sqliteTable(
   'follows',
   {

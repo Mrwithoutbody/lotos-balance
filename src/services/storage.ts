@@ -4,15 +4,7 @@ import type { AppState } from '../types'
 const STORAGE_KEY = 'lotos-balance:v1'
 
 export function defaultState(): AppState {
-  return {
-    snapshots: [],
-    checkIns: [],
-    sessions: [],
-    calendar: [],
-    favorites: [],
-    swipes: [],
-    brainSteps: [],
-  }
+  return { snapshots: [], sessions: [], calendar: [], swipes: [] }
 }
 
 /** Zostawia tylko elementy o wymaganych polach — jeden uszkodzony wpis nie kasuje reszty. */
@@ -26,21 +18,19 @@ function keep<T>(value: unknown, fields: string[]): T[] {
   )
 }
 
-const strings = (value: unknown): string[] =>
-  Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : []
-
-/** Uzupełnia braki i odrzuca uszkodzone wpisy — zamiast wywalać całą aplikację. */
+/**
+ * Uzupełnia braki i odrzuca uszkodzone wpisy — zamiast wywalać całą aplikację.
+ * Starsze zapisy miały więcej pól (mapa balansu, kalendarz, ulubione); zostaje historia.
+ */
 function migrate(raw: unknown): AppState {
   if (!raw || typeof raw !== 'object') return defaultState()
   const data = raw as Partial<AppState>
   return {
+    deckStart: typeof data.deckStart === 'string' ? data.deckStart : undefined,
     snapshots: keep(data.snapshots, ['id', 'date']),
-    checkIns: keep(data.checkIns, ['id', 'date', 'need']),
     sessions: keep(data.sessions, ['id', 'date', 'cardId']),
     calendar: keep(data.calendar, ['id', 'date', 'cardId']),
-    favorites: strings(data.favorites),
-    swipes: keep(data.swipes, ['id', 'cardId', 'area', 'direction']),
-    brainSteps: strings(data.brainSteps),
+    swipes: keep(data.swipes, ['id', 'date', 'cardId', 'direction']),
   }
 }
 

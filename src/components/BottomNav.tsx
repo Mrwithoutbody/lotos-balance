@@ -1,13 +1,13 @@
 // src/components/BottomNav.tsx
 import { Icon } from './Icon'
 
-export type TabId = 'dzisiaj' | 'program' | 'kalendarz' | 'balans'
+export type TabId = 'talia' | 'karty' | 'mapa' | 'postepy'
 
 const TABS: { id: TabId; label: string; icon: string }[] = [
-  { id: 'dzisiaj', label: 'Dzisiaj', icon: 'Home' },
-  { id: 'program', label: 'Program', icon: 'Layers' },
-  { id: 'kalendarz', label: 'Kalendarz', icon: 'CalendarDays' },
-  { id: 'balans', label: 'Balans', icon: 'Compass' },
+  { id: 'talia', label: 'Talia', icon: 'Home' },
+  { id: 'karty', label: 'Karty', icon: 'Layers' },
+  { id: 'mapa', label: 'Mapa', icon: 'Compass' },
+  { id: 'postepy', label: 'Postępy', icon: 'Activity' },
 ]
 
 interface Props {
@@ -15,6 +15,7 @@ interface Props {
   onChange: (tab: TabId) => void
 }
 
+/** Cztery strony: talia, karty z kalendarzem, Mapa Balansu, postępy. */
 export function BottomNav({ active, onChange }: Props) {
   return (
     <nav className="bottom-nav" aria-label="Nawigacja główna">

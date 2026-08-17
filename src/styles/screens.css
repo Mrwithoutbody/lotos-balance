@@ -51,32 +51,8 @@
   }
 }
 
-/* ——— Hero ze zdjęciem ——— */
 
-.hero {
-  position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background-size: cover;
-  background-position: center 30%;
-  box-shadow: var(--shadow);
-  min-height: 230px;
-  display: flex;
-  align-items: flex-end;
-}
 
-.hero-slim {
-  min-height: 180px;
-}
-
-.hero-overlay {
-  width: 100%;
-  padding: 56px 20px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-2);
-  background: linear-gradient(180deg, rgba(35, 28, 21, 0) 0%, rgba(35, 28, 21, 0.62) 62%, rgba(35, 28, 21, 0.78) 100%);
-}
 
 .hero-eyebrow {
   font-size: 0.7rem;
@@ -106,70 +82,196 @@
   border: 1px solid rgba(244, 237, 231, 0.25);
 }
 
-/* ——— Ciemna karta editorial („Mózg na lata”) ——— */
 
-.brain-card-dark {
-  position: relative;
+
+
+
+/* ——— Miniatura karty dnia: grafika z lewej, treść z prawej ——— */
+
+.today-card {
+  display: grid;
+  grid-template-columns: 186px 1fr;
+  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background-size: cover;
-  background-position: center;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-sm);
 }
 
-.brain-card-scrim {
+/* Kadr grafiki — koloryzacja z .card-art, ta sama co na pełnej karcie w talii. */
+.today-card-art {
+  position: relative;
+  border: 0;
+  padding: 0;
+  background: color-mix(in srgb, var(--area-soft) 70%, transparent);
+  cursor: pointer;
+  min-height: 148px;
+}
+
+.today-card-art .card-art {
+  /* Kadr poziomy, więc maska idzie w bok, nie w dół. */
+  -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 62%, transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0%, #000 62%, transparent 100%);
+  opacity: 0.62;
+}
+
+.today-card-emblem {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.today-card-body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--sp-2);
-  padding: 18px;
-  /* Ta sama plama światła co na kartach, tyle że ciepła — ciemny blok
-     przestaje być płaską płachtą, dostaje kierunek. */
-  background:
-    radial-gradient(
-      110% 140% at 0% 100%,
-      color-mix(in srgb, var(--glow) 26%, transparent) 0%,
-      transparent 58%
-    ),
-    linear-gradient(120deg, rgba(58, 48, 39, 0.94) 30%, rgba(58, 48, 39, 0.72) 100%);
-  color: var(--dark-text);
+  padding: var(--card-pad);
+}
+
+.today-card-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
   width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
-.brain-title {
+.today-card-title {
   font-family: var(--font-serif);
-  font-size: 1.35rem;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: #f4ecdf;
+  font-size: 1.25rem;
+  line-height: 1.2;
 }
 
-.brain-hint {
+.today-card-desc {
   font-size: 0.88rem;
-  color: var(--dark-muted);
+  color: var(--plum-soft);
 }
 
-.btn-glass {
-  background: rgba(244, 237, 231, 0.14);
-  border: 1px solid rgba(244, 237, 231, 0.3);
-  color: #f4ede7;
+.today-card-start {
+  margin-top: auto;
 }
 
-.btn-glass:hover {
-  background: rgba(244, 237, 231, 0.22);
+@media (max-width: 420px) {
+  .today-card {
+    grid-template-columns: 142px 1fr;
+  }
 }
 
-.btn-glass-done {
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--dark-muted);
+/* ——— Lista talii i okładka talii ——— */
+
+.deck-tile {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 260px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: #3a322d;
+  background-size: cover;
+  /* Kadr okładki: twarz zostaje w górnej połowie, tekst siada na tle. */
+  background-position: center 28%;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  text-align: left;
 }
 
-.icon-btn-glass {
-  background: rgba(244, 237, 231, 0.14);
-  border-color: rgba(244, 237, 231, 0.3);
-  color: #f4ede7;
+/* Maska tylko pod tekstem: góra zdjęcia czysta, dół ciemnieje płynnie. */
+.deck-tile-scrim {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  flex: 1;
+  padding: var(--card-pad);
+  background: linear-gradient(
+    180deg,
+    rgba(26, 20, 16, 0) 0%,
+    rgba(26, 20, 16, 0.08) 42%,
+    rgba(26, 20, 16, 0.62) 74%,
+    rgba(26, 20, 16, 0.88) 100%
+  );
+  color: #f7f1ea;
 }
+
+.deck-tile-name {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  line-height: 1.15;
+  text-shadow: 0 1px 12px rgba(26, 20, 16, 0.45);
+}
+
+.deck-tile-meta {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: rgba(247, 241, 234, 0.88);
+}
+
+.deck-tile-bio {
+  font-size: 0.86rem;
+  line-height: 1.4;
+  color: rgba(247, 241, 234, 0.78);
+  /* Dwie linie opisu — dłuższe bio nie rozpycha kafla. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.deck-tile-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin-top: var(--sp-2);
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(247, 241, 234, 0.16);
+  border: 1px solid rgba(247, 241, 234, 0.34);
+  backdrop-filter: blur(6px);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.deck-hero {
+  position: relative;
+  min-height: 230px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background-color: #3a322d;
+  background-size: cover;
+  background-position: center;
+}
+
+.deck-hero-scrim {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  height: 100%;
+  min-height: 230px;
+  padding: var(--card-pad);
+  justify-content: flex-end;
+  background: linear-gradient(180deg, rgba(28, 22, 18, 0.1) 0%, rgba(28, 22, 18, 0.8) 100%);
+  color: #f7f1ea;
+}
+
+
+
+
 
 /* ——— Ekran Dzisiaj ——— */
 
@@ -189,11 +291,6 @@
   border: 1px solid var(--line);
 }
 
-.entry-row-block {
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--sp-2);
-}
 
 .entry-title {
   display: block;
@@ -206,43 +303,9 @@
   display: block;
 }
 
-.entry-actions {
-  gap: var(--sp-2);
-}
 
-.pill-done {
-  background: rgba(123, 154, 120, 0.18);
-  color: #4d6b4b;
-}
 
-/* ——— Program ——— */
 
-.segmented {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 999px;
-  background: rgba(51, 41, 31, 0.06);
-}
-
-.segmented-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  min-height: 42px;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  color: var(--plum-soft);
-  font-size: 0.9rem;
-  font-weight: 600;
-  transition:
-    background 0.18s ease,
-    color 0.18s ease,
-    box-shadow 0.18s ease;
-}
 
 .segmented-btn.is-active {
   background: var(--paper);
@@ -392,18 +455,11 @@
   color: #fbf7f2;
 }
 
-.map-progress {
-  gap: var(--sp-2);
-  padding: 10px 14px;
-}
 
 .map-progress .eyebrow {
   white-space: nowrap;
 }
 
-.map-progress .area-dots {
-  flex-wrap: nowrap;
-}
 
 .probe-card .activation-title {
   font-size: 1.32rem;
@@ -426,66 +482,13 @@
   }
 }
 
-.chip-icon {
-  flex: none;
-  min-height: 48px;
-  padding: 0 14px;
-}
 
-/* Przy szukajce: bez płaszczyzny, dopiero wybrany filtr zapala inwersję z .chip[aria-pressed]. */
-.chip-ghost {
-  border-color: transparent;
-  background: transparent;
-}
 
-/* Bez :not() hover zdejmuje inwersję z wybranego filtra — obie reguły mają tę samą wagę. */
-.chip-ghost:not([aria-pressed='true']):hover {
-  background: rgba(255, 255, 255, 0.6);
-}
 
-.tile-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: var(--sp-2);
-}
 
-/* ——— Kalendarz ——— */
 
-.cal-month {
-  text-transform: capitalize;
-}
 
-.cal-weekdays,
-.cal-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
 
-.cal-weekdays {
-  font-size: 0.72rem;
-  color: var(--plum-faint);
-  text-align: center;
-  font-weight: 600;
-}
-
-.cal-cell {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  aspect-ratio: 1 / 1;
-  min-width: 0;
-  padding: 0;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.6);
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--plum);
-}
 
 .cal-cell.is-empty {
   background: transparent;
@@ -508,11 +511,6 @@
   border-color: var(--plum);
 }
 
-.cal-dots {
-  display: flex;
-  gap: 3px;
-  height: 6px;
-}
 
 .cal-dot {
   width: 5px;
@@ -529,43 +527,14 @@
   background: var(--sage);
 }
 
-.week-list {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
 
-.week-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.6);
-  text-align: left;
-}
 
-.week-row:hover {
-  background: #fff;
-}
 
 .week-row.is-selected {
   border-color: var(--coral);
 }
 
-.week-day {
-  display: flex;
-  flex-direction: column;
-  min-width: 54px;
-  line-height: 1.2;
-}
 
-.week-row svg {
-  flex: none;
-  color: var(--sage);
-}
 
 /* ——— Balans ——— */
 

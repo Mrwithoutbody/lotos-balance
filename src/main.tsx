@@ -5,8 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import { AppStateProvider } from './hooks/useAppState'
 import { match, usePath } from './lib/router'
-import { CircleScreen } from './screens/CircleScreen'
 import { LoginScreen } from './screens/LoginScreen'
+import { StartScreen } from './screens/StartScreen'
 import '@fontsource-variable/newsreader'
 import '@fontsource-variable/newsreader/wght-italic.css'
 import '@fontsource-variable/inter'
@@ -26,14 +26,14 @@ if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   })
 }
 
-/** "/" → krąg, "/logowanie" → logowanie, "/<slug>" → program twórczyni. */
+/** "/" → wejście, "/logowanie" → logowanie, "/<slug>" → program twórczyni. */
 function Root() {
   const path = usePath()
-  if (match('/', path)) return <CircleScreen />
+  if (match('/', path)) return <StartScreen />
   if (match('/logowanie', path)) return <LoginScreen />
   const program = match('/:slug', path)
   if (program) return <App creatorSlug={program.slug} />
-  return <CircleScreen />
+  return <StartScreen />
 }
 
 createRoot(container).render(

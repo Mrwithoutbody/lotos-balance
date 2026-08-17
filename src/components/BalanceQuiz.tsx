@@ -1,26 +1,21 @@
 // src/components/BalanceQuiz.tsx
 import { useState } from 'react'
-import { AREAS, AREA_BY_ID } from '../data/areas'
+import { AREAS } from '../data/areas'
 import type { AreaId, Scale5 } from '../types'
 import { Icon } from './Icon'
 import { ScaleInput } from './ScaleInput'
 
 interface Props {
   onSubmit: (answers: Partial<Record<AreaId, Scale5>>) => void
-  submitLabel?: string
-  /** Ograniczenie do wybranych obszarów — używane przy uzupełnianiu braków. */
-  areas?: AreaId[]
   initialAnswers?: Partial<Record<AreaId, Scale5>>
 }
 
 /** Pytania Mapy Balansu — po jednym na obszar, odniesione do ostatnich 7 dni. */
 export function BalanceQuiz({
   onSubmit,
-  submitLabel = 'Zapisz wynik',
-  areas,
   initialAnswers = {},
 }: Props) {
-  const list = areas ? areas.map((id) => AREA_BY_ID[id]) : AREAS
+  const list = AREAS
   const [answers, setAnswers] = useState<Partial<Record<AreaId, Scale5>>>(initialAnswers)
   const answered = list.filter((a) => answers[a.id] !== undefined).length
   const complete = answered === list.length
@@ -60,7 +55,7 @@ export function BalanceQuiz({
         disabled={!complete}
         onClick={() => complete && onSubmit(answers)}
       >
-        {submitLabel}
+        Zapisz wynik
       </button>
     </div>
   )

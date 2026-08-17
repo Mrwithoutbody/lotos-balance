@@ -1,16 +1,10 @@
 // src/hooks/useAppState.tsx
+// Stan aplikacji to dziś jedna rzecz: historia ukończonych ćwiczeń.
 import { createContext, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
-import type {
-  ActivationSession,
-  AppState,
-  AreaId,
-  DailyCheckIn,
-  Scale5,
-  SwipeDirection,
-} from '../types'
+import type { ActivationSession, AppState, AreaId, Scale5, SwipeDirection } from '../types'
 import { clearState, defaultState, loadState, saveState } from '../services/storage'
-import { latestSnapshot, levelsFromAnswers } from '../utils/balance'
+import { levelsFromAnswers } from '../utils/balance'
 import { makeId } from '../utils/id'
 import { dateKey } from '../utils/date'
 
@@ -18,18 +12,15 @@ interface AppStateContextValue {
   state: AppState
   /** Zapis do localStorage padł — dane znikną po zamknięciu karty. */
   saveFailed: boolean
-  /** Odpowiedź na jedno pytanie Mapy Balansu — dopisywana do dzisiejszego wyniku. */
-  setAreaAnswer: (area: AreaId, answer: Scale5) => void
-  recordSwipe: (cardId: string, area: AreaId, direction: SwipeDirection) => void
-  addSnapshot: (answers: Partial<Record<AreaId, Scale5>>) => void
-  addCheckIn: (input: Omit<DailyCheckIn, 'id' | 'date' | 'createdAt'>) => DailyCheckIn
   saveSession: (session: Omit<ActivationSession, 'id'>) => ActivationSession
-  toggleFavorite: (cardId: string) => void
-  planCard: (date: string, cardId: string, creatorSlug: string) => void
+  recordSwipe: (cardId: string, direction: SwipeDirection) => void
+  /** Zapisuje dzień startu talii — tylko raz, potem rozkład jest już ustalony. */
+  markDeckStart: (date: string) => void
+  /** Nowy wynik Mapy Balansu — wyłącznie z odpowiedzi na pytania. */
+  addSnapshot: (answers: Partial<Record<AreaId, Scale5>>) => void
+  planCard: (date: string, cardId: string) => void
   removeEntry: (entryId: string) => void
-  rescheduleEntry: (entryId: string, date: string) => void
   setEntryDone: (entryId: string, done: boolean) => void
-  markBrainStep: (date: string) => void
   resetAll: () => void
 }
 
@@ -43,68 +34,9 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     setSaveFailed(!saveState(state))
   }, [state])
 
-  const makeSnapshot = (answers: Partial<Record<AreaId, Scale5>>) => ({
-    id: makeId('snap'),
-    date: dateKey(),
-    createdAt: new Date().toISOString(),
-    answers,
-    levels: levelsFromAnswers(answers),
-  })
-
   const value: AppStateContextValue = {
     state,
     saveFailed,
-
-    setAreaAnswer(area, answer) {
-      setState((prev) => {
-        const existing = prev.snapshots.find((s) => s.date === dateKey())
-        const base = existing ?? latestSnapshot(prev.snapshots)
-        const snap = makeSnapshot({ ...(base?.answers ?? {}), [area]: answer })
-        const updated = existing ? { ...snap, id: existing.id } : snap
-        return {
-          ...prev,
-          snapshots: existing
-            ? prev.snapshots.map((s) => (s.id === existing.id ? updated : s))
-            : [...prev.snapshots, updated],
-        }
-      })
-    },
-
-    recordSwipe(cardId, area, direction) {
-      setState((prev) => ({
-        ...prev,
-        swipes: [
-          ...prev.swipes,
-          {
-            id: makeId('swipe'),
-            cardId,
-            area,
-            direction,
-            date: dateKey(),
-            createdAt: new Date().toISOString(),
-          },
-        ],
-        favorites:
-          direction === 'w-prawo' && !prev.favorites.includes(cardId)
-            ? [...prev.favorites, cardId]
-            : prev.favorites,
-      }))
-    },
-
-    addSnapshot(answers) {
-      setState((prev) => ({ ...prev, snapshots: [...prev.snapshots, makeSnapshot(answers)] }))
-    },
-
-    addCheckIn(input) {
-      const checkIn: DailyCheckIn = {
-        ...input,
-        id: makeId('checkin'),
-        date: dateKey(),
-        createdAt: new Date().toISOString(),
-      }
-      setState((prev) => ({ ...prev, checkIns: [...prev.checkIns, checkIn] }))
-      return checkIn
-    },
 
     saveSession(session) {
       const full: ActivationSession = { ...session, id: makeId('session') }
@@ -112,16 +44,34 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       return full
     },
 
-    toggleFavorite(cardId) {
+    addSnapshot(answers) {
       setState((prev) => ({
         ...prev,
-        favorites: prev.favorites.includes(cardId)
-          ? prev.favorites.filter((id) => id !== cardId)
-          : [...prev.favorites, cardId],
+        snapshots: [
+          ...prev.snapshots,
+          {
+            id: makeId('snap'),
+            date: dateKey(),
+            createdAt: new Date().toISOString(),
+            answers,
+            levels: levelsFromAnswers(answers),
+          },
+        ],
       }))
     },
 
-    planCard(date, cardId, creatorSlug) {
+    markDeckStart(date) {
+      setState((prev) => (prev.deckStart ? prev : { ...prev, deckStart: date }))
+    },
+
+    recordSwipe(cardId, direction) {
+      setState((prev) => ({
+        ...prev,
+        swipes: [...prev.swipes, { id: makeId('swipe'), cardId, direction, date: dateKey() }],
+      }))
+    },
+
+    planCard(date, cardId) {
       setState((prev) => ({
         ...prev,
         calendar: [
@@ -130,7 +80,6 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
             id: makeId('cal'),
             date,
             cardId,
-            creatorSlug,
             done: false,
             createdAt: new Date().toISOString(),
           },
@@ -142,26 +91,11 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       setState((prev) => ({ ...prev, calendar: prev.calendar.filter((e) => e.id !== entryId) }))
     },
 
-    rescheduleEntry(entryId, date) {
-      setState((prev) => ({
-        ...prev,
-        calendar: prev.calendar.map((e) => (e.id === entryId ? { ...e, date } : e)),
-      }))
-    },
-
     setEntryDone(entryId, done) {
       setState((prev) => ({
         ...prev,
         calendar: prev.calendar.map((e) => (e.id === entryId ? { ...e, done } : e)),
       }))
-    },
-
-    markBrainStep(date) {
-      setState((prev) =>
-        prev.brainSteps.includes(date)
-          ? prev
-          : { ...prev, brainSteps: [...prev.brainSteps, date] },
-      )
     },
 
     resetAll() {

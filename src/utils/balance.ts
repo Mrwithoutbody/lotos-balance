@@ -28,18 +28,8 @@ export function latestSnapshot(snapshots: BalanceSnapshot[]): BalanceSnapshot | 
   return snapshots.reduce((a, b) => (a.createdAt >= b.createdAt ? a : b))
 }
 
-export function previousSnapshot(snapshots: BalanceSnapshot[]): BalanceSnapshot | null {
-  if (snapshots.length < 2) return null
-  const sorted = [...snapshots].sort((a, b) => a.createdAt.localeCompare(b.createdAt))
-  return sorted[sorted.length - 2]
-}
-
 export function knownAreas(levels: Levels): AreaId[] {
   return AREA_IDS.filter((id) => levels[id] !== undefined)
-}
-
-export function unknownAreas(levels: Levels): AreaId[] {
-  return AREA_IDS.filter((id) => levels[id] === undefined)
 }
 
 /** Najsłabsze poznane obszary — kolejność deterministyczna. */
@@ -59,9 +49,3 @@ export function strongestArea(levels: Levels): AreaId | null {
   )[0]
 }
 
-export function averageLevel(levels: Levels): number | null {
-  const known = knownAreas(levels)
-  if (known.length === 0) return null
-  const sum = known.reduce((acc, id) => acc + (levels[id] as number), 0)
-  return Math.round(sum / known.length)
-}

@@ -25,6 +25,8 @@ import {
   Info,
   Layers,
   Lightbulb,
+  LogIn,
+  LogOut,
   MessageCircle,
   Milestone,
   Moon,
@@ -57,6 +59,10 @@ import {
 import type { LucideProps } from 'lucide-react'
 import type { ComponentType } from 'react'
 
+/**
+ * Jawny rejestr zamiast `import * as` — lucide ma ponad tysiąc ikon i gwiazdka
+ * wciągnęłaby wszystkie do paczki. Nazwy ikon siedzą w danych kart i obszarów.
+ */
 const ICONS: Record<string, ComponentType<LucideProps>> = {
   Activity,
   BookOpen,
@@ -83,6 +89,8 @@ const ICONS: Record<string, ComponentType<LucideProps>> = {
   Info,
   Layers,
   Lightbulb,
+  LogIn,
+  LogOut,
   MessageCircle,
   Milestone,
   Moon,

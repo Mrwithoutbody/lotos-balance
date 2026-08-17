@@ -12,9 +12,12 @@ interface Program {
   /** Slug twórczyni — folder w R2 i trasa /<slug>. */
   slug: string
   name: string
+  /** Nazwa talii z manifestu. */
+  title: string
+  bio?: string
+  /** Pełny URL okładki talii — manifest trzyma samą nazwę pliku. */
+  cover?: string
   cards: ActivationCard[]
-  /** Indeks id → ćwiczenie; kalendarz i statystyki szukają po id. */
-  byId: Record<string, ActivationCard>
   /** Pełne URL-e grafik tła per obszar — manifest trzyma same nazwy plików. */
   art: Partial<Record<AreaId, string>>
 }
@@ -32,8 +35,10 @@ export function ProgramProvider({ slug, deck, children }: Props) {
     () => ({
       slug,
       name: deck.creator.name,
+      title: deck.title,
+      bio: deck.creator.bio,
+      cover: deck.creator.cover ? deckAssetUrl(slug, deck.creator.cover) : undefined,
       cards: deck.cards,
-      byId: Object.fromEntries(deck.cards.map((card) => [card.id, card])),
       art: Object.fromEntries(
         Object.entries(deck.art ?? {}).map(([area, file]) => [
           area,

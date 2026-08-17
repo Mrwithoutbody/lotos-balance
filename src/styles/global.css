@@ -363,29 +363,7 @@ a {
   background: var(--cream-2);
 }
 
-/* ——— Chipy i pigułki ——— */
 
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 40px;
-  padding: 0 14px;
-  border-radius: 999px;
-  border: 1px solid var(--line-strong);
-  background: rgba(255, 255, 255, 0.7);
-  color: var(--plum);
-  font-size: 0.88rem;
-  font-weight: 500;
-  transition:
-    background 0.16s ease,
-    border-color 0.16s ease,
-    color 0.16s ease;
-}
-
-.chip:hover {
-  background: #fff;
-}
 
 .chip[aria-pressed='true'],
 .chip.selected {
@@ -424,17 +402,7 @@ textarea.input {
   resize: vertical;
 }
 
-.search-wrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
 
-.search-wrap svg {
-  position: absolute;
-  left: 14px;
-  color: var(--plum-faint);
-}
 
 .search-wrap .input {
   padding-left: 42px;

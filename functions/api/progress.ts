@@ -1,6 +1,6 @@
 // functions/api/progress.ts
-// POST — ukończone ćwiczenie zalogowanej osoby. Oceny przed/po to dane
-// o samopoczuciu (RODO art. 9): zapis wyłącznie własnych sesji, baza w EU.
+// POST — ukończone ćwiczenie zalogowanej osoby: tytuł ćwiczenia i data.
+// Aplikacja nie zbiera już ocen samopoczucia, więc kolumny before/after zostają puste.
 import { drizzle } from 'drizzle-orm/d1'
 import { getSession, pagesFunction } from '../../src/server/auth'
 import { progress } from '../../src/server/db/schema'
@@ -9,8 +9,6 @@ interface Body {
   creatorSlug?: string
   cardId?: string
   date?: string
-  before?: number
-  after?: number
 }
 
 export const onRequest = pagesFunction(async (ctx) => {
@@ -19,7 +17,7 @@ export const onRequest = pagesFunction(async (ctx) => {
   const session = await getSession(ctx)
   if (!session) return new Response('Unauthorized', { status: 401 })
 
-  const { creatorSlug, cardId, date, before, after } = (await ctx.request.json()) as Body
+  const { creatorSlug, cardId, date } = (await ctx.request.json()) as Body
   if (!creatorSlug || !cardId || !date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return new Response('Niepełne dane', { status: 400 })
   }
@@ -30,8 +28,6 @@ export const onRequest = pagesFunction(async (ctx) => {
     creatorSlug,
     cardId,
     date,
-    before: before ?? null,
-    after: after ?? null,
     createdAt: new Date(),
   })
   return Response.json({ ok: true })

@@ -1,6 +1,6 @@
 // src/types/index.ts
 
-/** Siedem obszarów prostego modelu człowieka. */
+/** Siedem obszarów prostego modelu człowieka — dziś tylko kolor i ikona ćwiczenia. */
 export type AreaId =
   | 'emocje'
   | 'regeneracja'
@@ -10,7 +10,7 @@ export type AreaId =
   | 'relacje'
   | 'sens'
 
-/** Potrzeba deklarowana w check-inie („Czego najbardziej potrzebujesz teraz?”). */
+/** Potrzeba, do której twórczyni przypisuje ćwiczenie w programie. */
 export type NeedId =
   | 'uspokojenie'
   | 'energia'
@@ -21,36 +21,30 @@ export type NeedId =
   | 'kontakt-z-czlowiekiem'
   | 'kierunek'
 
-/** Czas trwania aktywacji w minutach. */
-export type Minutes = 3 | 7 | 15
+/**
+ * Kierunek gestu na karcie dnia.
+ * „w-lewo” = nie czuję się z tym dobrze (temat schodzi z drogi na dwa tygodnie),
+ * „w-prawo” = fajne, ale nie teraz (karta wraca kolejnego dnia).
+ */
+export type SwipeDirection = 'w-lewo' | 'w-prawo'
 
-/** Poziom energii potrzebny, aby wykonać kartę. */
-export type EnergyLevel = 'niska' | 'srednia' | 'wysoka'
+/** Reakcja na kartę dnia. Nic nie ocenia użytkowniczki — steruje kolejką. */
+export interface Swipe {
+  id: string
+  cardId: string
+  direction: SwipeDirection
+  date: string
+}
 
-/** Skala samooceny 1–5 używana w check-inie i przy aktywacji. */
+/** Skala samooceny 1–5 w pytaniach Mapy Balansu. */
 export type Scale5 = 1 | 2 | 3 | 4 | 5
 
 /** Status obszaru wyliczany z poziomu 0–100. */
 export type AreaStatus = 'potrzebuje wsparcia' | 'stabilny' | 'mocna strona'
 
-/** Filary modułu „Mózg na lata”. */
-export type BrainPillar = 'ruch' | 'regeneracja' | 'wyzwanie' | 'relacje'
-
-/** Statyczna definicja obszaru balansu. */
-export interface BalanceArea {
-  id: AreaId
-  name: string
-  icon: string
-  color: string
-  /** Delikatniejszy odcień używany jako tło. */
-  softColor: string
-  /** Pytanie z Mapy Balansu (skala 1–5, ostatnie 7 dni). */
-  question: string
-}
-
 /**
- * Zapis Mapy Balansu. Buduje się stopniowo — obszar bez odpowiedzi
- * pozostaje nieznany, zamiast być zgadywany.
+ * Zapis Mapy Balansu. Buduje się z odpowiedzi użytkowniczki — nigdy z kliknięć
+ * ani z tego, co wykonała. Obszar bez odpowiedzi pozostaje nieznany.
  */
 export interface BalanceSnapshot {
   id: string
@@ -63,25 +57,27 @@ export interface BalanceSnapshot {
   levels: Partial<Record<AreaId, number>>
 }
 
-/** Kierunek gestu na stosie kart. */
-export type SwipeDirection = 'w-lewo' | 'w-prawo'
+/** Czas trwania ćwiczenia w minutach. */
+export type Minutes = 3 | 7 | 15
 
-/**
- * Reakcja na ćwiczenie w programie. „W prawo” to sygnał, że temat jest na czasie,
- * „w lewo” — że nie teraz. Oba zdejmują kartę, ale znaczą co innego.
- */
-export interface Swipe {
-  id: string
-  cardId: string
-  area: AreaId
-  direction: SwipeDirection
-  date: string
-  createdAt: string
+/** Poziom energii potrzebny, aby wykonać ćwiczenie. */
+export type EnergyLevel = 'niska' | 'srednia' | 'wysoka'
+
+/** Statyczna definicja obszaru. */
+export interface BalanceArea {
+  id: AreaId
+  name: string
+  icon: string
+  color: string
+  /** Delikatniejszy odcień używany jako tło. */
+  softColor: string
+  /** Pytanie opisujące obszar — dziś nieużywane w UI, zostaje przy danych. */
+  question: string
 }
 
 /**
  * Ćwiczenie z programu. Bez własnego koloru — barwa idzie z obszaru
- * (AREA_BY_ID[area].color), więc nie da się jej rozjechać z mapą balansu.
+ * (AREA_BY_ID[area].color).
  */
 export interface ActivationCard {
   id: string
@@ -95,31 +91,18 @@ export interface ActivationCard {
   description: string
   steps: string[]
   why: string
-  /** Bezpieczne zastrzeżenie pokazywane w trybie skupienia. */
+  /** Bezpieczne zastrzeżenie pokazywane przy ćwiczeniu. */
   caution?: string
 }
 
-/** Krótki check-in „czego potrzebuję teraz”. */
-export interface DailyCheckIn {
-  id: string
-  date: string
-  createdAt: string
-  need: NeedId
-  minutes: Minutes
-  state?: Scale5
-}
-
-/** Wykonanie ćwiczenia wraz z oceną przed i po. */
+/** Ukończone ćwiczenie. Bez ocen samopoczucia — aplikacja o nie nie pyta. */
 export interface ActivationSession {
   id: string
   cardId: string
   /** Program, z którego pochodzi ćwiczenie. Brak = wpis z czasów jednego programu. */
   creatorSlug?: string
   date: string
-  /** Czytane przez „instrukcję obsługi” — z niego bierze się pora dnia. */
   startedAt: string
-  before: Scale5
-  after?: Scale5
   completed: boolean
 }
 
@@ -129,24 +112,16 @@ export interface CalendarEntry {
   /** Data w formacie YYYY-MM-DD. */
   date: string
   cardId: string
-  /**
-   * Program, w którym zaplanowano ćwiczenie — bez tego wpisu z innego programu
-   * nie da się rozpoznać, bo id ćwiczeń są unikalne tylko w obrębie programu.
-   * Brak = wpis sprzed wielu programów.
-   */
-  creatorSlug?: string
   done: boolean
   createdAt: string
 }
 
 /** Cały stan aplikacji zapisywany w localStorage. */
 export interface AppState {
+  /** Dzień pierwszego wejścia do talii — od niego liczy się rozkład kart w czasie. */
+  deckStart?: string
   snapshots: BalanceSnapshot[]
-  checkIns: DailyCheckIn[]
   sessions: ActivationSession[]
   calendar: CalendarEntry[]
-  favorites: string[]
   swipes: Swipe[]
-  /** Dni, w których wykonano krok „Mózg na lata” (YYYY-MM-DD). */
-  brainSteps: string[]
 }
