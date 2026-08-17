@@ -19,10 +19,23 @@ if (!container) throw new Error('Nie znaleziono elementu #root')
 
 const queryClient = new QueryClient()
 
-// SW tylko na produkcji — w dev cache powłoki tylko myli.
-if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {})
+/**
+ * SERVICE WORKER WYŁĄCZONY NA CZAS PRAC (17.08.2026).
+ * Cache powłoki powodował, że po deployu widać było stary build do czasu ręcznego
+ * wyrejestrowania. Zamiast rejestrować, sprzątamy po sobie: każde wejście zdejmuje
+ * starego workera i kasuje jego cache, więc osoby z zainstalowaną apką dostają nowy
+ * kod bez grzebania w przeglądarce.
+ *
+ * Powrót po pracach: przywróć rejestrację (`navigator.serviceWorker.register('/sw.js')`)
+ * i podbij nazwę cache w public/sw.js. Do tego czasu apka nie działa offline,
+ * a Android nie pokaże własnego promptu instalacji (wymaga aktywnego SW).
+ */
+if ('serviceWorker' in navigator) {
+  void navigator.serviceWorker.getRegistrations().then(async (regs) => {
+    if (regs.length === 0) return
+    await Promise.all(regs.map((r) => r.unregister()))
+    await Promise.all((await caches.keys()).map((k) => caches.delete(k)))
+    console.info('[LOTOS] Service worker wyłączony na czas prac — cache powłoki wyczyszczony.')
   })
 }
 

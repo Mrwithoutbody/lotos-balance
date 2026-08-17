@@ -14,6 +14,7 @@ Vite + React + TS, zwykły CSS, Cloudflare Pages Functions + D1 + R2. Reszta w k
 - Produkcja https://lotos-balance.pages.dev, repo **publiczne**.
 - Sekrety Pages działają od następnego deploymentu.
 - Deployować po każdej zaakceptowanej zmianie, bez pytania.
+- **Service worker wyłączony na czas prac** (od 17.08.2026, `src/main.tsx`): każde wejście wyrejestrowuje workera i kasuje cache, więc deploy widać od razu. Koszt: brak trybu offline i brak promptu instalacji na Androidzie. Powrót = przywrócić `register('/sw.js')` i podbić nazwę cache w `public/sw.js`.
 
 ## Tryb pracy
 
