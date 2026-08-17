@@ -2,7 +2,10 @@
 
 /* ——— Dolna nawigacja ——— */
 
-.bottom-nav {
+/* Pasek instalacji dzieli wyglad z nawigacja — na kregu nie ma dolnej nawigacji,
+   wiec zajmuje to samo miejsce, ktore .app-main i tak rezerwuje. */
+.bottom-nav,
+.install-bar {
   position: fixed;
   left: 0;
   right: 0;
@@ -12,6 +15,14 @@
   background: rgba(244, 237, 231, 0.9);
   backdrop-filter: blur(14px);
   border-top: 1px solid var(--line);
+}
+
+.install-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  text-align: center;
 }
 
 .bottom-nav-list {
