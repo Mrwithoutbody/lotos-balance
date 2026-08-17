@@ -2,7 +2,7 @@
 // Odczyt programu z publicznego bucketa R2 (konto dadmor, jurysdykcja EU).
 // Zapis pójdzie później przez Pages Function + S3 API.
 import { useQuery } from '@tanstack/react-query'
-import type { DeckManifest } from '../types/deck'
+import { parseManifest } from './manifest.ts'
 
 /** Twórczyni z listy talii — tyle, ile rysuje ekran startowy. */
 export interface Creator {
@@ -27,7 +27,8 @@ async function json<T>(url: string): Promise<T> {
 export function useDeck(creatorSlug: string) {
   return useQuery({
     queryKey: ['deck', creatorSlug],
-    queryFn: () => json<DeckManifest>(deckAssetUrl(creatorSlug, 'deck.json')),
+    queryFn: async () =>
+      parseManifest(await json<unknown>(deckAssetUrl(creatorSlug, 'deck.json')), creatorSlug),
     staleTime: 5 * 60 * 1000,
     // 404 = program nie istnieje; ponawianie nic nie zmieni. Retry tylko na sieć.
     retry: (failureCount, error) =>

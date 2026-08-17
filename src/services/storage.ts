@@ -1,5 +1,5 @@
 // src/services/storage.ts
-import type { AppState } from '../types'
+import type { AppState } from '../types/index.ts'
 
 const STORAGE_KEY = 'lotos-balance:v1'
 
@@ -22,7 +22,7 @@ function keep<T>(value: unknown, fields: string[]): T[] {
  * Uzupełnia braki i odrzuca uszkodzone wpisy — zamiast wywalać całą aplikację.
  * Starsze zapisy miały więcej pól (mapa balansu, kalendarz, ulubione); zostaje historia.
  */
-function migrate(raw: unknown): AppState {
+export function migrate(raw: unknown): AppState {
   if (!raw || typeof raw !== 'object') return defaultState()
   const data = raw as Partial<AppState>
   return {

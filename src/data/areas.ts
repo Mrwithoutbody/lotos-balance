@@ -1,5 +1,5 @@
 // src/data/areas.ts
-import type { AreaId, BalanceArea } from '../types'
+import type { AreaId, BalanceArea } from '../types/index.ts'
 
 export const AREAS: BalanceArea[] = [
   {
