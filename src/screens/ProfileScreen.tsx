@@ -3,6 +3,8 @@
 // Jedno miejsce na konto i prawa do danych, żeby nie szukać ich po ekranach.
 import { useState } from 'react'
 import { AboutModal } from '../components/AboutModal'
+import { LoginForm } from '../components/LoginForm'
+import { Modal } from '../components/Modal'
 import { Icon } from '../components/Icon'
 import { ProfileSwitch } from '../components/ProfileSwitch'
 import { useAppState } from '../hooks/useAppState'
@@ -24,6 +26,7 @@ export function ProfileScreen() {
   const viewer = useViewer()
   const { state } = useAppState()
   const [aboutOpen, setAboutOpen] = useState(false)
+  const [loginOpen, setLoginOpen] = useState(false)
 
   const loggedIn = Boolean(session.data)
   const email = session.data?.user.email
@@ -31,10 +34,10 @@ export function ProfileScreen() {
   const name = viewer.data?.name ?? session.data?.user.name
   const done = state.sessions.filter((s) => s.completed).length
 
-  /** Przełączenie konta = wyjście z tego i wejście na inne, bez czyszczenia historii. */
+  /** Przełączenie konta = wyjście z tego i logowanie innym, bez czyszczenia historii. */
   async function switchAccount() {
     await signOut()
-    navigate('/logowanie')
+    setLoginOpen(true)
   }
 
   return (
@@ -124,7 +127,7 @@ export function ProfileScreen() {
                 <button
                   type="button"
                   className="btn btn-primary btn-block"
-                  onClick={() => navigate('/logowanie')}
+                  onClick={() => setLoginOpen(true)}
                 >
                   <Icon name="LogIn" size={16} />
                   Zaloguj się
@@ -145,6 +148,12 @@ export function ProfileScreen() {
           </button>
         </div>
       </main>
+
+      {loginOpen && (
+        <Modal title="Zaloguj się" onClose={() => setLoginOpen(false)}>
+          <LoginForm callbackURL="/profil" />
+        </Modal>
+      )}
 
       {aboutOpen && <AboutModal onClose={() => setAboutOpen(false)} />}
     </div>
