@@ -1,7 +1,7 @@
 // src/components/ActivationCard.tsx
 import type { CSSProperties, ReactNode } from 'react'
 import { AREA_BY_ID } from '../data/areas'
-import { CARD_ART } from '../data/cards'
+import { useProgram } from '../hooks/useProgram'
 import type { ActivationCard as Card } from '../types'
 import { plural } from '../utils/plural'
 import { Icon } from './Icon'
@@ -18,7 +18,7 @@ interface Props {
 export function ActivationCardView({ card, reasons, onInfo, footer }: Props) {
   const area = AREA_BY_ID[card.area]
   const secondary = card.secondaryArea ? AREA_BY_ID[card.secondaryArea] : null
-  const art = CARD_ART[card.area]
+  const art = useProgram().art[card.area]
 
   return (
     <article

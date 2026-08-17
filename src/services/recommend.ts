@@ -1,16 +1,15 @@
 // src/services/recommend.ts
-import { CARDS } from '../data/cards'
 import type { ActivationCard, AppState, AreaId, Minutes, NeedId, Scale5 } from '../types'
 import { latestSnapshot, weakestAreas } from '../utils/balance'
 import { dateKey, diffDays } from '../utils/date'
 
-export interface RecommendationInput {
+interface RecommendationInput {
   need: NeedId
   minutes: Minutes
   state?: Scale5
 }
 
-export interface ScoredCard {
+interface ScoredCard {
   card: ActivationCard
   score: number
   reasons: string[]
@@ -52,12 +51,16 @@ function preferredAreas(state: AppState): Set<AreaId> {
   return areas
 }
 
-export function scoreCards(state: AppState, input: RecommendationInput): ScoredCard[] {
+export function scoreCards(
+  state: AppState,
+  input: RecommendationInput,
+  cards: ActivationCard[],
+): ScoredCard[] {
   const snapshot = latestSnapshot(state.snapshots)
   const weak: AreaId[] = snapshot ? weakestAreas(snapshot.levels, 2) : []
   const goalAreas = preferredAreas(state)
 
-  const scored = CARDS.map((card, index) => {
+  const scored = cards.map((card, index) => {
     let score = 0
     const reasons: string[] = []
 
@@ -117,7 +120,7 @@ export function scoreCards(state: AppState, input: RecommendationInput): ScoredC
     }
 
     // Deterministyczny tie-break, żeby kolejność była stabilna między renderami.
-    score += (CARDS.length - index) * 0.001
+    score += (cards.length - index) * 0.001
 
     return { card, score, reasons: reasons.slice(0, 3) }
   })

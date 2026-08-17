@@ -25,7 +25,7 @@ interface AppStateContextValue {
   addCheckIn: (input: Omit<DailyCheckIn, 'id' | 'date' | 'createdAt'>) => DailyCheckIn
   saveSession: (session: Omit<ActivationSession, 'id'>) => ActivationSession
   toggleFavorite: (cardId: string) => void
-  planCard: (date: string, cardId: string) => void
+  planCard: (date: string, cardId: string, creatorSlug: string) => void
   removeEntry: (entryId: string) => void
   rescheduleEntry: (entryId: string, date: string) => void
   setEntryDone: (entryId: string, done: boolean) => void
@@ -121,12 +121,19 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       }))
     },
 
-    planCard(date, cardId) {
+    planCard(date, cardId, creatorSlug) {
       setState((prev) => ({
         ...prev,
         calendar: [
           ...prev.calendar,
-          { id: makeId('cal'), date, cardId, done: false, createdAt: new Date().toISOString() },
+          {
+            id: makeId('cal'),
+            date,
+            cardId,
+            creatorSlug,
+            done: false,
+            createdAt: new Date().toISOString(),
+          },
         ],
       }))
     },

@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AREA_BY_ID } from '../data/areas'
 import { useAppState } from '../hooks/useAppState'
+import { useProgram } from '../hooks/useProgram'
 import type { ActivationCard, Scale5 } from '../types'
 import { dateKey } from '../utils/date'
 import { Icon } from './Icon'
@@ -14,8 +15,6 @@ interface Props {
   card: ActivationCard
   /** Wpis kalendarza, który zostanie oznaczony jako wykonany. */
   calendarEntryId?: string
-  /** Program, z którego grane jest ćwiczenie — do zapisu postępu na serwerze. */
-  creatorSlug?: string
   onClose: () => void
 }
 
@@ -32,8 +31,9 @@ function summaryText(before: Scale5, after: Scale5): string {
   return 'Dziś to ćwiczenie nie pomogło. Następnym razem spróbujemy innego podejścia.'
 }
 
-export function CardPlayer({ card, calendarEntryId, creatorSlug, onClose }: Props) {
+export function CardPlayer({ card, calendarEntryId, onClose }: Props) {
   const { saveSession, setEntryDone } = useAppState()
+  const { slug: creatorSlug } = useProgram()
   const [phase, setPhase] = useState<Phase>('before')
   const [before, setBefore] = useState<Scale5>()
   const [after, setAfter] = useState<Scale5>()
@@ -66,6 +66,7 @@ export function CardPlayer({ card, calendarEntryId, creatorSlug, onClose }: Prop
     if (before === undefined) return
     const session = saveSession({
       cardId: card.id,
+      creatorSlug,
       date: dateKey(),
       startedAt: startedAt.current,
       before,
@@ -75,13 +76,11 @@ export function CardPlayer({ card, calendarEntryId, creatorSlug, onClose }: Prop
     if (calendarEntryId) setEntryDone(calendarEntryId, true)
     // Zalogowana osoba dokłada swoją pracę do kręgu; 401 (brak sesji) po prostu ignorujemy —
     // localStorage wyżej pozostaje źródłem prawdy dla widoku.
-    if (creatorSlug) {
-      void fetch('/api/progress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ creatorSlug, cardId: card.id, date: session.date, before, after }),
-      }).catch(() => {})
-    }
+    void fetch('/api/progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ creatorSlug, cardId: card.id, date: session.date, before, after }),
+    }).catch(() => {})
     setPhase('summary')
   }
 

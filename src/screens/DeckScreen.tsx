@@ -10,9 +10,9 @@ import { PlanSheet } from '../components/PlanSheet'
 import { ProbeCard } from '../components/ProbeCard'
 import { SwipeCard } from '../components/SwipeCard'
 import { AREAS, AREA_IDS } from '../data/areas'
-import { CARDS } from '../data/cards'
 import { TIME_OPTIONS } from '../data/goals'
 import { useAppState } from '../hooks/useAppState'
+import { useProgram } from '../hooks/useProgram'
 import type { ActivationCard, AreaId, Minutes, Scale5, SwipeDirection } from '../types'
 import { knownAreas, latestSnapshot, unknownAreas } from '../utils/balance'
 import { plural } from '../utils/plural'
@@ -44,6 +44,7 @@ function interleaveByArea(cards: ActivationCard[]): ActivationCard[] {
 
 export function DeckScreen({ onPlay, onNavigate }: Props) {
   const { state, toggleFavorite, planCard, recordSwipe, setAreaAnswer } = useAppState()
+  const program = useProgram()
   const [mode, setMode] = useState<Mode>('stos')
   const [index, setIndex] = useState(0)
   const [area, setArea] = useState<AreaId | 'wszystkie'>('wszystkie')
@@ -64,7 +65,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
   const [probePlan] = useState<AreaId[]>(() => unknownAreas(levels))
 
   const queue = useMemo<QueueItem[]>(() => {
-    const ordered = interleaveByArea(CARDS)
+    const ordered = interleaveByArea(program.cards)
     const items: QueueItem[] = []
     let probe = 0
     ordered.forEach((card, i) => {
@@ -79,7 +80,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
       probe += 1
     }
     return items
-  }, [probePlan])
+  }, [probePlan, program.cards])
 
   const current = queue[index % queue.length]
   const advance = useCallback(() => setIndex((i) => i + 1), [])
@@ -94,13 +95,13 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
 
   const filtered = useMemo(
     () =>
-      filterCards(CARDS, {
+      filterCards(program.cards, {
         query,
         area,
         minutes,
         favorites: onlyFavorites ? state.favorites : undefined,
       }),
-    [area, minutes, query, onlyFavorites, state.favorites],
+    [program.cards, area, minutes, query, onlyFavorites, state.favorites],
   )
 
   useEffect(() => {
@@ -237,7 +238,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
               <input
                 type="search"
                 className="input"
-                placeholder={`Szukaj wśród ${CARDS.length} ćwiczeń`}
+                placeholder={`Szukaj wśród ${program.cards.length} ćwiczeń`}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 aria-label="Szukaj ćwiczenia po tytule"
@@ -360,7 +361,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
           card={planTarget}
           onClose={() => setPlanTarget(null)}
           onPlan={(date) => {
-            planCard(date, planTarget.id)
+            planCard(date, planTarget.id, program.slug)
             setPlanTarget(null)
             onNavigate('kalendarz')
           }}

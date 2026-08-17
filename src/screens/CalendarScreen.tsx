@@ -1,11 +1,12 @@
 // src/screens/CalendarScreen.tsx
 import { useMemo, useState } from 'react'
 import { CardPicker } from '../components/CardPicker'
+import { ForeignEntry } from '../components/ForeignEntry'
 import { Icon } from '../components/Icon'
 import { PlanSheet } from '../components/PlanSheet'
 import { AREA_BY_ID } from '../data/areas'
-import { CARD_BY_ID } from '../data/cards'
 import { useAppState } from '../hooks/useAppState'
+import { useProgram } from '../hooks/useProgram'
 import type { ActivationCard, CalendarEntry } from '../types'
 import {
   WEEKDAYS_SHORT,
@@ -25,6 +26,7 @@ interface Props {
 
 export function CalendarScreen({ onPlay }: Props) {
   const { state, planCard, removeEntry, rescheduleEntry, setEntryDone } = useAppState()
+  const program = useProgram()
   const today = dateKey()
   const [cursor, setCursor] = useState(() => {
     const d = parseKey(today)
@@ -143,8 +145,12 @@ export function CalendarScreen({ onPlay }: Props) {
         ) : (
           <ul className="entry-list">
             {selectedEntries.map((entry) => {
-              const card = CARD_BY_ID[entry.cardId]
-              if (!card) return null
+              const card = program.byId[entry.cardId]
+              if (!card) {
+                return (
+                  <ForeignEntry key={entry.id} entry={entry} onRemove={() => removeEntry(entry.id)} />
+                )
+              }
               const area = AREA_BY_ID[card.area]
               return (
                 <li key={entry.id} className="entry-row entry-row-block">
@@ -236,8 +242,7 @@ export function CalendarScreen({ onPlay }: Props) {
                     {entries.length === 0
                       ? 'wolne'
                       : entries
-                          .map((e) => CARD_BY_ID[e.cardId]?.title)
-                          .filter(Boolean)
+                          .map((e) => program.byId[e.cardId]?.title ?? 'inny program')
                           .join(', ')}
                   </span>
                   {entries.some((e) => e.done) && <Icon name="CheckCircle2" size={16} />}
@@ -254,15 +259,15 @@ export function CalendarScreen({ onPlay }: Props) {
           title={`Dodaj ćwiczenie — ${longDate(selected)}`}
           onClose={() => setPickerOpen(false)}
           onPick={(cardId) => {
-            planCard(selected, cardId)
+            planCard(selected, cardId, program.slug)
             setPickerOpen(false)
           }}
         />
       )}
 
-      {moving && CARD_BY_ID[moving.cardId] && (
+      {moving && program.byId[moving.cardId] && (
         <PlanSheet
-          card={CARD_BY_ID[moving.cardId]}
+          card={program.byId[moving.cardId]}
           mode="przenies"
           initialDate={moving.date}
           onClose={() => setMoving(null)}

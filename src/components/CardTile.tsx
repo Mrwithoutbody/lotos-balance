@@ -1,7 +1,7 @@
 // src/components/CardTile.tsx
 import type { CSSProperties } from 'react'
 import { AREA_BY_ID } from '../data/areas'
-import { CARD_ART } from '../data/cards'
+import { useProgram } from '../hooks/useProgram'
 import type { ActivationCard } from '../types'
 import { Icon } from './Icon'
 
@@ -14,7 +14,7 @@ interface Props {
 
 export function CardTile({ card, isFavorite, onToggleFavorite, onOpen }: Props) {
   const area = AREA_BY_ID[card.area]
-  const art = CARD_ART[card.area]
+  const art = useProgram().art[card.area]
   return (
     <div
       className="card-tile area-surface"

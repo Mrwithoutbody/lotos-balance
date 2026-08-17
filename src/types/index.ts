@@ -79,13 +79,15 @@ export interface Swipe {
   createdAt: string
 }
 
-/** Ćwiczenie z programu. */
+/**
+ * Ćwiczenie z programu. Bez własnego koloru — barwa idzie z obszaru
+ * (AREA_BY_ID[area].color), więc nie da się jej rozjechać z mapą balansu.
+ */
 export interface ActivationCard {
   id: string
   title: string
   area: AreaId
   secondaryArea?: AreaId
-  color: string
   icon: string
   minutes: Minutes
   energy: EnergyLevel
@@ -107,10 +109,12 @@ export interface DailyCheckIn {
   state?: Scale5
 }
 
-/** Wykonanie karty wraz z oceną przed i po. */
+/** Wykonanie ćwiczenia wraz z oceną przed i po. */
 export interface ActivationSession {
   id: string
   cardId: string
+  /** Program, z którego pochodzi ćwiczenie. Brak = wpis z czasów jednego programu. */
+  creatorSlug?: string
   date: string
   /** Czytane przez „instrukcję obsługi” — z niego bierze się pora dnia. */
   startedAt: string
@@ -119,12 +123,18 @@ export interface ActivationSession {
   completed: boolean
 }
 
-/** Karta zaplanowana na konkretny dzień. */
+/** Ćwiczenie zaplanowane na konkretny dzień. */
 export interface CalendarEntry {
   id: string
   /** Data w formacie YYYY-MM-DD. */
   date: string
   cardId: string
+  /**
+   * Program, w którym zaplanowano ćwiczenie — bez tego wpisu z innego programu
+   * nie da się rozpoznać, bo id ćwiczeń są unikalne tylko w obrębie programu.
+   * Brak = wpis sprzed wielu programów.
+   */
+  creatorSlug?: string
   done: boolean
   createdAt: string
 }

@@ -6,11 +6,10 @@
 // Uruchomienie: npx tsx scripts/export-deck.ts
 import { mkdirSync, writeFileSync, copyFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { AREA_BY_ID } from '../src/data/areas'
 import type { ActivationCard } from '../src/types'
 import type { DeckManifest } from '../src/types/deck'
 
-const RAW: Omit<ActivationCard, 'color'>[] = [
+const cards: ActivationCard[] = [
   // ——— EMOCJE ———
   {
     id: 'emo-nazwij',
@@ -514,11 +513,6 @@ const RAW: Omit<ActivationCard, 'color'>[] = [
 ]
 
 const OUT = join(import.meta.dirname, '..', 'seed', 'anna-rysnik')
-
-const cards: ActivationCard[] = RAW.map((card) => ({
-  ...card,
-  color: AREA_BY_ID[card.area].color,
-}))
 
 const manifest: DeckManifest = {
   creator: {

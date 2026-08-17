@@ -4,12 +4,13 @@ import { ActivationCardView } from '../components/ActivationCard'
 import { BalanceWheel } from '../components/BalanceWheel'
 import { BrainCard } from '../components/BrainCard'
 import { CheckInSheet } from '../components/CheckInSheet'
+import { ForeignEntry } from '../components/ForeignEntry'
 import { Icon } from '../components/Icon'
 import { PlanSheet } from '../components/PlanSheet'
 import { AREA_BY_ID } from '../data/areas'
-import { CARD_BY_ID } from '../data/cards'
 import { NEED_BY_ID } from '../data/goals'
 import { useAppState } from '../hooks/useAppState'
+import { useProgram } from '../hooks/useProgram'
 import { streak } from '../services/insights'
 import { scoreCards } from '../services/recommend'
 import type { ActivationCard, Minutes, NeedId, Scale5 } from '../types'
@@ -26,7 +27,8 @@ interface Props {
 }
 
 export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
-  const { state, addCheckIn, planCard } = useAppState()
+  const { state, addCheckIn, planCard, removeEntry } = useAppState()
+  const program = useProgram()
   const today = dateKey()
   const [checkInOpen, setCheckInOpen] = useState(false)
   const [planCardTarget, setPlanCardTarget] = useState<ActivationCard | null>(null)
@@ -39,12 +41,12 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
 
   const ranked = useMemo(() => {
     if (!todayCheckIn) return []
-    return scoreCards(state, {
-      need: todayCheckIn.need,
-      minutes: todayCheckIn.minutes,
-      state: todayCheckIn.state,
-    })
-  }, [state, todayCheckIn])
+    return scoreCards(
+      state,
+      { need: todayCheckIn.need, minutes: todayCheckIn.minutes, state: todayCheckIn.state },
+      program.cards,
+    )
+  }, [state, todayCheckIn, program.cards])
 
   const suggestion = ranked.length > 0 ? ranked[offset % ranked.length] : null
   const snapshot = latestSnapshot(state.snapshots)
@@ -161,8 +163,12 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
         ) : (
           <ul className="entry-list">
             {todayEntries.map((entry) => {
-              const card = CARD_BY_ID[entry.cardId]
-              if (!card) return null
+              const card = program.byId[entry.cardId]
+              if (!card) {
+                return (
+                  <ForeignEntry key={entry.id} entry={entry} onRemove={() => removeEntry(entry.id)} />
+                )
+              }
               const area = AREA_BY_ID[card.area]
               return (
                 <li key={entry.id} className="entry-row">
@@ -241,7 +247,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
           card={planCardTarget}
           onClose={() => setPlanCardTarget(null)}
           onPlan={(date) => {
-            planCard(date, planCardTarget.id)
+            planCard(date, planCardTarget.id, program.slug)
             setPlanCardTarget(null)
             onNavigate('kalendarz')
           }}

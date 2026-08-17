@@ -3,7 +3,7 @@
 // liczy się szybkie przejrzenie listy, nie oglądanie grafik.
 import { useMemo, useState } from 'react'
 import { AREA_BY_ID } from '../data/areas'
-import { CARDS } from '../data/cards'
+import { useProgram } from '../hooks/useProgram'
 import type { AreaId } from '../types'
 import { filterCards } from '../utils/search'
 import { AreaChips } from './AreaChips'
@@ -17,10 +17,11 @@ interface Props {
 }
 
 export function CardPicker({ title, onClose, onPick }: Props) {
+  const { cards } = useProgram()
   const [query, setQuery] = useState('')
   const [area, setArea] = useState<AreaId | 'wszystkie'>('wszystkie')
 
-  const list = useMemo(() => filterCards(CARDS, { query, area }), [query, area])
+  const list = useMemo(() => filterCards(cards, { query, area }), [cards, query, area])
 
   return (
     <Modal title={title} onClose={onClose}>

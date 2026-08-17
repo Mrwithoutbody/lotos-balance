@@ -1,8 +1,13 @@
 // src/services/insights.ts
 import { AREA_BY_ID } from '../data/areas'
-import { CARD_BY_ID } from '../data/cards'
-import type { ActivationSession, AppState, AreaId } from '../types'
+import type { ActivationCard, ActivationSession, AppState, AreaId } from '../types'
 import { addDays, dateKey, partOfDay } from '../utils/date'
+
+/**
+ * Indeks ćwiczeń bieżącego programu. Sesje z innych programów nie mają tu
+ * swoich id, więc wypadają ze statystyk — liczby dotyczą tego programu.
+ */
+type Cards = Record<string, ActivationCard>
 
 interface CardEffect {
   cardId: string
@@ -17,7 +22,7 @@ function completedWithRating(state: AppState): ActivationSession[] {
 }
 
 /** Karty pogrupowane po średniej zmianie (po − przed). */
-function cardEffects(state: AppState): CardEffect[] {
+function cardEffects(state: AppState, cards: Cards): CardEffect[] {
   const map = new Map<string, { sum: number; count: number }>()
   for (const s of completedWithRating(state)) {
     const entry = map.get(s.cardId) ?? { sum: 0, count: 0 }
@@ -27,21 +32,21 @@ function cardEffects(state: AppState): CardEffect[] {
   }
   const result: CardEffect[] = []
   for (const [cardId, { sum, count }] of map) {
-    const card = CARD_BY_ID[cardId]
+    const card = cards[cardId]
     if (!card) continue
     result.push({ cardId, title: card.title, area: card.area, count, avgDelta: sum / count })
   }
   return result.sort((a, b) => b.avgDelta - a.avgDelta || b.count - a.count)
 }
 
-export function helpfulCards(state: AppState, limit = 3): CardEffect[] {
-  return cardEffects(state)
+export function helpfulCards(state: AppState, cards: Cards, limit = 3): CardEffect[] {
+  return cardEffects(state, cards)
     .filter((c) => c.avgDelta > 0)
     .slice(0, limit)
 }
 
-export function neutralCards(state: AppState, limit = 3): CardEffect[] {
-  return cardEffects(state)
+export function neutralCards(state: AppState, cards: Cards, limit = 3): CardEffect[] {
+  return cardEffects(state, cards)
     .filter((c) => c.avgDelta <= 0)
     .reverse()
     .slice(0, limit)
@@ -85,7 +90,7 @@ export function weekAverageDelta(state: AppState): number | null {
  * „Twoja osobista instrukcja obsługi” — proste, deterministyczne reguły
  * liczone wyłącznie z lokalnej historii. Bez AI, bez zgadywania.
  */
-export function personalManual(state: AppState): string[] {
+export function personalManual(state: AppState, cards: Cards): string[] {
   const rules: string[] = []
   const rated = completedWithRating(state)
 
@@ -99,7 +104,7 @@ export function personalManual(state: AppState): string[] {
   if (lowStart.length >= 2) {
     const byArea = new Map<AreaId, { sum: number; count: number }>()
     for (const s of lowStart) {
-      const card = CARD_BY_ID[s.cardId]
+      const card = cards[s.cardId]
       if (!card) continue
       const entry = byArea.get(card.area) ?? { sum: 0, count: 0 }
       entry.sum += (s.after as number) - s.before
@@ -121,7 +126,7 @@ export function personalManual(state: AppState): string[] {
   // 2. Ulubiona długość aktywacji.
   const byMinutes = new Map<number, { sum: number; count: number }>()
   for (const s of rated) {
-    const card = CARD_BY_ID[s.cardId]
+    const card = cards[s.cardId]
     if (!card) continue
     const entry = byMinutes.get(card.minutes) ?? { sum: 0, count: 0 }
     entry.sum += (s.after as number) - s.before
@@ -167,7 +172,7 @@ export function personalManual(state: AppState): string[] {
   // 5. Obszar wykonywany rzadziej niż planowany.
   const plannedByArea = new Map<AreaId, { planned: number; done: number }>()
   for (const e of past) {
-    const card = CARD_BY_ID[e.cardId]
+    const card = cards[e.cardId]
     if (!card) continue
     const entry = plannedByArea.get(card.area) ?? { planned: 0, done: 0 }
     entry.planned += 1

@@ -7,6 +7,7 @@ import { Modal } from '../components/Modal'
 import { AREA_BY_ID, AREA_IDS } from '../data/areas'
 import { NEED_BY_ID } from '../data/goals'
 import { useAppState } from '../hooks/useAppState'
+import { useProgram } from '../hooks/useProgram'
 import { helpfulCards, neutralCards, personalManual, weekActivity, weekAverageDelta } from '../services/insights'
 import { exportState } from '../services/storage'
 import {
@@ -30,6 +31,7 @@ interface Props {
 
 export function BalanceScreen({ onAbout, onNavigate }: Props) {
   const { state, addSnapshot, resetAll } = useAppState()
+  const { byId } = useProgram()
   const [quizAreas, setQuizAreas] = useState<AreaId[] | null>(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
 
@@ -43,9 +45,9 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
   const activity = weekActivity(state)
   const maxActivity = Math.max(1, ...activity.map((a) => a.count))
   const avgDelta = weekAverageDelta(state)
-  const helpful = helpfulCards(state)
-  const neutral = neutralCards(state)
-  const manual = personalManual(state)
+  const helpful = helpfulCards(state, byId)
+  const neutral = neutralCards(state, byId)
+  const manual = personalManual(state, byId)
   const recentCheckIns = [...state.checkIns].slice(-4).reverse()
   const currentAvg = snapshot ? averageLevel(snapshot.levels) : null
   const previousAvg = previous ? averageLevel(previous.levels) : null

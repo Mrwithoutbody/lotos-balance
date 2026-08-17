@@ -5,11 +5,11 @@ import { BottomNav } from './components/BottomNav'
 import type { TabId } from './components/BottomNav'
 import { CardPlayer } from './components/CardPlayer'
 import { Icon } from './components/Icon'
-import { hydrateCards } from './data/cards'
 import { useAppState } from './hooks/useAppState'
+import { ProgramProvider } from './hooks/useProgram'
 import { useSession } from './lib/auth-client'
 import { navigate } from './lib/router'
-import { deckAssetUrl, useDeck } from './services/decks'
+import { useDeck } from './services/decks'
 import { BalanceScreen } from './screens/BalanceScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
 import { DeckScreen } from './screens/DeckScreen'
@@ -23,19 +23,9 @@ interface Props {
 
 export default function App({ creatorSlug }: Props) {
   const { state, saveFailed } = useAppState()
-  // Program z R2 to jedyne źródło kart. Ekrany montują się dopiero po hydracji,
-  // więc konsumenci CARDS nigdy nie widzą pustego magazynu.
+  // Program z R2 to jedyne źródło ćwiczeń. Idzie do ekranów przez ProgramProvider,
+  // więc nikt nie czyta go z globala i nikt nie widzi pustego programu.
   const deck = useDeck(creatorSlug)
-  if (deck.data) {
-    const art = Object.fromEntries(
-      Object.entries(deck.data.art ?? {}).map(([area, file]) => [
-        area,
-        deckAssetUrl(creatorSlug, 'art', file),
-      ]),
-    )
-    hydrateCards(deck.data.cards, art)
-  }
-  const deckReady = Boolean(deck.data)
   // Bez onboardingu: bez ani jednego wyniku zaczynamy od programu, bo to on buduje mapę.
   const [tab, setTab] = useState<TabId>(() => (state.snapshots.length === 0 ? 'program' : 'dzisiaj'))
   const [player, setPlayer] = useState<{ card: ActivationCard; entryId?: string } | null>(null)
@@ -105,26 +95,33 @@ export default function App({ creatorSlug }: Props) {
             </button>
           </section>
         )}
-        {deckReady && tab === 'dzisiaj' && (
-          <TodayScreen onPlay={openPlayer} onAbout={() => setAboutOpen(true)} onNavigate={setTab} />
-        )}
-        {deckReady && tab === 'program' && <DeckScreen onPlay={openPlayer} onNavigate={setTab} />}
-        {deckReady && tab === 'kalendarz' && <CalendarScreen onPlay={openPlayer} />}
-        {deckReady && tab === 'balans' && (
-          <BalanceScreen onAbout={() => setAboutOpen(true)} onNavigate={setTab} />
+        {deck.data && (
+          <ProgramProvider slug={creatorSlug} deck={deck.data}>
+            {tab === 'dzisiaj' && (
+              <TodayScreen
+                onPlay={openPlayer}
+                onAbout={() => setAboutOpen(true)}
+                onNavigate={setTab}
+              />
+            )}
+            {tab === 'program' && <DeckScreen onPlay={openPlayer} onNavigate={setTab} />}
+            {tab === 'kalendarz' && <CalendarScreen onPlay={openPlayer} />}
+            {tab === 'balans' && (
+              <BalanceScreen onAbout={() => setAboutOpen(true)} onNavigate={setTab} />
+            )}
+
+            {player && (
+              <CardPlayer
+                card={player.card}
+                calendarEntryId={player.entryId}
+                onClose={() => setPlayer(null)}
+              />
+            )}
+          </ProgramProvider>
         )}
       </main>
 
       <BottomNav active={tab} onChange={setTab} />
-
-      {player && (
-        <CardPlayer
-          card={player.card}
-          calendarEntryId={player.entryId}
-          creatorSlug={creatorSlug}
-          onClose={() => setPlayer(null)}
-        />
-      )}
 
       {aboutOpen && <AboutModal onClose={() => setAboutOpen(false)} />}
     </div>
