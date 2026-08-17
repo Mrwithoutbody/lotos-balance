@@ -10,7 +10,7 @@
   "background_color": "#f4ede7",
   "theme_color": "#f4ede7",
   "related_applications": [
-    { "platform": "webapp", "url": "https://lotos-balance.pages.dev/manifest.webmanifest" }
+    { "platform": "webapp", "url": "https://lotusbalance.app/manifest.webmanifest" }
   ],
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
