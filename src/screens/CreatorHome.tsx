@@ -4,7 +4,9 @@
 import { CreatorScreen } from './CreatorScreen'
 import { StartScreen } from './StartScreen'
 import { ProfileSwitch } from '../components/ProfileSwitch'
+import { Icon } from '../components/Icon'
 import { InstallButton } from '../components/InstallButton'
+import { navigate } from '../lib/router'
 import { useViewMode, useViewer } from '../services/viewer'
 
 export function CreatorHome() {
@@ -22,7 +24,17 @@ export function CreatorHome() {
       <header className="app-bar">
         <div className="app-bar-inner">
           <span className="brand-mark">LOTOS BALANCE</span>
-          <ProfileSwitch role={role} />
+          <div className="row">
+            <ProfileSwitch role={role} />
+            <button
+              type="button"
+              className="icon-btn"
+              onClick={() => navigate('/profil')}
+              aria-label="Profil"
+            >
+              <Icon name="UserRound" size={18} />
+            </button>
+          </div>
         </div>
       </header>
       <main className="app-main">

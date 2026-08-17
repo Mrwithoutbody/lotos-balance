@@ -50,14 +50,24 @@ export default function App({ creatorSlug }: Props) {
             <span className="brand-mark">LOTOS BALANCE</span>
             {deck.data && <span className="brand-sub">{deck.data.creator.name}</span>}
           </a>
-          <button
-            type="button"
-            className="icon-btn"
-            onClick={() => setAboutOpen(true)}
-            aria-label="O metodzie"
-          >
-            <Icon name="Info" size={18} />
-          </button>
+          <div className="row">
+            <button
+              type="button"
+              className="icon-btn"
+              onClick={() => setAboutOpen(true)}
+              aria-label="O metodzie"
+            >
+              <Icon name="Info" size={18} />
+            </button>
+            <button
+              type="button"
+              className="icon-btn"
+              onClick={() => navigate('/profil')}
+              aria-label="Profil"
+            >
+              <Icon name="UserRound" size={18} />
+            </button>
+          </div>
         </div>
       </header>
 

@@ -6,6 +6,7 @@ import App from './App'
 import { AppStateProvider } from './hooks/useAppState'
 import { match, usePath } from './lib/router'
 import { LoginScreen } from './screens/LoginScreen'
+import { ProfileScreen } from './screens/ProfileScreen'
 import { CreatorHome } from './screens/CreatorHome'
 import { StartScreen } from './screens/StartScreen'
 import '@fontsource-variable/newsreader'
@@ -40,11 +41,12 @@ if ('serviceWorker' in navigator) {
   })
 }
 
-/** "/" → wejście, "/logowanie" → logowanie, "/<slug>" → program twórczyni. */
+/** "/" → wejście, "/logowanie", "/profil", "/<slug>" → talia twórczyni. */
 function Root() {
   const path = usePath()
   if (match('/', path)) return <CreatorHome />
   if (match('/logowanie', path)) return <LoginScreen />
+  if (match('/profil', path)) return <ProfileScreen />
   const program = match('/:slug', path)
   if (program) return <App creatorSlug={program.slug} />
   return <StartScreen />

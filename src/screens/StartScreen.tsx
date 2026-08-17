@@ -52,7 +52,17 @@ export function StartScreen({ switcher }: Props) {
       <header className="app-bar">
         <div className="app-bar-inner">
           <span className="brand-mark">LOTOS BALANCE</span>
-          {switcher}
+          <div className="row">
+            {switcher}
+            <button
+              type="button"
+              className="icon-btn"
+              onClick={() => navigate('/profil')}
+              aria-label="Profil"
+            >
+              <Icon name="UserRound" size={18} />
+            </button>
+          </div>
         </div>
       </header>
 
