@@ -1,7 +1,8 @@
 // src/components/InstallButton.tsx
-// Instalacja PWA — tylko na kręgu ("/"). Chrome/Android daje własny prompt,
-// iOS nie ma beforeinstallprompt w żadnej przeglądarce, więc tam zostaje
-// instrukcja ręczna — od iOS 16.4 działa tak samo w Safari i w Chrome.
+// Skrót na ekran telefonu — tylko na kręgu ("/"). Jeśli przeglądarka da
+// beforeinstallprompt, klik odpala jej własny prompt; jeśli nie, pokazujemy
+// drogę ręczną. Na iOS zdarzenia nie ma w żadnej przeglądarce, ale od 16.4
+// „Do ekranu początkowego” działa tak samo w Safari i w Chrome.
 import { useEffect, useState } from 'react'
 import { Icon } from './Icon'
 
@@ -38,8 +39,11 @@ export function InstallButton() {
     }
   }, [])
 
+  // Poza trybem standalone przycisk jest zawsze. beforeinstallprompt to sygnał
+  // uznaniowy — Chrome milczy po odrzuceniu prompta i bywa cicho po odinstalowaniu,
+  // a przez menu przeglądarki skrót da się dodać zawsze. Bez prompta pokazujemy
+  // instrukcję ręczną, tak jak na iOS, gdzie tego zdarzenia nie ma w ogóle.
   if (installed) return null
-  if (!prompt && !isIos()) return null
 
   const install = async () => {
     if (!prompt) return setHint((v) => !v)
@@ -57,8 +61,9 @@ export function InstallButton() {
       </button>
       {hint && (
         <p className="tiny">
-          Udostępnij (kwadrat ze strzałką) → „Do ekranu początkowego”. Tak samo w Safari
-          i w Chrome (menu ⋯ → Udostępnij).
+          {isIos()
+            ? 'Udostępnij (kwadrat ze strzałką) → „Do ekranu początkowego”. Tak samo w Safari i w Chrome (menu ⋯ → Udostępnij).'
+            : 'Menu przeglądarki (⋮) → „Dodaj do ekranu głównego”.'}
         </p>
       )}
     </div>
