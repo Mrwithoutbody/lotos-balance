@@ -476,10 +476,6 @@
 
 
 
-.area-dot.is-known {
-  border-style: solid;
-  border-color: transparent;
-}
 
 /* Zapalenie kropki po odpowiedzi na pytanie — jedyny moment, w którym mapa rośnie. */
 @keyframes area-dot-lit {
@@ -497,9 +493,6 @@
   }
 }
 
-.area-dot.is-lit {
-  animation: area-dot-lit 1.4s ease-out;
-}
 
 .reasons {
   margin-top: 14px;

@@ -490,20 +490,8 @@
 
 
 
-.cal-cell.is-empty {
-  background: transparent;
-  border: 0;
-}
 
-.cal-cell:not(.is-empty):hover {
-  background: var(--cream-2);
-}
 
-.cal-cell.is-today {
-  border-color: var(--coral);
-  font-weight: 700;
-  color: var(--coral);
-}
 
 .cal-cell.is-selected {
   background: var(--plum);
@@ -512,20 +500,8 @@
 }
 
 
-.cal-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  display: inline-block;
-}
 
-.cal-dot-planned {
-  background: var(--blue);
-}
 
-.cal-dot-done {
-  background: var(--sage);
-}
 
 
 
