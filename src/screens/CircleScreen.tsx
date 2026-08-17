@@ -196,9 +196,7 @@ export function CircleScreen() {
             </section>
           )}
 
-          {/* Dopiero po pierwszym ćwiczeniu — kto wszedł z linku i nic jeszcze nie
-              dostał, nie ma powodu robić miejsca na telefonie. */}
-          {done > 0 && <InstallButton />}
+          <InstallButton />
         </div>
       </main>
     </div>
