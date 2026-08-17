@@ -52,8 +52,8 @@ export function InstallButton() {
   return (
     <div className="stack-sm">
       <button type="button" className="btn btn-ghost btn-sm" onClick={install}>
-        <Icon name="Download" size={16} />
-        Zainstaluj aplikację
+        <Icon name="Home" size={16} />
+        Dodaj do ekranu telefonu
       </button>
       {hint && (
         <p className="tiny">
