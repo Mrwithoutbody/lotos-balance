@@ -1,6 +1,7 @@
 // src/screens/DeckScreen.tsx
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { ActivationCardView } from '../components/ActivationCard'
+import { AreaChips } from '../components/AreaChips'
 import { CardDetail } from '../components/CardDetail'
 import { CardTile } from '../components/CardTile'
 import { Icon } from '../components/Icon'
@@ -15,24 +16,16 @@ import { useAppState } from '../hooks/useAppState'
 import type { ActivationCard, AreaId, Minutes, Scale5, SwipeDirection } from '../types'
 import { knownAreas, latestSnapshot, unknownAreas } from '../utils/balance'
 import { plural } from '../utils/plural'
+import { filterCards } from '../utils/search'
 import type { TabId } from '../components/BottomNav'
 
 interface Props {
-  onPlay: (card: ActivationCard, source: 'dzisiaj' | 'program' | 'kalendarz', entryId?: string) => void
+  onPlay: (card: ActivationCard, entryId?: string) => void
   onNavigate: (tab: TabId) => void
 }
 
 type Mode = 'stos' | 'biblioteka'
 type QueueItem = { kind: 'karta'; card: ActivationCard } | { kind: 'sonda'; area: AreaId }
-
-/** Prosta normalizacja polskich znaków, żeby wyszukiwanie działało bez ogonków. */
-function normalize(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/ł/g, 'l')
-}
 
 /** Karty poprzeplatane obszarami, żeby stos nie zaczynał się od czterech kart z rzędu. */
 function interleaveByArea(cards: ActivationCard[]): ActivationCard[] {
@@ -99,18 +92,16 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
     [current, recordSwipe, advance],
   )
 
-  const filtered = useMemo(() => {
-    const q = normalize(query.trim())
-    return CARDS.filter((card) => {
-      if (area !== 'wszystkie' && card.area !== area && card.secondaryArea !== area) return false
-      if (minutes !== 'dowolny' && card.minutes !== minutes) return false
-      if (onlyFavorites && !state.favorites.includes(card.id)) return false
-      if (q && !normalize(card.title).includes(q) && !normalize(card.description).includes(q)) {
-        return false
-      }
-      return true
-    })
-  }, [area, minutes, query, onlyFavorites, state.favorites])
+  const filtered = useMemo(
+    () =>
+      filterCards(CARDS, {
+        query,
+        area,
+        minutes,
+        favorites: onlyFavorites ? state.favorites : undefined,
+      }),
+    [area, minutes, query, onlyFavorites, state.favorites],
+  )
 
   useEffect(() => {
     if (mode !== 'stos' || detail || planTarget) return
@@ -203,37 +194,35 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
           </div>
 
           {current.kind === 'karta' ? (
-            <>
-              {/* Pomiń i ulubione robi gest (oraz strzałki ←/→) — ikony są tylko dla myszy. */}
-              <div className="row deck-actions">
-                <button
-                  type="button"
-                  className="icon-btn"
-                  onClick={() => handleSwipe('w-lewo')}
-                  aria-label="Pomiń to ćwiczenie"
-                  title="Pomiń"
-                >
-                  <Icon name="ChevronLeft" size={18} />
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary grow"
-                  onClick={() => onPlay(current.card, 'program')}
-                >
-                  <Icon name="Play" size={16} />
-                  Wykonaj
-                </button>
-                <button
-                  type="button"
-                  className="icon-btn"
-                  onClick={() => handleSwipe('w-prawo')}
-                  aria-label="Dodaj do ulubionych"
-                  title="Do ulubionych"
-                >
-                  <Icon name="Star" size={18} />
-                </button>
-              </div>
-            </>
+            /* Pomiń i ulubione robi gest (oraz strzałki ←/→) — ikony są tylko dla myszy. */
+            <div className="row deck-actions">
+              <button
+                type="button"
+                className="icon-btn"
+                onClick={() => handleSwipe('w-lewo')}
+                aria-label="Pomiń to ćwiczenie"
+                title="Pomiń"
+              >
+                <Icon name="ChevronLeft" size={18} />
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary grow"
+                onClick={() => onPlay(current.card)}
+              >
+                <Icon name="Play" size={16} />
+                Wykonaj
+              </button>
+              <button
+                type="button"
+                className="icon-btn"
+                onClick={() => handleSwipe('w-prawo')}
+                aria-label="Dodaj do ulubionych"
+                title="Do ulubionych"
+              >
+                <Icon name="Star" size={18} />
+              </button>
+            </div>
           ) : (
             <p className="tiny center">Przeciągnij w bok, aby pominąć — pytanie wróci.</p>
           )}
@@ -310,21 +299,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
           <div className="stack">
             <div className="stack-sm">
               <span className="h3">Obszar</span>
-              {/* Klik w aktywny chip czyści filtr, więc bez osobnego chipa „wszystkie". */}
-              <div className="row wrap">
-                {AREAS.map((a) => (
-                  <button
-                    key={a.id}
-                    type="button"
-                    className="chip"
-                    aria-pressed={area === a.id}
-                    onClick={() => setArea((v) => (v === a.id ? 'wszystkie' : a.id))}
-                  >
-                    <Icon name={a.icon} size={14} />
-                    {a.name}
-                  </button>
-                ))}
-              </div>
+              <AreaChips value={area} onChange={setArea} />
             </div>
 
             <div className="stack-sm">
@@ -370,7 +345,7 @@ export function DeckScreen({ onPlay, onNavigate }: Props) {
           onStart={() => {
             const card = detail
             setDetail(null)
-            onPlay(card, 'program')
+            onPlay(card)
           }}
           onPlan={() => {
             setPlanTarget(detail)

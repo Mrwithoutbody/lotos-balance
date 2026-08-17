@@ -8,7 +8,7 @@ import { mkdirSync, writeFileSync, copyFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { AREA_BY_ID } from '../src/data/areas'
 import type { ActivationCard } from '../src/types'
-import type { DeckCard, DeckManifest } from '../src/types/deck'
+import type { DeckManifest } from '../src/types/deck'
 
 const RAW: Omit<ActivationCard, 'color'>[] = [
   // ——— EMOCJE ———
@@ -515,7 +515,7 @@ const RAW: Omit<ActivationCard, 'color'>[] = [
 
 const OUT = join(import.meta.dirname, '..', 'seed', 'anna-rysnik')
 
-const cards: DeckCard[] = RAW.map((card) => ({
+const cards: ActivationCard[] = RAW.map((card) => ({
   ...card,
   color: AREA_BY_ID[card.area].color,
 }))

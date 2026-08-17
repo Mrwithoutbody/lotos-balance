@@ -5,17 +5,16 @@ import type { AreaId, AreaStatus, BalanceSnapshot, Scale5 } from '../types'
 export type Levels = Partial<Record<AreaId, number>>
 
 /** Odpowiedź 1–5 przeliczona liniowo na poziom 0–100. */
-export function answerToLevel(answer: Scale5): number {
-  return Math.round(((answer - 1) / 4) * 100)
-}
+const answerToLevel = (answer: Scale5) => Math.round(((answer - 1) / 4) * 100)
 
+/** Tylko znane obszary z odpowiedzią — filtr trzyma śmieci z localStorage poza mapą. */
 export function levelsFromAnswers(answers: Partial<Record<AreaId, Scale5>>): Levels {
-  const levels: Levels = {}
-  for (const id of AREA_IDS) {
-    const answer = answers[id]
-    if (answer !== undefined) levels[id] = answerToLevel(answer)
-  }
-  return levels
+  return Object.fromEntries(
+    AREA_IDS.filter((id) => answers[id] !== undefined).map((id) => [
+      id,
+      answerToLevel(answers[id] as Scale5),
+    ]),
+  )
 }
 
 export function statusOf(level: number): AreaStatus {

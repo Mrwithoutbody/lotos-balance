@@ -14,13 +14,7 @@ import { BalanceScreen } from './screens/BalanceScreen'
 import { CalendarScreen } from './screens/CalendarScreen'
 import { DeckScreen } from './screens/DeckScreen'
 import { TodayScreen } from './screens/TodayScreen'
-import type { ActivationCard, ActivationSession } from './types'
-
-interface PlayerTarget {
-  card: ActivationCard
-  source: ActivationSession['source']
-  entryId?: string
-}
+import type { ActivationCard } from './types'
 
 interface Props {
   /** Slug twórczyni z trasy /<slug> — folder programu w R2. */
@@ -42,9 +36,9 @@ export default function App({ creatorSlug }: Props) {
     hydrateCards(deck.data.cards, art)
   }
   const deckReady = Boolean(deck.data)
-  // Bez onboardingu: przy pustym profilu zaczynamy od programu, bo to on buduje mapę.
+  // Bez onboardingu: bez ani jednego wyniku zaczynamy od programu, bo to on buduje mapę.
   const [tab, setTab] = useState<TabId>(() => (state.snapshots.length === 0 ? 'program' : 'dzisiaj'))
-  const [player, setPlayer] = useState<PlayerTarget | null>(null)
+  const [player, setPlayer] = useState<{ card: ActivationCard; entryId?: string } | null>(null)
   const [aboutOpen, setAboutOpen] = useState(false)
 
   // Wejście na stronę twórczyni = dołączenie do jej kręgu (link działa jak
@@ -60,11 +54,7 @@ export default function App({ creatorSlug }: Props) {
     }).catch(() => {})
   }, [loggedIn, creatorSlug, deck.data])
 
-  const openPlayer = (
-    card: ActivationCard,
-    source: ActivationSession['source'],
-    entryId?: string,
-  ) => setPlayer({ card, source, entryId })
+  const openPlayer = (card: ActivationCard, entryId?: string) => setPlayer({ card, entryId })
 
   return (
     <div className="app">
@@ -130,7 +120,6 @@ export default function App({ creatorSlug }: Props) {
       {player && (
         <CardPlayer
           card={player.card}
-          source={player.source}
           calendarEntryId={player.entryId}
           creatorSlug={creatorSlug}
           onClose={() => setPlayer(null)}

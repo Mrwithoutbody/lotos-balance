@@ -1,7 +1,7 @@
 // src/data/brain.ts
 import type { BrainPillar } from '../types'
 
-export interface BrainStep {
+interface BrainStep {
   pillar: BrainPillar
   pillarLabel: string
   icon: string

@@ -2,9 +2,9 @@
 import { AREA_BY_ID } from '../data/areas'
 import { CARD_BY_ID } from '../data/cards'
 import type { ActivationSession, AppState, AreaId } from '../types'
-import { addDays, partOfDay, todayKey } from '../utils/date'
+import { addDays, dateKey, partOfDay } from '../utils/date'
 
-export interface CardEffect {
+interface CardEffect {
   cardId: string
   title: string
   area: AreaId
@@ -17,7 +17,7 @@ function completedWithRating(state: AppState): ActivationSession[] {
 }
 
 /** Karty pogrupowane po średniej zmianie (po − przed). */
-export function cardEffects(state: AppState): CardEffect[] {
+function cardEffects(state: AppState): CardEffect[] {
   const map = new Map<string, { sum: number; count: number }>()
   for (const s of completedWithRating(state)) {
     const entry = map.get(s.cardId) ?? { sum: 0, count: 0 }
@@ -50,7 +50,7 @@ export function neutralCards(state: AppState, limit = 3): CardEffect[] {
 /** Liczba dni z rzędu (licząc od dziś lub wczoraj) z ukończoną aktywacją. */
 export function streak(state: AppState): number {
   const days = new Set(state.sessions.filter((s) => s.completed).map((s) => s.date))
-  const today = todayKey()
+  const today = dateKey()
   let cursor = days.has(today) ? today : addDays(today, -1)
   if (!days.has(cursor)) return 0
   let count = 0
@@ -63,7 +63,7 @@ export function streak(state: AppState): number {
 
 /** Aktywność z ostatnich siedmiu dni: liczba ukończonych aktywacji dziennie. */
 export function weekActivity(state: AppState): { date: string; count: number }[] {
-  const today = todayKey()
+  const today = dateKey()
   return Array.from({ length: 7 }, (_, i) => {
     const date = addDays(today, i - 6)
     const count = state.sessions.filter((s) => s.completed && s.date === date).length
@@ -73,7 +73,7 @@ export function weekActivity(state: AppState): { date: string; count: number }[]
 
 /** Średnia zmiana samopoczucia w ostatnich siedmiu dniach. */
 export function weekAverageDelta(state: AppState): number | null {
-  const from = addDays(todayKey(), -6)
+  const from = addDays(dateKey(), -6)
   const deltas = completedWithRating(state)
     .filter((s) => s.date >= from)
     .map((s) => (s.after as number) - s.before)
@@ -154,7 +154,7 @@ export function personalManual(state: AppState): string[] {
   }
 
   // 4. Plan kontra wykonanie.
-  const past = state.calendar.filter((e) => e.date < todayKey())
+  const past = state.calendar.filter((e) => e.date < dateKey())
   if (past.length >= 3) {
     const doneRatio = past.filter((e) => e.done).length / past.length
     if (doneRatio < 0.5) {

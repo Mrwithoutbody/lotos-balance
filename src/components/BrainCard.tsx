@@ -1,7 +1,7 @@
 // src/components/BrainCard.tsx
 import { brainStepForDate } from '../data/brain'
 import { useAppState } from '../hooks/useAppState'
-import { todayKey } from '../utils/date'
+import { dateKey } from '../utils/date'
 import { Icon } from './Icon'
 import natureImg from '../assets/anna/natura-gniazdo.webp'
 
@@ -12,7 +12,7 @@ interface Props {
 /** „Mózg na lata” — dokładnie jeden prosty krok dziennie. Ciemna karta editorial. */
 export function BrainCard({ onAbout }: Props) {
   const { state, markBrainStep } = useAppState()
-  const today = todayKey()
+  const today = dateKey()
   const step = brainStepForDate(today)
   const done = state.brainSteps.includes(today)
 

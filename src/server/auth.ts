@@ -1,7 +1,7 @@
 // src/server/auth.ts
 // Fabryka Better Auth — instancja powstaje per-request, bo bindingi (D1, sekrety)
 // przychodzą w env dopiero w czasie żądania (Cloudflare Pages Functions).
-import type { D1Database } from '@cloudflare/workers-types'
+import type { D1Database, PagesFunction } from '@cloudflare/workers-types'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { magicLink } from 'better-auth/plugins'
@@ -18,6 +18,24 @@ export interface Env {
   /** Sam adres nadawcy, bez nazwy — domena musi być uwierzytelniona w Brevo. */
   MAIL_FROM: string
 }
+
+/**
+ * Kontekst funkcji opisany typami DOM: @cloudflare/workers-types kłóci się tutaj
+ * z lib DOM, a funkcje potrzebują tylko env, request i params.
+ */
+export interface Ctx {
+  env: Env
+  request: Request
+  params: Record<string, string | string[]>
+}
+
+/** Zdejmuje z każdego pliku funkcji to samo rzutowanie na PagesFunction. */
+export const pagesFunction = (fn: (ctx: Ctx) => Promise<Response>) =>
+  fn as unknown as PagesFunction<Env>
+
+/** Sesja zalogowanej osoby albo null. */
+export const getSession = (ctx: Ctx) =>
+  createAuth(ctx.env).api.getSession({ headers: ctx.request.headers })
 
 export function createAuth(env: Env) {
   return betterAuth({

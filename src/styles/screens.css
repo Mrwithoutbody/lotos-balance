@@ -426,18 +426,6 @@
   }
 }
 
-.filter-scroll {
-  display: flex;
-  gap: var(--sp-2);
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: thin;
-}
-
-.filter-scroll .chip {
-  flex: none;
-}
-
 .chip-icon {
   flex: none;
   min-height: 48px;

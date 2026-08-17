@@ -2,7 +2,7 @@
 import { CARDS } from '../data/cards'
 import type { ActivationCard, AppState, AreaId, Minutes, NeedId, Scale5 } from '../types'
 import { latestSnapshot, weakestAreas } from '../utils/balance'
-import { diffDays, todayKey } from '../utils/date'
+import { dateKey, diffDays } from '../utils/date'
 
 export interface RecommendationInput {
   need: NeedId
@@ -17,7 +17,7 @@ export interface ScoredCard {
 }
 
 /** Średnia zmiana (po − przed) dla danej karty w historii użytkowniczki. */
-export function averageDelta(state: AppState, cardId: string): number | null {
+function averageDelta(state: AppState, cardId: string): number | null {
   const deltas = state.sessions
     .filter((s) => s.cardId === cardId && s.completed && typeof s.after === 'number')
     .map((s) => (s.after as number) - s.before)
@@ -29,7 +29,7 @@ function daysSinceLastUse(state: AppState, cardId: string): number | null {
   const dates = state.sessions.filter((s) => s.cardId === cardId).map((s) => s.date)
   if (dates.length === 0) return null
   const last = dates.reduce((a, b) => (a >= b ? a : b))
-  return diffDays(todayKey(), last)
+  return diffDays(dateKey(), last)
 }
 
 /**
@@ -37,7 +37,7 @@ function daysSinceLastUse(state: AppState, cardId: string): number | null {
  * od potrzeby, Mapy Balansu, celów, czasu i wcześniejszych reakcji.
  */
 /** Obszary, które użytkowniczka sama wskazała kartami zatrzymanymi w prawo („to o mnie”). */
-export function preferredAreas(state: AppState): Set<AreaId> {
+function preferredAreas(state: AppState): Set<AreaId> {
   const areas = new Set<AreaId>()
   const counts = new Map<AreaId, number>()
   for (const swipe of state.swipes) {

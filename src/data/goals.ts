@@ -1,7 +1,7 @@
 // src/data/goals.ts
 import type { Minutes, NeedId } from '../types'
 
-export interface NeedDef {
+interface NeedDef {
   id: NeedId
   label: string
   icon: string

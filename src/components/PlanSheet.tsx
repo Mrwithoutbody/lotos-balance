@@ -1,7 +1,7 @@
 // src/components/PlanSheet.tsx
 import { useState } from 'react'
 import type { ActivationCard } from '../types'
-import { addDays, longDate, todayKey } from '../utils/date'
+import { addDays, dateKey, longDate } from '../utils/date'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
 
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export function PlanSheet({ card, onClose, onPlan, mode = 'plan', initialDate }: Props) {
-  const today = todayKey()
+  const today = dateKey()
   const [date, setDate] = useState(initialDate ?? today)
 
   const quick = [

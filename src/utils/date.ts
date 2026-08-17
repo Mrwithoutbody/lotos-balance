@@ -7,10 +7,6 @@ export function dateKey(d: Date = new Date()): string {
   return d.toLocaleDateString('sv-SE')
 }
 
-export function todayKey(): string {
-  return dateKey()
-}
-
 export function parseKey(key: string): Date {
   const [y, m, d] = key.split('-').map(Number)
   return new Date(y, m - 1, d)

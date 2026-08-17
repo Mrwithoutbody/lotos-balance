@@ -2,8 +2,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { AREA_BY_ID } from '../data/areas'
 import { useAppState } from '../hooks/useAppState'
-import type { ActivationCard, ActivationSession, Scale5 } from '../types'
-import { todayKey } from '../utils/date'
+import type { ActivationCard, Scale5 } from '../types'
+import { dateKey } from '../utils/date'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
 import { ScaleInput } from './ScaleInput'
@@ -12,7 +12,6 @@ type Phase = 'before' | 'run' | 'after' | 'summary'
 
 interface Props {
   card: ActivationCard
-  source: ActivationSession['source']
   /** Wpis kalendarza, który zostanie oznaczony jako wykonany. */
   calendarEntryId?: string
   /** Program, z którego grane jest ćwiczenie — do zapisu postępu na serwerze. */
@@ -33,12 +32,11 @@ function summaryText(before: Scale5, after: Scale5): string {
   return 'Dziś to ćwiczenie nie pomogło. Następnym razem spróbujemy innego podejścia.'
 }
 
-export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose }: Props) {
+export function CardPlayer({ card, calendarEntryId, creatorSlug, onClose }: Props) {
   const { saveSession, setEntryDone } = useAppState()
   const [phase, setPhase] = useState<Phase>('before')
   const [before, setBefore] = useState<Scale5>()
   const [after, setAfter] = useState<Scale5>()
-  const [note, setNote] = useState('')
   const [secondsLeft, setSecondsLeft] = useState(card.minutes * 60)
   const [running, setRunning] = useState(true)
   const startedAt = useRef<string>(new Date().toISOString())
@@ -68,16 +66,13 @@ export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose
     if (before === undefined) return
     const session = saveSession({
       cardId: card.id,
-      date: todayKey(),
+      date: dateKey(),
       startedAt: startedAt.current,
-      finishedAt: new Date().toISOString(),
       before,
       after,
-      note: note.trim() || undefined,
       completed: true,
-      source,
     })
-    if (calendarEntryId) setEntryDone(calendarEntryId, true, session.id)
+    if (calendarEntryId) setEntryDone(calendarEntryId, true)
     // Zalogowana osoba dokłada swoją pracę do kręgu; 401 (brak sesji) po prostu ignorujemy —
     // localStorage wyżej pozostaje źródłem prawdy dla widoku.
     if (creatorSlug) {
@@ -202,15 +197,6 @@ export function CardPlayer({ card, source, calendarEntryId, creatorSlug, onClose
             lowLabel="ciężko"
             highLabel="dobrze"
           />
-          <label className="stack-sm">
-            <span className="h3">Krótka notatka (opcjonalnie)</span>
-            <textarea
-              className="input"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Co zauważyłaś?"
-            />
-          </label>
           <button
             type="button"
             className="btn btn-primary btn-block"

@@ -80,6 +80,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Zamiast ręcznego body.style.overflow w Modalu — otwarty dialog blokuje scroll. */
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
 #root {
   min-height: 100dvh;
 }

@@ -97,12 +97,6 @@ export interface ActivationCard {
   caution?: string
 }
 
-/** Profil użytkowniczki. Powstaje sam przy pierwszym uruchomieniu — bez ekranu rejestracji. */
-export interface UserProfile {
-  name?: string
-  createdAt: string
-}
-
 /** Krótki check-in „czego potrzebuję teraz”. */
 export interface DailyCheckIn {
   id: string
@@ -118,13 +112,11 @@ export interface ActivationSession {
   id: string
   cardId: string
   date: string
+  /** Czytane przez „instrukcję obsługi” — z niego bierze się pora dnia. */
   startedAt: string
-  finishedAt?: string
   before: Scale5
   after?: Scale5
-  note?: string
   completed: boolean
-  source: 'dzisiaj' | 'program' | 'kalendarz'
 }
 
 /** Karta zaplanowana na konkretny dzień. */
@@ -134,13 +126,11 @@ export interface CalendarEntry {
   date: string
   cardId: string
   done: boolean
-  sessionId?: string
   createdAt: string
 }
 
 /** Cały stan aplikacji zapisywany w localStorage. */
 export interface AppState {
-  profile: UserProfile | null
   snapshots: BalanceSnapshot[]
   checkIns: DailyCheckIn[]
   sessions: ActivationSession[]

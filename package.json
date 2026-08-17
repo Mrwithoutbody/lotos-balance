@@ -8,7 +8,6 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "db:generate": "drizzle-kit generate",
     "db:migrate": "wrangler d1 migrations apply lotos-db",
     "dev:api": "npm run build && wrangler pages dev"
   },
@@ -27,7 +26,6 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "drizzle-kit": "^0.31.10",
     "typescript": "^5.6.3",
     "vite": "^5.4.11"
   }

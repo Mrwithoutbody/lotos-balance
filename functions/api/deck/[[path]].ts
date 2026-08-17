@@ -2,7 +2,7 @@
 // GET — programy z bucketa R2 podane spod własnej domeny. Dzięki temu przeglądarka
 // nie robi żadnego zapytania cross-origin (koniec ze sztywną listą origin na buckecie,
 // więc program wstaje na dowolnym porcie deweloperskim), a my ustawiamy Cache-Control.
-import type { PagesFunction } from '@cloudflare/workers-types'
+import { pagesFunction } from '../../../src/server/auth'
 
 /** Publiczny bucket lotos-balance (konto dadmor, jurysdykcja EU). */
 const R2_URL = 'https://pub-b800680ed48f426cab8c4693966aa056.r2.dev'
@@ -11,10 +11,7 @@ const R2_URL = 'https://pub-b800680ed48f426cab8c4693966aa056.r2.dev'
 const MANIFEST_CACHE = 'public, max-age=300, stale-while-revalidate=3600'
 const ASSET_CACHE = 'public, max-age=604800, immutable'
 
-export const onRequest: PagesFunction = (async (ctx: {
-  request: { method: string }
-  params: { path?: string | string[] }
-}) => {
+export const onRequest = pagesFunction(async (ctx) => {
   if (!['GET', 'HEAD'].includes(ctx.request.method)) {
     return new Response('Method Not Allowed', { status: 405 })
   }
@@ -35,4 +32,4 @@ export const onRequest: PagesFunction = (async (ctx: {
     parts[parts.length - 1] === 'deck.json' ? MANIFEST_CACHE : ASSET_CACHE,
   )
   return new Response(upstream.body, { status: 200, headers })
-}) as unknown as PagesFunction
+})

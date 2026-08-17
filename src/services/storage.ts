@@ -5,7 +5,6 @@ const STORAGE_KEY = 'lotos-balance:v1'
 
 export function defaultState(): AppState {
   return {
-    profile: null,
     snapshots: [],
     checkIns: [],
     sessions: [],
@@ -32,11 +31,9 @@ const strings = (value: unknown): string[] =>
 
 /** Uzupełnia braki i odrzuca uszkodzone wpisy — zamiast wywalać całą aplikację. */
 function migrate(raw: unknown): AppState {
-  const base = defaultState()
-  if (!raw || typeof raw !== 'object') return base
+  if (!raw || typeof raw !== 'object') return defaultState()
   const data = raw as Partial<AppState>
   return {
-    profile: data.profile && typeof data.profile === 'object' ? data.profile : base.profile,
     snapshots: keep(data.snapshots, ['id', 'date']),
     checkIns: keep(data.checkIns, ['id', 'date', 'need']),
     sessions: keep(data.sessions, ['id', 'date', 'cardId']),

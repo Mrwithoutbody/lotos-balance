@@ -6,10 +6,7 @@
 //   <bucket>/<creatorSlug>/karty/<cardSlug>/card.json
 import type { ActivationCard, AreaId } from './index'
 
-/** Zawartość card.json — dokładnie pola ćwiczenia. */
-export type DeckCard = ActivationCard
-
-/** deck.json — manifest programu jednego twórcy. */
+/** deck.json — manifest programu jednego twórcy. Card.json to jedna ActivationCard. */
 export interface DeckManifest {
   creator: {
     slug: string
@@ -23,5 +20,5 @@ export interface DeckManifest {
   /** Grafiki tła kart per obszar — nazwy plików w folderze art/ programu. */
   art?: Partial<Record<AreaId, string>>
   /** Pełne karty w kolejności ustalonej przez twórcę. */
-  cards: DeckCard[]
+  cards: ActivationCard[]
 }

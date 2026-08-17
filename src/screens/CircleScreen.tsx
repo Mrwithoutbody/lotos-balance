@@ -30,27 +30,17 @@ interface FeedRow {
   date: string
 }
 
-function useCreators() {
-  return useQuery<CreatorRow[]>({
-    queryKey: ['creators'],
+/** Jeden fetch-json pod react-query — oba zapytania tego ekranu wyglądają tak samo. */
+function useJson<T>(key: string, url: string, enabled = true) {
+  return useQuery<T>({
+    queryKey: [key],
+    enabled,
+    staleTime: 60 * 1000,
     queryFn: async () => {
-      const res = await fetch('/api/creators')
+      const res = await fetch(url)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       return res.json()
     },
-    staleTime: 60 * 1000,
-  })
-}
-
-function useFeed() {
-  return useQuery<FeedRow[]>({
-    queryKey: ['feed'],
-    queryFn: async () => {
-      const res = await fetch('/api/feed')
-      if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      return res.json()
-    },
-    staleTime: 60 * 1000,
   })
 }
 
@@ -68,18 +58,6 @@ function FeedEntry({ row }: { row: FeedRow }) {
       </div>
     </li>
   )
-}
-
-function useMe(loggedIn: boolean) {
-  return useQuery<Me | null>({
-    queryKey: ['me'],
-    enabled: loggedIn,
-    queryFn: async () => {
-      const res = await fetch('/api/me')
-      if (!res.ok) return null
-      return res.json()
-    },
-  })
 }
 
 function CreatorCard({ creator }: { creator: CreatorRow }) {
@@ -121,15 +99,15 @@ function CreatorCard({ creator }: { creator: CreatorRow }) {
 export function CircleScreen() {
   const session = useSession()
   const loggedIn = Boolean(session.data)
-  const creators = useCreators()
-  const me = useMe(loggedIn)
-  const feed = useFeed()
+  const circle = useJson<{ creators: CreatorRow[]; feed: FeedRow[] }>('circle', '/api/circle')
+  // /api/me odpowiada null, gdy sesja padła — stąd null w typie.
+  const me = useJson<Me | null>('me', '/api/me', loggedIn)
   const { state } = useAppState()
   const done = state.sessions.filter((s) => s.completed).length
   const days = streak(state)
   const [tab, setTab] = useState<'feed' | 'programy'>('programy')
   // Pusty feed nie dostaje własnego tabu — nowa osoba nie może wylądować w martwej apce.
-  const hasFeed = (feed.data?.length ?? 0) > 0
+  const hasFeed = (circle.data?.feed.length ?? 0) > 0
 
   return (
     <div className="app">
@@ -174,14 +152,14 @@ export function CircleScreen() {
 
           {tab === 'feed' && hasFeed && (
             <ul className="entry-list">
-              {feed.data!.map((row, i) => (
+              {circle.data!.feed.map((row, i) => (
                 <FeedEntry key={`${row.creatorSlug}-${row.cardId}-${row.date}-${i}`} row={row} />
               ))}
             </ul>
           )}
 
           {(tab === 'programy' || !hasFeed) &&
-            (creators.data ?? []).map((c) => <CreatorCard key={c.slug} creator={c} />)}
+            (circle.data?.creators ?? []).map((c) => <CreatorCard key={c.slug} creator={c} />)}
 
           {done > 0 && (
             <section className="surface stack-sm">
@@ -196,7 +174,7 @@ export function CircleScreen() {
                 {days > 0 && (
                   <span className="pill">
                     <Icon name="Flame" size={13} />
-                    {days} {days === 1 ? 'dzień' : 'dni'} z rzędu
+                    {days} {plural(days, 'dzień', 'dni', 'dni')} z rzędu
                   </span>
                 )}
               </div>

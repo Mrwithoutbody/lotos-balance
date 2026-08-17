@@ -18,13 +18,14 @@ import {
   unknownAreas,
   weakestAreas,
 } from '../utils/balance'
-import { longDate, shortDate, todayKey, weekdayShort } from '../utils/date'
+import { dateKey, longDate, shortDate, weekdayShort } from '../utils/date'
 import type { AreaId } from '../types'
+import type { TabId } from '../components/BottomNav'
 import zielenImg from '../assets/anna/hero-balans.webp'
 
 interface Props {
   onAbout: () => void
-  onNavigate: (tab: 'dzisiaj' | 'program' | 'kalendarz' | 'balans') => void
+  onNavigate: (tab: TabId) => void
 }
 
 export function BalanceScreen({ onAbout, onNavigate }: Props) {
@@ -34,7 +35,7 @@ export function BalanceScreen({ onAbout, onNavigate }: Props) {
 
   const snapshot = latestSnapshot(state.snapshots)
   const previous = previousSnapshot(state.snapshots)
-  const today = todayKey()
+  const today = dateKey()
   const updatedToday = snapshot?.date === today
   const missing = unknownAreas(snapshot?.levels ?? {})
   const weak = snapshot ? weakestAreas(snapshot.levels, 2) : []

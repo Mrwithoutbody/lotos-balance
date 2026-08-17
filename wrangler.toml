@@ -11,9 +11,3 @@ database_name = "lotos-db"
 database_id = "be7b255e-610f-4414-ab86-66474f5e05ee"
 migrations_dir = "drizzle"
 
-# Bucket na programy — utworzyć po włączeniu R2 na koncie Anny:
-#   npx wrangler r2 bucket create lotos-programy --jurisdiction eu
-# Do tego czasu binding zakomentowany, żeby deploy nie wywalał się o brakujący bucket.
-# [[r2_buckets]]
-# binding = "PROGRAMY"
-# bucket_name = "lotos-programy"

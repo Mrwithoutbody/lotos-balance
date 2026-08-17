@@ -1,8 +1,12 @@
 // src/components/CardPicker.tsx
+// Wybór ćwiczenia na konkretny dzień. Kompaktowe wiersze zamiast kafli — tu
+// liczy się szybkie przejrzenie listy, nie oglądanie grafik.
 import { useMemo, useState } from 'react'
-import { AREA_BY_ID, AREAS } from '../data/areas'
+import { AREA_BY_ID } from '../data/areas'
 import { CARDS } from '../data/cards'
 import type { AreaId } from '../types'
+import { filterCards } from '../utils/search'
+import { AreaChips } from './AreaChips'
 import { Icon } from './Icon'
 import { Modal } from './Modal'
 
@@ -16,14 +20,7 @@ export function CardPicker({ title, onClose, onPick }: Props) {
   const [query, setQuery] = useState('')
   const [area, setArea] = useState<AreaId | 'wszystkie'>('wszystkie')
 
-  const list = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    return CARDS.filter(
-      (c) =>
-        (area === 'wszystkie' || c.area === area) &&
-        (q === '' || c.title.toLowerCase().includes(q)),
-    )
-  }, [query, area])
+  const list = useMemo(() => filterCards(CARDS, { query, area }), [query, area])
 
   return (
     <Modal title={title} onClose={onClose}>
@@ -39,27 +36,7 @@ export function CardPicker({ title, onClose, onPick }: Props) {
             aria-label="Szukaj ćwiczenia"
           />
         </div>
-        <div className="filter-scroll">
-          <button
-            type="button"
-            className="chip"
-            aria-pressed={area === 'wszystkie'}
-            onClick={() => setArea('wszystkie')}
-          >
-            Wszystkie
-          </button>
-          {AREAS.map((a) => (
-            <button
-              key={a.id}
-              type="button"
-              className="chip"
-              aria-pressed={area === a.id}
-              onClick={() => setArea(a.id)}
-            >
-              {a.name}
-            </button>
-          ))}
-        </div>
+        <AreaChips value={area} onChange={setArea} />
         <ul className="picker-list">
           {list.map((card) => {
             const cardArea = AREA_BY_ID[card.area]

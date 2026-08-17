@@ -14,19 +14,20 @@ import { streak } from '../services/insights'
 import { scoreCards } from '../services/recommend'
 import type { ActivationCard, Minutes, NeedId, Scale5 } from '../types'
 import { latestSnapshot, weakestAreas } from '../utils/balance'
-import { greeting, longDate, todayKey } from '../utils/date'
+import { dateKey, greeting, longDate } from '../utils/date'
+import { plural } from '../utils/plural'
 import type { TabId } from '../components/BottomNav'
 import heroImg from '../assets/anna/hero-dzisiaj.webp'
 
 interface Props {
-  onPlay: (card: ActivationCard, source: 'dzisiaj' | 'program' | 'kalendarz', entryId?: string) => void
+  onPlay: (card: ActivationCard, entryId?: string) => void
   onAbout: () => void
   onNavigate: (tab: TabId) => void
 }
 
 export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
   const { state, addCheckIn, planCard } = useAppState()
-  const today = todayKey()
+  const today = dateKey()
   const [checkInOpen, setCheckInOpen] = useState(false)
   const [planCardTarget, setPlanCardTarget] = useState<ActivationCard | null>(null)
   const [offset, setOffset] = useState(0)
@@ -70,11 +71,11 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
           <div className="row wrap">
             <span className="pill pill-glass">
               <Icon name="Flame" size={13} />
-              {days > 0 ? `${days} ${days === 1 ? 'dzień' : 'dni'} z rzędu` : 'Zacznij dziś'}
+              {days > 0 ? `${days} ${plural(days, 'dzień', 'dni', 'dni')} z rzędu` : 'Zacznij dziś'}
             </span>
             <span className="pill pill-glass">
               <Icon name="Check" size={13} />
-              {doneToday} {doneToday === 1 ? 'ćwiczenie dziś' : doneToday < 5 ? 'ćwiczenia dziś' : 'ćwiczeń dziś'}
+              {doneToday} {plural(doneToday, 'ćwiczenie', 'ćwiczenia', 'ćwiczeń')} dziś
             </span>
           </div>
         </div>
@@ -117,7 +118,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
                   <button
                     type="button"
                     className="btn btn-primary btn-block"
-                    onClick={() => onPlay(suggestion.card, 'dzisiaj')}
+                    onClick={() => onPlay(suggestion.card)}
                   >
                     <Icon name="Play" size={18} />
                     Zaczynam
@@ -186,7 +187,7 @@ export function TodayScreen({ onPlay, onAbout, onNavigate }: Props) {
                     <button
                       type="button"
                       className="btn btn-secondary btn-sm"
-                      onClick={() => onPlay(card, 'kalendarz', entry.id)}
+                      onClick={() => onPlay(card, entry.id)}
                     >
                       Zacznij
                     </button>

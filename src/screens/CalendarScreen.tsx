@@ -10,22 +10,22 @@ import type { ActivationCard, CalendarEntry } from '../types'
 import {
   WEEKDAYS_SHORT,
   addDays,
+  dateKey,
   longDate,
   monthGrid,
   monthLabel,
   parseKey,
   shortDate,
-  todayKey,
   weekdayShort,
 } from '../utils/date'
 
 interface Props {
-  onPlay: (card: ActivationCard, source: 'dzisiaj' | 'program' | 'kalendarz', entryId?: string) => void
+  onPlay: (card: ActivationCard, entryId?: string) => void
 }
 
 export function CalendarScreen({ onPlay }: Props) {
   const { state, planCard, removeEntry, rescheduleEntry, setEntryDone } = useAppState()
-  const today = todayKey()
+  const today = dateKey()
   const [cursor, setCursor] = useState(() => {
     const d = parseKey(today)
     return { year: d.getFullYear(), month: d.getMonth() }
@@ -173,7 +173,7 @@ export function CalendarScreen({ onPlay }: Props) {
                       <button
                         type="button"
                         className="btn btn-primary btn-sm"
-                        onClick={() => onPlay(card, 'kalendarz', entry.id)}
+                        onClick={() => onPlay(card, entry.id)}
                       >
                         <Icon name="Play" size={15} />
                         Zacznij
