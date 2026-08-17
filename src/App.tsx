@@ -11,9 +11,8 @@ import { navigate } from './lib/router'
 import { useDeck } from './services/decks'
 import { CardsScreen } from './screens/CardsScreen'
 import { DeckHomeScreen } from './screens/DeckHomeScreen'
-import { MapScreen } from './screens/MapScreen'
 import { ProgressScreen } from './screens/ProgressScreen'
-import { TreeScreen } from './screens/TreeScreen'
+import { StarMapScreen } from './screens/StarMapScreen'
 import type { ActivationCard } from './types'
 import { dateKey } from './utils/date'
 
@@ -102,8 +101,7 @@ export default function App({ creatorSlug }: Props) {
             {tab === 'karty' && (
               <CardsScreen onPlay={(card, entryId) => setPlayer({ card, entryId })} />
             )}
-            {tab === 'drzewo' && <TreeScreen />}
-            {tab === 'mapa' && <MapScreen />}
+            {tab === 'mapa' && <StarMapScreen onPlay={(card) => setPlayer({ card })} />}
             {tab === 'postepy' && <ProgressScreen onAbout={() => setAboutOpen(true)} />}
 
             {player && (
